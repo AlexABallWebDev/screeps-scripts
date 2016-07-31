@@ -2,7 +2,7 @@
 /*jshint esversion: 6 */
 
 var harvesterCapacity = 6;
-var upgraderCapacity = 1;
+var upgraderCapacity = 2;
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
