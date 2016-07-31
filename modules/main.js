@@ -20,12 +20,12 @@ var clearDeadCreepMemory = function() {
 var getNextSource = function() {
     var harvestSource = 0;
     var sources = Game.spawns.Spawn1.room.find(FIND_SOURCES);
-    if (Game.spawns.Spawn1.nextSource === undefined || Game.spawns.Spawn1.nextSource >= sources.length) {
-        Game.spawns.Spawn1.nextSource = 0;
+    if (Game.spawns.Spawn1.memory.nextSource === undefined || Game.spawns.Spawn1.memory.nextSource >= sources.length) {
+        Game.spawns.Spawn1.memory.nextSource = 0;
     }
     else {
-        harvestSource = sources[Game.spawns.Spawn1.nextSource];
-        Game.spawns.Spawn1.nextSource += 1;
+        harvestSource = Game.spawns.Spawn1.memory.nextSource;
+        Game.spawns.Spawn1.memory.nextSource += 1;
     }
     return harvestSource;
 };
@@ -34,7 +34,7 @@ var spawnUpgrader = function() {
     var harvestSource = getNextSource();
 
     var creepMemory = {role: 'upgrader', source: harvestSource};
-    var newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], undefined, creepMemory);
+    var newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName != -6) {
         console.log('Spawning new upgrader: ' + newName);
     }
@@ -44,7 +44,7 @@ var spawnHarvester = function () {
     var harvestSource = getNextSource();
 
     var creepMemory = {role: 'harvester', source: harvestSource};
-    var newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], undefined, creepMemory);
+    var newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName != -6) {
         console.log('Spawning new harvester: ' + newName);
     }
