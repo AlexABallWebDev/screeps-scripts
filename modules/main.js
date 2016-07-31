@@ -1,7 +1,7 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
 
-var harvesterCapacity = 4;
+var harvesterCapacity = 6;
 var upgraderCapacity = 1;
 
 var roleHarvester = require('role.harvester');
