@@ -20,7 +20,7 @@ var roleUpgrader = {
             }
         }
         else {
-            if(creep.withdraw(Game.spawns.Spawn1) == ERR_NOT_IN_RANGE) {
+            if(creep.withdraw(Game.spawns.Spawn1, 'source') == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.spawns.Spawn1, {reusePath: 5});
             }
             /*
