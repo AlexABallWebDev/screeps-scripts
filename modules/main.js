@@ -2,6 +2,7 @@
 /*jshint esversion: 6 */
 
 var harvesterCapacity = 4;
+var upgraderCapacity = 1;
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
@@ -78,7 +79,7 @@ module.exports.loop = function () {
         spawnHarvester();
     }
 
-    if(upgraders.length < harvesterCapacity) {
+    if(upgraders.length < upgraderCapacity) {
         spawnUpgrader();
     }
 
