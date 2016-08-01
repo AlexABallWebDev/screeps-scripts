@@ -2,14 +2,14 @@
 /*jshint esversion: 6 */
 
 var harvesterCapacity = 6;
-var upgraderCapacity = 2;
+var upgraderCapacity = 10;
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 
 var clearDeadCreepMemory = function() {
-    for(var name in Memory.creeps) {
+    for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory:', name);
@@ -18,8 +18,8 @@ var clearDeadCreepMemory = function() {
 };
 
 var getNextSource = function() {
-    var harvestSource = 0;
-    var sources = Game.spawns.Spawn1.room.find(FIND_SOURCES);
+    let harvestSource = 0;
+    let sources = Game.spawns.Spawn1.room.find(FIND_SOURCES);
     if (Game.spawns.Spawn1.memory.nextSource === undefined || Game.spawns.Spawn1.memory.nextSource >= sources.length) {
         Game.spawns.Spawn1.memory.nextSource = 0;
     }
@@ -31,20 +31,20 @@ var getNextSource = function() {
 };
 
 var spawnUpgrader = function() {
-    var harvestSource = getNextSource();
+    let harvestSource = getNextSource();
 
-    var creepMemory = {role: 'upgrader', source: harvestSource};
-    var newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
+    let creepMemory = {role: 'upgrader', source: harvestSource};
+    let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName != -6) {
         console.log('Spawning new upgrader: ' + newName);
     }
 };
 
 var spawnHarvester = function () {
-    var harvestSource = getNextSource();
+    let harvestSource = getNextSource();
 
-    var creepMemory = {role: 'harvester', source: harvestSource};
-    var newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
+    let creepMemory = {role: 'harvester', source: harvestSource};
+    let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName != -6) {
         console.log('Spawning new harvester: ' + newName);
     }
@@ -54,14 +54,14 @@ module.exports.loop = function () {
 
     var tower = Game.getObjectById('519170edb0e79b2eeb360e71');
     if(tower) {
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+        let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => structure.hits < structure.hitsMax
         });
         if(closestDamagedStructure) {
             tower.repair(closestDamagedStructure);
         }
 
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(closestHostile) {
             tower.attack(closestHostile);
         }
@@ -83,8 +83,8 @@ module.exports.loop = function () {
         spawnHarvester();
     }
 
-    for(var name in Game.creeps) {
-        var creep = Game.creeps[name];
+    for(let name in Game.creeps) {
+        let creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
         }

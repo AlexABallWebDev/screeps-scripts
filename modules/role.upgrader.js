@@ -20,15 +20,14 @@ var roleUpgrader = {
             }
         }
         else {
-            if(creep.withdraw(Game.spawns.Spawn1, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            /*if(creep.withdraw(Game.spawns.Spawn1, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.spawns.Spawn1, {reusePath: 5});
             }
-            /*
-            var sources = creep.room.find(FIND_SOURCES);
+            */
+            let sources = creep.room.find(FIND_SOURCES);
             if(creep.harvest(sources[creep.memory.source]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[creep.memory.source], {reusePath: 5});
             }
-            */
         }
 	}
 };
