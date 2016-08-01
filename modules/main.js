@@ -83,22 +83,18 @@ module.exports.loop = function () {
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     console.log('Upgraders: ' + upgraders.length);
 
-    if(upgraders.length < upgraderCapacity) {
-        spawnUpgrader();
-    }
-
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     console.log('Builder: ' + upgraders.length);
-
-    if(builder.length < builderCapacity) {
-        spawnBuilder();
-    }
 
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     console.log('Harvesters: ' + harvesters.length);
 
     if(harvesters.length < harvesterCapacity) {
         spawnHarvester();
+    } else if(builders.length < builderCapacity) {
+        spawnBuilder();
+    } else {
+        spawnUpgrader();
     }
 
     for(let name in Game.creeps) {
