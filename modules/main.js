@@ -3,7 +3,7 @@
 
 var harvesterCapacity = 6;
 var upgraderCapacity = 10;
-var builderCapacity = 2;
+var builderCapacity = 4;
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
