@@ -75,12 +75,12 @@ module.exports.loop = function () {
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     console.log('Upgraders: ' + upgraders.length);
 
-    if(harvesters.length < harvesterCapacity) {
-        spawnHarvester();
-    }
-
     if(upgraders.length < upgraderCapacity) {
         spawnUpgrader();
+    }
+
+    if(harvesters.length < harvesterCapacity) {
+        spawnHarvester();
     }
 
     for(var name in Game.creeps) {
