@@ -1,5 +1,8 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
+
+var roleUpgrader = require('role.upgrader');
+
 var roleBuilder = {
 
     /** @param {Creep} creep **/
@@ -21,6 +24,9 @@ var roleBuilder = {
                     creep.moveTo(targets[0], {reusePath: 5});
                 }
             }
+						else {
+								roleBuilder(creep);
+						}
 	    }
 	    else {
 	        let sources = creep.room.find(FIND_SOURCES);
