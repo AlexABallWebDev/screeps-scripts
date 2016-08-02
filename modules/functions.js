@@ -34,7 +34,7 @@ var functions = {
       let creepMemory = {role: 'upgrader'};
       let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
       if (newName >= 0 || typeof(newName) == 'string') {
-          let harvestSource = getNextSource();
+          let harvestSource = this.getNextSource();
           Game.creeps[newName].memory.source = harvestSource;
           console.log('Spawning new upgrader: ' + newName);
       }
@@ -45,7 +45,7 @@ var functions = {
       let creepMemory = {role: 'harvester'};
       let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
       if (newName >= 0 || typeof(newName) == 'string') {
-          let harvestSource = getNextSource();
+          let harvestSource = this.getNextSource();
           Game.creeps[newName].memory.source = harvestSource;
           console.log('Spawning new harvester: ' + newName);
       }
@@ -56,7 +56,7 @@ var functions = {
       let creepMemory = {role: 'builder'};
       let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
       if (newName >= 0 || typeof(newName) == 'string') {
-          let harvestSource = getNextSource();
+          let harvestSource = this.getNextSource();
           Game.creeps[newName].memory.source = harvestSource;
           console.log('Spawning new builder: ' + newName);
       }

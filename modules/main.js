@@ -28,23 +28,6 @@ let functions = require('functions');
 //Begin main loop.
 module.exports.loop = function () {
 
-    //Tower logic, works for a single tower that has a given ID.
-    /*
-    let tower = Game.getObjectById('519170edb0e79b2eeb360e71');
-    if(tower) {
-        let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-        if(closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
-        }
-
-        let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
-    }*/
-
     //Cleanup memory.
     functions.clearDeadCreepMemory();
 
@@ -86,4 +69,21 @@ module.exports.loop = function () {
             roleBuilder.run(creep);
         }
     }
+
+    //Tower logic, works for a single tower that has a given ID.
+    /*
+    let tower = Game.getObjectById('519170edb0e79b2eeb360e71');
+    if(tower) {
+        let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => structure.hits < structure.hitsMax
+        });
+        if(closestDamagedStructure) {
+            tower.repair(closestDamagedStructure);
+        }
+
+        let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if(closestHostile) {
+            tower.attack(closestHostile);
+        }
+    }*/
 }; //End main game loop.
