@@ -1,7 +1,7 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
 
-var harvesterCapacity = 6;
+var harvesterCapacity = 10;
 var upgraderCapacity = 10;
 var builderCapacity = 4;
 
@@ -33,31 +33,31 @@ var getNextSource = function() {
 };
 
 var spawnUpgrader = function() {
-    let harvestSource = getNextSource();
-
-    let creepMemory = {role: 'upgrader', source: harvestSource};
+    let creepMemory = {role: 'upgrader'};
     let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName >= 0 || typeof(newName) == 'string') {
+        let harvestSource = getNextSource();
+        Game.creeps[newName].memory.source = harvestSource;
         console.log('Spawning new upgrader: ' + newName);
     }
 };
 
 var spawnHarvester = function () {
-    let harvestSource = getNextSource();
-
-    let creepMemory = {role: 'harvester', source: harvestSource};
+    let creepMemory = {role: 'harvester'};
     let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName >= 0 || typeof(newName) == 'string') {
+        let harvestSource = getNextSource();
+        Game.creeps[newName].memory.source = harvestSource;
         console.log('Spawning new harvester: ' + newName);
     }
 };
 
 var spawnBuilder = function () {
-    let harvestSource = getNextSource();
-
-    let creepMemory = {role: 'builder', source: harvestSource};
+    let creepMemory = {role: 'builder'};
     let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
     if (newName >= 0 || typeof(newName) == 'string') {
+        let harvestSource = getNextSource();
+        Game.creeps[newName].memory.source = harvestSource;
         console.log('Spawning new builder: ' + newName);
     }
 };
