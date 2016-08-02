@@ -1,70 +1,36 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
 
-var harvesterCapacity = 10;
-var upgraderCapacity = 10;
-var builderCapacity = 4;
+// Constants
 
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
+/**Minimum number of harvesters.*/
+let HARVESTER_MINIMUM = 10;
 
-var clearDeadCreepMemory = function() {
-    for(let name in Memory.creeps) {
-        if(!Game.creeps[name]) {
-            delete Memory.creeps[name];
-            console.log('Clearing non-existing creep memory:', name);
-        }
-    }
-};
+/**Minimum number of upgraders.*/
+let UPGRADER_MINIMUM = 1;
 
-var getNextSource = function() {
-    let harvestSource = 0;
-    let sources = Game.spawns.Spawn1.room.find(FIND_SOURCES);
-    if (Game.spawns.Spawn1.memory.nextSource === undefined || Game.spawns.Spawn1.memory.nextSource >= sources.length) {
-        Game.spawns.Spawn1.memory.nextSource = 0;
-    }
-    else {
-        harvestSource = Game.spawns.Spawn1.memory.nextSource;
-    }
-    Game.spawns.Spawn1.memory.nextSource += 1;
-    console.log('Assigning creep to source: ' + harvestSource);
-    return harvestSource;
-};
+/**Minimum number of builders.*/
+let BUILDER_MINIMUM = 2;
 
-var spawnUpgrader = function() {
-    let creepMemory = {role: 'upgrader'};
-    let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
-    if (newName >= 0 || typeof(newName) == 'string') {
-        let harvestSource = getNextSource();
-        Game.creeps[newName].memory.source = harvestSource;
-        console.log('Spawning new upgrader: ' + newName);
-    }
-};
+// Require the other modules.
 
-var spawnHarvester = function () {
-    let creepMemory = {role: 'harvester'};
-    let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
-    if (newName >= 0 || typeof(newName) == 'string') {
-        let harvestSource = getNextSource();
-        Game.creeps[newName].memory.source = harvestSource;
-        console.log('Spawning new harvester: ' + newName);
-    }
-};
+/**Harvester role.*/
+let roleHarvester = require('role.harvester');
 
-var spawnBuilder = function () {
-    let creepMemory = {role: 'builder'};
-    let newName = Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE,MOVE], undefined, creepMemory);
-    if (newName >= 0 || typeof(newName) == 'string') {
-        let harvestSource = getNextSource();
-        Game.creeps[newName].memory.source = harvestSource;
-        console.log('Spawning new builder: ' + newName);
-    }
-};
+/**Upgrader role.*/
+let roleUpgrader = require('role.upgrader');
 
+/**Builder role.*/
+let roleBuilder = require('role.builder');
+
+let functions = require('functions');
+
+//Begin main loop.
 module.exports.loop = function () {
 
-    var tower = Game.getObjectById('519170edb0e79b2eeb360e71');
+    //Tower logic, works for a single tower that has a given ID.
+    /*
+    let tower = Game.getObjectById('519170edb0e79b2eeb360e71');
     if(tower) {
         let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => structure.hits < structure.hitsMax
@@ -77,27 +43,37 @@ module.exports.loop = function () {
         if(closestHostile) {
             tower.attack(closestHostile);
         }
-    }
+    }*/
 
-    clearDeadCreepMemory();
+    //Cleanup memory.
+    functions.clearDeadCreepMemory();
 
-    var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+    //Count the number of each creep role.
+    let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     console.log('Upgraders: ' + upgraders.length);
 
-    var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+    let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     console.log('Builders: ' + builders.length);
 
-    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+    let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     console.log('Harvesters: ' + harvesters.length);
 
-    if(harvesters.length < harvesterCapacity) {
-        spawnHarvester();
-    } else if(builders.length < builderCapacity) {
-        spawnBuilder();
+    //Autobuild creeps:
+    if(harvesters.length < HARVESTER_MINIMUM) {
+        //Prioritize maintaining the minimum number of harvesters first.
+        functions.spawnHarvester();
+    } else if(builders.length < BUILDER_MINIMUM) {
+        //Prioritize builders next.
+        functions.spawnBuilder();
+    } else if(upgraders.length < UPGRADER_MINIMUM){
+        //Prioritize upgraders next.
+        functions.spawnUpgrader();
     } else {
-        spawnUpgrader();
+        //Excess creeps will be of this role.
+        functions.spawnBuilder();
     }
 
+    //For each creep, have it act (run) according to its role.
     for(let name in Game.creeps) {
         let creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
@@ -110,4 +86,4 @@ module.exports.loop = function () {
             roleBuilder.run(creep);
         }
     }
-};
+}; //End main game loop.

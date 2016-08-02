@@ -1,5 +1,6 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
+
 var roleUpgrader = {
 
     /** @param {Creep} creep **/
