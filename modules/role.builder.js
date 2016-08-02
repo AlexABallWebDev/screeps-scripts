@@ -25,7 +25,7 @@ var roleBuilder = {
                 }
             }
 						else {
-								roleBuilder(creep);
+								roleUpgrader.run(creep);
 						}
 	    }
 	    else {

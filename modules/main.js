@@ -28,6 +28,7 @@ var getNextSource = function() {
         harvestSource = Game.spawns.Spawn1.memory.nextSource;
         Game.spawns.Spawn1.memory.nextSource += 1;
     }
+    console.log('Assigning creep to source: ' + harvestSource);
     return harvestSource;
 };
 
