@@ -51,7 +51,7 @@ var roleHarvester = {
       });
 
       //Move to the target and return energy to it.
-      if (target) {
+      if (target !== undefined) {
         if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(target, {
             reusePath: 5

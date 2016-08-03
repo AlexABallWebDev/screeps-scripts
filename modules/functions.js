@@ -70,6 +70,19 @@ var functions = {
       Game.creeps[newName].memory.source = harvestSource;
       console.log('Spawning new builder: ' + newName);
     }
+  },
+
+  /**Spawns a builder.*/
+  spawnRepairer: function() {
+    let creepMemory = {
+      role: 'repairer'
+    };
+    let newName = Game.spawns.Spawn1.createCreep([WORK, WORK, CARRY, MOVE], undefined, creepMemory);
+    if (newName >= 0 || typeof(newName) == 'string') {
+      let harvestSource = this.getNextSource();
+      Game.creeps[newName].memory.source = harvestSource;
+      console.log('Spawning new repairer: ' + newName);
+    }
   }
 }; //End module.
 

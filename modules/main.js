@@ -7,10 +7,13 @@
 let HARVESTER_MINIMUM = 10;
 
 /**Minimum number of upgraders.*/
-let UPGRADER_MINIMUM = 1;
+let UPGRADER_MINIMUM = 2;
 
 /**Minimum number of builders.*/
 let BUILDER_MINIMUM = 2;
+
+/**Minimum number of builders.*/
+let REPAIRER_MINIMUM = 2;
 
 // Require other modules.
 
@@ -23,6 +26,10 @@ let roleUpgrader = require('role.upgrader');
 /**Builder role.*/
 let roleBuilder = require('role.builder');
 
+/**Repairer role.*/
+let roleRepairer = require('role.repairer');
+
+/**Functions that are used across different modules.*/
 let functions = require('functions');
 
 //Begin main loop.
@@ -41,15 +48,18 @@ module.exports.loop = function() {
   let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
   console.log('Harvesters: ' + harvesters.length);
 
+  let repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+  console.log('Harvesters: ' + harvesters.length);
+
   //Autobuild creeps:
+  //Prioritize maintaining the minimum number of each creep in order.
   if (harvesters.length < HARVESTER_MINIMUM) {
-    //Prioritize maintaining the minimum number of harvesters first.
     functions.spawnHarvester();
+  } else if (repairers.length < REPAIRER_MINIMUM) {
+    functions.spawnRepairer();
   } else if (builders.length < BUILDER_MINIMUM) {
-    //Prioritize builders next.
     functions.spawnBuilder();
   } else if (upgraders.length < UPGRADER_MINIMUM) {
-    //Prioritize upgraders next.
     functions.spawnUpgrader();
   } else {
     //Excess creeps will be of this role.
@@ -61,12 +71,12 @@ module.exports.loop = function() {
     let creep = Game.creeps[name];
     if (creep.memory.role == 'harvester') {
       roleHarvester.run(creep);
-    }
-    if (creep.memory.role == 'upgrader') {
+    } else if (creep.memory.role == 'upgrader') {
       roleUpgrader.run(creep);
-    }
-    if (creep.memory.role == 'builder') {
+    } else if (creep.memory.role == 'builder') {
       roleBuilder.run(creep);
+    } else if (creep.memory.role == 'repairer') {
+      roleRepairer.run(creep);
     }
   }
 
