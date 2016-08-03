@@ -49,7 +49,7 @@ module.exports.loop = function() {
   console.log('Harvesters: ' + harvesters.length);
 
   let repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
-  console.log('Harvesters: ' + harvesters.length);
+  console.log('Repairers: ' + repairers.length);
 
   //Autobuild creeps:
   //Prioritize maintaining the minimum number of each creep in order.
