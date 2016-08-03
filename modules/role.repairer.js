@@ -13,20 +13,20 @@ var roleRepairer = {
    */
   run: function(creep) {
 
-      if (creep.memory.repairing && creep.carry.energy === 0) {
+      if (creep.memory.working && creep.carry.energy === 0) {
         //If the repairer is trying to repair but has no energy,
         //go gather more source.
-        creep.memory.repairing = false;
+        creep.memory.working = false;
         creep.say('harvesting');
       }
-      if (!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
+      if (!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
         //If the repairer is not repairing but is full of energy,
         //go repair.
-        creep.memory.repairing = true;
+        creep.memory.working = true;
         creep.say('repairing');
       }
 
-      if (creep.memory.repairing) {
+      if (creep.memory.working) {
         //If the repairer is trying to repair, go to the
         //structure and repair it.
 

@@ -16,21 +16,21 @@ var roleBuilder = {
    */
   run: function(creep) {
 
-      if (creep.memory.building && creep.carry.energy === 0) {
+      if (creep.memory.working && creep.carry.energy === 0) {
         //If the builder is trying to build something but it is out of energy,
         //then it will to go gather more source (stop building).
-        creep.memory.building = false;
+        creep.memory.working = false;
         creep.say('harvesting');
       }
 
-      if (!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
+      if (!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
         //If the builder is not building anything, but is full of energy,
         //then it will go build something (start building).
-        creep.memory.building = true;
+        creep.memory.working = true;
         creep.say('building');
       }
 
-      if (creep.memory.building) {
+      if (creep.memory.working) {
         //If this builder is trying to build something,
         //check for construction sites.
         let targets = creep.room.find(FIND_CONSTRUCTION_SITES);
