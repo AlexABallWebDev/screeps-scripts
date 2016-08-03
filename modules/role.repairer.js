@@ -5,6 +5,9 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
 
+/**Builder Role.*/
+var roleBuilder = require('role.builder');
+
 //Begin module.
 var roleRepairer = {
 
@@ -33,18 +36,17 @@ var roleRepairer = {
         //Find a damaged structure that is not a wall.
         structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
           filter: (structure) => structure.hits < structure.hitsMax &&
-          structure.structureType != STRUCTURE_WALL
+            structure.structureType != STRUCTURE_WALL
         });
 
-        if (structure !== undefined) {
+        if (structure !== undefined && structure !== null) {
           //Repair or move to the damaged structure.
           if (creep.repair(structure) == ERR_NOT_IN_RANGE) {
             creep.moveTo(structure, {
               reusePath: 5
             });
           }
-        }
-        else {
+        } else {
           //If there are no damaged structures, then the repairer
           //should act like a builder.
           roleBuilder.run(creep);

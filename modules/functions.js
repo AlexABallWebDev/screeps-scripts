@@ -23,7 +23,9 @@ var functions = {
   getNextSource: function() {
     let harvestSource = 0;
     let sources = Game.spawns.Spawn1.room.find(FIND_SOURCES);
-    if (Game.spawns.Spawn1.memory.nextSource === undefined || Game.spawns.Spawn1.memory.nextSource >= sources.length) {
+    if (Game.spawns.Spawn1.memory.nextSource === undefined ||
+      Game.spawns.Spawn1.memory.nextSource === null ||
+      Game.spawns.Spawn1.memory.nextSource >= sources.length) {
       Game.spawns.Spawn1.memory.nextSource = 0;
     } else {
       harvestSource = Game.spawns.Spawn1.memory.nextSource;
