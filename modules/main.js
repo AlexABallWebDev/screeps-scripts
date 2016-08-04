@@ -81,19 +81,22 @@ module.exports.loop = function() {
   }
 
   //Tower logic, works for a single tower that has a given ID.
-  /*
-  let tower = Game.getObjectById('519170edb0e79b2eeb360e71');
-  if(tower) {
-      let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-          filter: (structure) => structure.hits < structure.hitsMax
-      });
-      if(closestDamagedStructure) {
-          tower.repair(closestDamagedStructure);
-      }
+  //let towers = _.filter(Game.structures, (structure) => structure.structureType == STRUCTURE_TOWER);
+  let tower = Game.getObjectById('57a295732787488b246b8961');
+  if (tower) {
+    let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => structure.hits < structure.hitsMax &&
+        structure.structureType != STRUCTURE_WALL &&
+        structure.hits < 200000
+    });
 
-      let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-      if(closestHostile) {
-          tower.attack(closestHostile);
+    let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+    if (closestHostile) {
+      tower.attack(closestHostile);
+    } else {
+      if (closestDamagedStructure) {
+        tower.repair(closestDamagedStructure);
       }
-  }*/
+    }
+  }
 }; //End main loop.
