@@ -22,6 +22,9 @@ let TOWER_REPAIR_TARGET = {
     structure.hits < 200000
 };
 
+/**Base Worker Body. 2W, 1C, 1M.*/
+let BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
+
 // Require other modules.
 
 /**Harvester role.*/
@@ -65,16 +68,16 @@ module.exports.loop = function() {
   //Autobuild creeps:
   //Prioritize maintaining the minimum number of each creep in order.
   if (harvesters.length < HARVESTER_MINIMUM) {
-    functions.spawnHarvester();
+    functions.spawnHarvester(BASE_WORKER_BODY);
   } else if (repairers.length < REPAIRER_MINIMUM) {
-    functions.spawnRepairer();
+    functions.spawnRepairer(BASE_WORKER_BODY);
   } else if (builders.length < BUILDER_MINIMUM) {
-    functions.spawnBuilder();
+    functions.spawnBuilder(BASE_WORKER_BODY);
   } else if (upgraders.length < UPGRADER_MINIMUM) {
-    functions.spawnUpgrader();
+    functions.spawnUpgrader(BASE_WORKER_BODY);
   } else {
     //Excess creeps will be of this role.
-    functions.spawnBuilder();
+    functions.spawnBuilder(BASE_WORKER_BODY);
   }
 
   //For each creep, have it act (run) according to its role.
