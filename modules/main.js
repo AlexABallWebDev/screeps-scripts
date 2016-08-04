@@ -15,6 +15,13 @@ let BUILDER_MINIMUM = 2;
 /**Minimum number of builders.*/
 let REPAIRER_MINIMUM = 2;
 
+/**filter for helping a tower find a target to repair.*/
+let TOWER_REPAIR_TARGET = {
+  filter: (structure) => structure.hits < structure.hitsMax &&
+    structure.structureType != STRUCTURE_WALL &&
+    structure.hits < 200000
+};
+
 // Require other modules.
 
 /**Harvester role.*/
@@ -39,16 +46,20 @@ module.exports.loop = function() {
   functions.clearDeadCreepMemory();
 
   //Count the number of each creep role.
-  let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+  let upgraders = _.filter(Game.creeps, (creep) =>
+    creep.memory.role == 'upgrader');
   console.log('Upgraders: ' + upgraders.length);
 
-  let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+  let builders = _.filter(Game.creeps, (creep) =>
+    creep.memory.role == 'builder');
   console.log('Builders: ' + builders.length);
 
-  let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+  let harvesters = _.filter(Game.creeps, (creep) =>
+    creep.memory.role == 'harvester');
   console.log('Harvesters: ' + harvesters.length);
 
-  let repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+  let repairers = _.filter(Game.creeps, (creep) =>
+    creep.memory.role == 'repairer');
   console.log('Repairers: ' + repairers.length);
 
   //Autobuild creeps:
@@ -81,22 +92,27 @@ module.exports.loop = function() {
   }
 
   //Tower logic, works for a single tower that has a given ID.
-  //let towers = _.filter(Game.structures, (structure) => structure.structureType == STRUCTURE_TOWER);
-  let tower = Game.getObjectById('57a295732787488b246b8961');
-  if (tower) {
-    let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: (structure) => structure.hits < structure.hitsMax &&
-        structure.structureType != STRUCTURE_WALL &&
-        structure.hits < 200000
-    });
 
+  //get towers.
+  let towers = _.filter(Game.structures, (structure) =>
+    structure.structureType == STRUCTURE_TOWER);
+  //let tower = Game.getObjectById('57a295732787488b246b8961');
+  for (let towerref in towers) {
+    //Get tower out of towers hash
+    let tower = towers[towerref];
+
+    //find closest damaged structure.
+    let closestDamagedStructure = tower.pos
+      .findClosestByRange(FIND_STRUCTURES, TOWER_REPAIR_TARGET);
+
+    //find closest hostile creep.
     let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+    //prioritize shooting enemy creeps over repairing structures.
     if (closestHostile) {
       tower.attack(closestHostile);
-    } else {
-      if (closestDamagedStructure) {
-        tower.repair(closestDamagedStructure);
-      }
+    } else if (closestDamagedStructure && tower.energy > 600) {
+      tower.repair(closestDamagedStructure);
     }
   }
 }; //End main loop.
