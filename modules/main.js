@@ -15,7 +15,11 @@ let BUILDER_MINIMUM = 2;
 /**Minimum number of builders.*/
 let REPAIRER_MINIMUM = 2;
 
+/**Only targets with less that this much health will be repaired by towers.*/
 let TOWER_REPAIR_MAX_HEALTH = 200000;
+
+/**Minimum energy for towers to save for attacking hostile targets.*/
+let TOWER_MINIMUM_ENERGY = 600;
 
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {
@@ -116,7 +120,9 @@ module.exports.loop = function() {
     //prioritize shooting enemy creeps over repairing structures.
     if (closestHostile) {
       tower.attack(closestHostile);
-    } else if (closestDamagedStructure && tower.energy > 600) {
+    } else if (closestDamagedStructure &&
+      tower.energy > TOWER_MINIMUM_ENERGY) {
+      //Only repair if enough energy is saved up (in case of attacks).
       tower.repair(closestDamagedStructure);
     }
   }
