@@ -9,7 +9,7 @@
 let CRITICAL_HARVESTER_COUNT = 3;
 
 /**Minimum number of harvesters.*/
-let HARVESTER_MINIMUM = 6;
+let HARVESTER_MINIMUM = 10;
 
 /**Minimum number of upgraders.*/
 let UPGRADER_MINIMUM = 2;
@@ -19,6 +19,12 @@ let BUILDER_MINIMUM = 2;
 
 /**Minimum number of builders.*/
 let REPAIRER_MINIMUM = 2;
+
+/**Minimum number of creeps.*/
+let WORKERS_MINIMUM = HARVESTER_MINIMUM +
+  UPGRADER_MINIMUM +
+  BUILDER_MINIMUM +
+  REPAIRER_MINIMUM;
 
 /**Only targets with less that this much health will be repaired by towers.*/
 let TOWER_REPAIR_MAX_HEALTH = 200000;
@@ -137,8 +143,10 @@ module.exports.loop = function() {
     if (closestHostile) {
       tower.attack(closestHostile);
     } else if (closestDamagedStructure &&
-      tower.energy > TOWER_MINIMUM_ENERGY) {
-      //Only repair if enough energy is saved up (in case of attacks).
+      tower.energy > TOWER_MINIMUM_ENERGY &&
+      Game.creeps.length >= WORKERS_MINIMUM) {
+      //Only repair if enough energy is saved up (in case of attacks)
+      //and enough workers are supplying the base.
       tower.repair(closestDamagedStructure);
     }
   }
