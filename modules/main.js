@@ -4,7 +4,7 @@
 // Constants
 
 /**Minimum number of harvesters.*/
-let HARVESTER_MINIMUM = 10;
+let HARVESTER_MINIMUM = 6;
 
 /**Minimum number of upgraders.*/
 let UPGRADER_MINIMUM = 2;
@@ -19,7 +19,7 @@ let REPAIRER_MINIMUM = 2;
 let TOWER_REPAIR_MAX_HEALTH = 200000;
 
 /**Minimum energy for towers to save for attacking hostile targets.*/
-let TOWER_MINIMUM_ENERGY = 600;
+let TOWER_MINIMUM_ENERGY = 800;
 
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {
@@ -29,7 +29,7 @@ let TOWER_REPAIR_TARGET = {
 };
 
 /**Base Worker Body. 2W, 1C, 1M.*/
-let BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
+let BASE_WORKER_BODY = [WORK, WORK, WORK, CARRY, MOVE, MOVE];
 
 // Require other modules.
 
