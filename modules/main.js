@@ -9,16 +9,16 @@
 let CRITICAL_HARVESTER_COUNT = 3;
 
 /**Minimum number of harvesters.*/
-let HARVESTER_MINIMUM = 10;
+let HARVESTER_MINIMUM = 6;
 
 /**Minimum number of upgraders.*/
-let UPGRADER_MINIMUM = 2;
+let UPGRADER_MINIMUM = 1;
 
 /**Minimum number of builders.*/
-let BUILDER_MINIMUM = 2;
+let BUILDER_MINIMUM = 1;
 
-/**Minimum number of builders.*/
-let REPAIRER_MINIMUM = 2;
+/**Minimum number of repairers.*/
+let REPAIRER_MINIMUM = 1;
 
 /**Minimum number of creeps.*/
 let WORKERS_MINIMUM = HARVESTER_MINIMUM +
@@ -40,7 +40,7 @@ let TOWER_REPAIR_TARGET = {
 };
 
 /**Base Worker Body. 2W, 1C, 1M.*/
-let BASE_WORKER_BODY = [WORK, WORK, WORK, CARRY, MOVE, MOVE];
+let BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
 
 // Require other modules and prototypes.
 
