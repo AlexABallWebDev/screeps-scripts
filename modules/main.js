@@ -6,7 +6,7 @@
 /**Critical number of harvesters. We need to have at least this many
  * harvesters before building bigger creeps
  */
-let CRITICAL_HARVESTER_COUNT = 2;
+let CRITICAL_HARVESTER_COUNT = 3;
 
 /**Minimum number of harvesters.*/
 let HARVESTER_MINIMUM = 6;
@@ -89,7 +89,7 @@ module.exports.loop = function() {
   if (harvesters.length < HARVESTER_MINIMUM) {
     name = spawn.createBiggestWorkerCreep(energyCapacity, 'harvester');
     if (name == ERR_NOT_ENOUGH_ENERGY &&
-      harvesters.length <= CRITICAL_HARVESTER_COUNT) {
+      harvesters.length < CRITICAL_HARVESTER_COUNT) {
       //If very few harvesters are alive, build one
       //using whatever energy is available.
       spawn.createBiggestWorkerCreep(spawn.room.energyAvailable, 'harvester');
