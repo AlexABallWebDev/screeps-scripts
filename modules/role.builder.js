@@ -8,6 +8,9 @@
 /**Upgrader Role.*/
 var roleUpgrader = require('role.upgrader');
 
+/**Harvester Role.*/
+var roleHarvester = require('role.harvester');
+
 //Begin module.
 var roleBuilder = {
 
@@ -37,9 +40,7 @@ var roleBuilder = {
         if (targets.length) {
           //If there is at least one construction site, go to a site and build.
           if (creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(targets[0], {
-              reusePath: 5
-            });
+            creep.moveTo(targets[0]);
           }
         } else {
           //If there are no construction sites, then the builder
@@ -48,13 +49,7 @@ var roleBuilder = {
         }
       } else {
         //If this builder is not trying to build something, go gather source.
-        //let sources = creep.room.find(FIND_SOURCES);
-        let closestSource = creep.pos.findClosestByPath(FIND_SOURCES);
-        if (creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(closestSource, {
-            reusePath: 5
-          });
-        }
+        roleHarvester.run(creep);
       }
     } //End run function.
 }; //End module.

@@ -33,62 +33,6 @@ var functions = {
     Game.spawns.Spawn1.memory.nextSource += 1;
     console.log('Assigning creep to source: ' + harvestSource);
     return harvestSource;
-  },
-
-  /**Spawns an upgrader.
-   * @param {body} creep The body of the new creep.
-   */
-  spawnUpgrader: function(body) {
-    let creepMemory = {
-      role: 'upgrader'
-    };
-    this.spawnCreep(body, creepMemory);
-  },
-
-  /**Spawns a harvester.
-   * @param {body} creep The body of the new creep.
-   */
-  spawnHarvester: function(body) {
-    let creepMemory = {
-      role: 'harvester'
-    };
-    this.spawnCreep(body, creepMemory);
-  },
-
-  /**Spawns a builder.
-   * @param {body} creep The body of the new creep.
-   */
-  spawnBuilder: function(body) {
-    let creepMemory = {
-      role: 'builder'
-    };
-    this.spawnCreep(body, creepMemory);
-  },
-
-  /**Spawns a builder.
-   * @param {body} creep The body of the new creep.
-   */
-  spawnRepairer: function(body) {
-    let creepMemory = {
-      role: 'repairer'
-    };
-    this.spawnCreep(body, creepMemory);
-  },
-
-  /**Spawns a creep.
-   * @param {body} creep The body of the new creep.
-   * @param {creepMemory} creepMemory The memory of the new creep.
-   * @param {string} name=undefined A name to give to the new creep.
-   * @return {string} newName The name of the new creep.
-   */
-  spawnCreep: function(body, creepMemory, name = undefined) {
-    let newName = Game.spawns.Spawn1.createCreep(body, name, creepMemory);
-    if (newName >= 0 || typeof(newName) == 'string') {
-      let harvestSource = this.getNextSource();
-      Game.creeps[newName].memory.source = harvestSource;
-      console.log('Spawning new ' + creepMemory.role + ': ' + newName);
-    }
-    return newName;
   }
 }; //End module.
 

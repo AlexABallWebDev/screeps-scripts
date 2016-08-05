@@ -8,6 +8,9 @@
 /**Builder Role.*/
 var roleBuilder = require('role.builder');
 
+/**Harvester Role.*/
+var roleHarvester = require('role.harvester');
+
 //Begin module.
 var roleRepairer = {
 
@@ -34,7 +37,7 @@ var roleRepairer = {
         //structure and repair it.
 
         //Find a damaged structure that is not a wall.
-        structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        let structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
           filter: (structure) => structure.hits < structure.hitsMax &&
             structure.structureType != STRUCTURE_WALL
         });
@@ -42,9 +45,7 @@ var roleRepairer = {
         if (structure !== undefined && structure !== null) {
           //Repair or move to the damaged structure.
           if (creep.repair(structure) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(structure, {
-              reusePath: 5
-            });
+            creep.moveTo(structure);
           }
         } else {
           //If there are no damaged structures, then the repairer
@@ -54,18 +55,7 @@ var roleRepairer = {
 
       } else {
         //If the repairer is not trying to repair, go harvest source.
-
-        /*if(creep.withdraw(Game.spawns.Spawn1, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(Game.spawns.Spawn1, {reusePath: 5});
-        }
-        */
-        //let sources = creep.room.find(FIND_SOURCES);
-        let closestSource = creep.pos.findClosestByPath(FIND_SOURCES);
-        if (creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(closestSource, {
-            reusePath: 5
-          });
-        }
+        roleHarvester.run(creep);
       }
     } //End run function.
 }; //End module.
