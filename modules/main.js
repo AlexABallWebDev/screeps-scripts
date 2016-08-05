@@ -24,7 +24,7 @@ let TOWER_MINIMUM_ENERGY = 800;
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {
   filter: (structure) => structure.hits < structure.hitsMax &&
-    structure.structureType != STRUCTURE_WALL &&
+    //structure.structureType != STRUCTURE_WALL &&
     structure.hits < TOWER_REPAIR_MAX_HEALTH
 };
 
