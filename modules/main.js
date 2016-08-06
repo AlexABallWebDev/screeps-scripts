@@ -9,13 +9,13 @@
 let CRITICAL_HARVESTER_COUNT = 3;
 
 /**Minimum number of harvesters.*/
-let HARVESTER_MINIMUM = 6;
+let HARVESTER_MINIMUM = 5;
 
 /**Minimum number of upgraders.*/
 let UPGRADER_MINIMUM = 1;
 
 /**Minimum number of builders.*/
-let BUILDER_MINIMUM = 1;
+let BUILDER_MINIMUM = 2;
 
 /**Minimum number of repairers.*/
 let REPAIRER_MINIMUM = 1;
@@ -35,7 +35,7 @@ let TOWER_MINIMUM_ENERGY = 800;
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {
   filter: (structure) => structure.hits < structure.hitsMax &&
-    //structure.structureType != STRUCTURE_WALL &&
+    structure.structureType != STRUCTURE_WALL &&
     structure.hits < TOWER_REPAIR_MAX_HEALTH
 };
 
@@ -87,6 +87,11 @@ module.exports.loop = function() {
     creep.memory.role == 'repairer');
   console.log('Repairers: ' + repairers.length);
 
+  let totalWorkers = upgraders.length +
+    builders.length +
+    harvesters.length +
+    repairers.length;
+
   let name;
   let energyCapacity = spawn.room.energyCapacityAvailable;
 
@@ -108,7 +113,7 @@ module.exports.loop = function() {
     name = spawn.createBiggestWorkerCreep(energyCapacity, 'upgrader');
   } else {
     //Excess creeps will be of this role.
-    name = spawn.createBiggestWorkerCreep(energyCapacity, 'builder');
+    //name = spawn.createBiggestWorkerCreep(energyCapacity, 'builder');
   }
 
   //For each creep, have it act (run) according to its role.
@@ -144,7 +149,7 @@ module.exports.loop = function() {
       tower.attack(closestHostile);
     } else if (closestDamagedStructure &&
       tower.energy > TOWER_MINIMUM_ENERGY &&
-      Game.creeps.length >= WORKERS_MINIMUM) {
+      totalWorkers >= WORKERS_MINIMUM) {
       //Only repair if enough energy is saved up (in case of attacks)
       //and enough workers are supplying the base.
       tower.repair(closestDamagedStructure);
