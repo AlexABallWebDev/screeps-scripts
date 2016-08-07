@@ -35,8 +35,8 @@ let TOWER_MINIMUM_ENERGY = 700;
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {
   filter: (structure) => structure.hits < structure.hitsMax &&
-    //structure.structureType != STRUCTURE_WALL &&
-    structure.hits < TOWER_REPAIR_MAX_HEALTH
+    structure.hits !== undefined &&
+    structure.hits > 0
 };
 
 /**Base Worker Body. 2W, 1C, 1M.*/
@@ -138,19 +138,14 @@ module.exports.loop = function() {
   for (let tower of towers) {
 
     //Find damaged structures.
-    let structures = tower.room.find(FIND_STRUCTURES,
-      (structure) => structure.hits < structure.hitsMax);
+    let structures = tower.room.find(FIND_STRUCTURES, TOWER_REPAIR_TARGET);
 
     let lowestHitsStructure;
 
     //Find the most damaged (lowest hits) structure.
     for (let structure of structures) {
-      if (lowestHitsStructure === undefined) {
-        //prevent structures that do not have hits from being selected.
-        if (structure.hits >= 0) {
-          lowestHitsStructure = structure;
-        }
-      } else if (structure.hits < lowestHitsStructure.hits) {
+      if (lowestHitsStructure === undefined ||
+        structure.hits < lowestHitsStructure.hits) {
         lowestHitsStructure = structure;
       }
     }
