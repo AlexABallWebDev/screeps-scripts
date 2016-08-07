@@ -132,14 +132,34 @@ module.exports.loop = function() {
 
   //Tower logic
 
-  //get towers.
+  //Get towers.
   let towers = _.filter(Game.structures, (structure) =>
     structure.structureType == STRUCTURE_TOWER);
   for (let tower of towers) {
 
+    //Find damaged structures.
+    let structures = tower.room.find(FIND_STRUCTURES,
+      (structure) => structure.hits < structure.hitsMax);
+
+    let lowestHitsStructure;
+
+    //Find the most damaged (lowest hits) structure.
+    for (let structure of structures) {
+      if (lowestHitsStructure === undefined) {
+        //prevent structures that do not have hits from being selected.
+        if (structure.hits >= 0) {
+          lowestHitsStructure = structure;
+        }
+      } else if (structure.hits < lowestHitsStructure.hits) {
+        lowestHitsStructure = structure;
+      }
+    }
+
+    /*
     //find closest damaged structure.
     let closestDamagedStructure = tower.pos
       .findClosestByRange(FIND_STRUCTURES, TOWER_REPAIR_TARGET);
+    */
 
     //find closest hostile creep.
     let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -147,12 +167,12 @@ module.exports.loop = function() {
     //prioritize shooting enemy creeps over repairing structures.
     if (closestHostile) {
       tower.attack(closestHostile);
-    } else if (closestDamagedStructure &&
+    } else if (lowestHitsStructure &&
       tower.energy > TOWER_MINIMUM_ENERGY &&
       totalWorkers >= WORKERS_MINIMUM) {
       //Only repair if enough energy is saved up (in case of attacks)
       //and enough workers are supplying the base.
-      tower.repair(closestDamagedStructure);
+      tower.repair(lowestHitsStructure);
     }
   }
 }; //End main loop.

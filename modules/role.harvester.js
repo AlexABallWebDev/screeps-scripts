@@ -47,7 +47,6 @@ var roleHarvester = {
       } else {
         //If this harvester is not full of energy, go gather source.
 
-        //let sources = creep.room.find(FIND_SOURCES);
         let closestSource = creep.pos.findClosestByPath(FIND_SOURCES);
         if (creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
           creep.moveTo(closestSource);
