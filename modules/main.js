@@ -27,7 +27,7 @@ let WORKERS_MINIMUM = HARVESTER_MINIMUM +
   REPAIRER_MINIMUM;
 
 /**Only targets with less that this much health will be repaired by towers.*/
-let TOWER_REPAIR_MAX_HEALTH = 200000;
+let TOWER_REPAIR_MAX_HEALTH = 300000;
 
 /**Minimum energy for towers to save for attacking hostile targets.*/
 let TOWER_MINIMUM_ENERGY = 800;
@@ -35,7 +35,7 @@ let TOWER_MINIMUM_ENERGY = 800;
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {
   filter: (structure) => structure.hits < structure.hitsMax &&
-    structure.structureType != STRUCTURE_WALL &&
+    //structure.structureType != STRUCTURE_WALL &&
     structure.hits < TOWER_REPAIR_MAX_HEALTH
 };
 
