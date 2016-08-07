@@ -30,7 +30,7 @@ let WORKERS_MINIMUM = HARVESTER_MINIMUM +
 let TOWER_REPAIR_MAX_HEALTH = 300000;
 
 /**Minimum energy for towers to save for attacking hostile targets.*/
-let TOWER_MINIMUM_ENERGY = 800;
+let TOWER_MINIMUM_ENERGY = 700;
 
 /**filter for helping a tower find a target to repair.*/
 let TOWER_REPAIR_TARGET = {

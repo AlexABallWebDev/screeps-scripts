@@ -4,9 +4,6 @@
 //Tell jshint (atom package) to stop showing certain irrelevent warnings.
 /*jshint esversion: 6 */
 
-/**Minimum energy for towers to save for attacking hostile targets.*/
-let TOWER_MINIMUM_ENERGY = 800;
-
 //Begin module.
 var roleHarvester = {
 
@@ -35,7 +32,8 @@ var roleHarvester = {
                 structure.structureType == STRUCTURE_SPAWN ||
                 //Only return to tower if a large dropoff can be made.
                 (structure.structureType == STRUCTURE_TOWER &&
-                  structure.energy <= TOWER_MINIMUM_ENERGY)) &&
+                  creep.carry.energy <= structure.energyCapacity -
+                  structure.energy)) &&
               structure.energy < structure.energyCapacity;
           }
         });
