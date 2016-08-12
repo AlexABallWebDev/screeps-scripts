@@ -45,19 +45,22 @@ let BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
 // Require other modules and prototypes.
 
 /**Harvester role.*/
-let roleHarvester = require('role.harvester');
+//let roleHarvester = require('role.harvester');
 
 /**Upgrader role.*/
-let roleUpgrader = require('role.upgrader');
+//let roleUpgrader = require('role.upgrader');
 
 /**Builder role.*/
-let roleBuilder = require('role.builder');
+//let roleBuilder = require('role.builder');
 
 /**Repairer role.*/
-let roleRepairer = require('role.repairer');
+//let roleRepairer = require('role.repairer');
 
 /**Prototype for spawn objects.*/
 require('prototype.spawn')();
+
+/**Prototype for creep objects.*/
+require('prototype.creep')();
 
 /**Functions that are used across different modules.*/
 let functions = require('functions');
@@ -120,13 +123,13 @@ module.exports.loop = function() {
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
     if (creep.memory.role == 'harvester') {
-      roleHarvester.run(creep);
+      creep.roleHarvester();
     } else if (creep.memory.role == 'upgrader') {
-      roleUpgrader.run(creep);
+      creep.roleUpgrader();
     } else if (creep.memory.role == 'builder') {
-      roleBuilder.run(creep);
+      creep.roleBuilder();
     } else if (creep.memory.role == 'repairer') {
-      roleRepairer.run(creep);
+      creep.roleRepairer();
     }
   }
 
