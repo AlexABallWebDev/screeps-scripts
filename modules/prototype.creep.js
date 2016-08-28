@@ -135,16 +135,35 @@ module.exports = function() {
       //If the repairer is trying to repair, go to the
       //structure and repair it.
 
+      /*
       //Find a damaged structure that is not a wall.
-      let structure = this.pos.findClosestByPath(FIND_STRUCTURES, {
+      let repairTarget = this.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) => structure.hits < structure.hitsMax &&
           structure.structureType != STRUCTURE_WALL
       });
+      */
 
-      if (structure !== undefined && structure !== null) {
+      //Find damaged structures.
+      let structures = this.room.find(FIND_STRUCTURES, {
+        filter: (structure) => structure.hits < structure.hitsMax &&
+          structure.hits !== undefined &&
+          structure.hits > 0
+      });
+
+      let repairTarget;
+
+      //Find the most damaged (lowest hits) structure.
+      for (let structure of structures) {
+        if (repairTarget === undefined ||
+          structure.hits < repairTarget.hits) {
+          repairTarget = structure;
+        }
+      }
+
+      if (repairTarget !== undefined && repairTarget !== null) {
         //Repair or move to the damaged structure.
-        if (this.repair(structure) == ERR_NOT_IN_RANGE) {
-          this.moveTo(structure);
+        if (this.repair(repairTarget) == ERR_NOT_IN_RANGE) {
+          this.moveTo(repairTarget);
         }
       } else {
         //If there are no damaged structures, then the repairer
