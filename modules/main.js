@@ -1,3 +1,16 @@
+
+
+// Require other modules and prototypes.
+
+/**Prototype for spawn objects.*/
+require('prototype.spawn')();
+
+/**Prototype for creep objects.*/
+require('prototype.creep')();
+
+/**Functions that are used across different modules.*/
+const FUNCTIONS = require('functions');
+
 // Constants
 
 /**Critical number of harvesters. We need to have at least this many
@@ -39,22 +52,11 @@ const TOWER_REPAIR_TARGET = {
 /**Base Worker Body. 2W, 1C, 1M.*/
 const BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
 
-// Require other modules and prototypes.
-
-/**Prototype for spawn objects.*/
-require('prototype.spawn')();
-
-/**Prototype for creep objects.*/
-require('prototype.creep')();
-
-/**Functions that are used across different modules.*/
-let functions = require('functions');
-
 //Begin main loop.
 module.exports.loop = function() {
 
   //Cleanup memory.
-  functions.clearDeadCreepMemory();
+  FUNCTIONS.clearDeadCreepMemory();
 
   let spawn = Game.spawns.Spawn1;
 
