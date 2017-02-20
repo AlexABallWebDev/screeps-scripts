@@ -1,6 +1,3 @@
-//Tell jshint (atom package) to stop showing certain irrelevent warnings.
-/*jshint esversion: 6 */
-
 module.exports = function() {
   /**function for executing the harvester role.*/
   Creep.prototype.roleHarvester = function() {

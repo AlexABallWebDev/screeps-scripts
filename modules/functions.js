@@ -2,9 +2,6 @@
  * reduce its length.
  */
 
-//Tell jshint (atom package) to stop showing certain irrelevent warnings.
-/*jshint esversion: 6 */
-
 //Begin module.
 var functions = {
   /**Clears memory of creeps that are not currently alive in Game.creeps.*/

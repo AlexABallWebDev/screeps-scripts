@@ -1,6 +1,3 @@
-//Tell jshint (atom package) to stop showing certain irrelevent warnings.
-/*jshint esversion: 6 */
-
 // Constants
 
 /**Critical number of harvesters. We need to have at least this many
