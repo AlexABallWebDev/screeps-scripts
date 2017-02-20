@@ -3,55 +3,43 @@
 /**Critical number of harvesters. We need to have at least this many
  * harvesters before building bigger creeps
  */
-let CRITICAL_HARVESTER_COUNT = 1;
+const CRITICAL_HARVESTER_COUNT = 1;
 
 /**Minimum number of harvesters.*/
-let HARVESTER_MINIMUM = 2;
+const HARVESTER_MINIMUM = 2;
 
 /**Minimum number of upgraders.*/
-let UPGRADER_MINIMUM = 1;
+const UPGRADER_MINIMUM = 1;
 
 /**Minimum number of builders.*/
-let BUILDER_MINIMUM = 2;
+const BUILDER_MINIMUM = 2;
 
 /**Minimum number of repairers.*/
-let REPAIRER_MINIMUM = 1;
+const REPAIRER_MINIMUM = 1;
 
 /**Minimum number of creeps.*/
-let WORKERS_MINIMUM = HARVESTER_MINIMUM +
+const WORKERS_MINIMUM = HARVESTER_MINIMUM +
   UPGRADER_MINIMUM +
   BUILDER_MINIMUM +
   REPAIRER_MINIMUM;
 
 /**Only targets with less that this much health will be repaired by towers.*/
-let TOWER_REPAIR_MAX_HEALTH = 100000;
+const TOWER_REPAIR_MAX_HEALTH = 100000;
 
 /**Minimum energy for towers to save for attacking hostile targets.*/
-let TOWER_MINIMUM_ENERGY = 700;
+const TOWER_MINIMUM_ENERGY = 700;
 
 /**filter for helping a tower find a target to repair.*/
-let TOWER_REPAIR_TARGET = {
+const TOWER_REPAIR_TARGET = {
   filter: (structure) => structure.hits < structure.hitsMax &&
     structure.hits !== undefined &&
     structure.hits > 0
 };
 
 /**Base Worker Body. 2W, 1C, 1M.*/
-let BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
+const BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
 
 // Require other modules and prototypes.
-
-/**Harvester role.*/
-//let roleHarvester = require('role.harvester');
-
-/**Upgrader role.*/
-//let roleUpgrader = require('role.upgrader');
-
-/**Builder role.*/
-//let roleBuilder = require('role.builder');
-
-/**Repairer role.*/
-//let roleRepairer = require('role.repairer');
 
 /**Prototype for spawn objects.*/
 require('prototype.spawn')();
