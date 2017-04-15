@@ -1,4 +1,9 @@
+/**
+Author: Alex Ball
+screeps-scripts
 
+scripts for the JavaScript-based MMO Screeps.
+*/
 
 // Require other modules and prototypes.
 
@@ -8,27 +13,25 @@ require('prototype.spawn')();
 /**Prototype for creep objects.*/
 require('prototype.creep')();
 
+/**Tower Logic*/
+require('tower').runTowerLogic();
+
 /**Functions that are used across different modules.*/
 const FUNCTIONS = require('functions');
 
 // Constants
 
-/**Critical number of harvesters. We need to have at least this many
- * harvesters before building bigger creeps
- */
-const CRITICAL_HARVESTER_COUNT = 1;
-
 /**Minimum number of harvesters.*/
 const HARVESTER_MINIMUM = 2;
 
 /**Minimum number of upgraders.*/
-const UPGRADER_MINIMUM = 1;
+const UPGRADER_MINIMUM = 2;
 
 /**Minimum number of builders.*/
-const BUILDER_MINIMUM = 2;
+const BUILDER_MINIMUM = 3;
 
 /**Minimum number of repairers.*/
-const REPAIRER_MINIMUM = 1;
+const REPAIRER_MINIMUM = 2;
 
 /**Minimum number of creeps.*/
 const WORKERS_MINIMUM = HARVESTER_MINIMUM +
@@ -36,29 +39,19 @@ const WORKERS_MINIMUM = HARVESTER_MINIMUM +
   BUILDER_MINIMUM +
   REPAIRER_MINIMUM;
 
-/**Only targets with less that this much health will be repaired by towers.*/
-const TOWER_REPAIR_MAX_HEALTH = 100000;
-
-/**Minimum energy for towers to save for attacking hostile targets.*/
-const TOWER_MINIMUM_ENERGY = 700;
-
-/**filter for helping a tower find a target to repair.*/
-const TOWER_REPAIR_TARGET = {
-  filter: (structure) => structure.hits < structure.hitsMax &&
-    structure.hits !== undefined &&
-    structure.hits > 0
-};
-
 /**Base Worker Body. 2W, 1C, 1M.*/
 const BASE_WORKER_BODY = [WORK, WORK, CARRY, MOVE];
 
 //Begin main loop.
 module.exports.loop = function() {
+  FUNCTIONS.respawn();
 
   //Cleanup memory.
   FUNCTIONS.clearDeadCreepMemory();
 
   let spawn = Game.spawns.Spawn1;
+
+  FUNCTIONS.checkForLevelUp(spawn);
 
   //Count the number of each creep role.
   let upgraders = _.filter(Game.creeps, (creep) =>
@@ -117,48 +110,6 @@ module.exports.loop = function() {
       creep.roleBuilder();
     } else if (creep.memory.role == 'repairer') {
       creep.roleRepairer();
-    }
-  }
-
-  //Tower logic
-
-  //Get towers.
-  let towers = _.filter(Game.structures, (structure) =>
-    structure.structureType == STRUCTURE_TOWER);
-  for (let tower of towers) {
-
-    //Find damaged structures.
-    let structures = tower.room.find(FIND_STRUCTURES, TOWER_REPAIR_TARGET);
-
-    let lowestHitsStructure;
-
-    //Find the most damaged (lowest hits) structure.
-    for (let structure of structures) {
-      if (lowestHitsStructure === undefined ||
-        structure.hits < lowestHitsStructure.hits) {
-        lowestHitsStructure = structure;
-      }
-    }
-
-    /*
-    //find closest damaged structure.
-    let closestDamagedStructure = tower.pos
-      .findClosestByRange(FIND_STRUCTURES, TOWER_REPAIR_TARGET);
-    */
-
-    //find closest hostile creep.
-    let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-
-    //prioritize shooting enemy creeps over repairing structures.
-    if (closestHostile) {
-      tower.attack(closestHostile);
-    } else if (lowestHitsStructure &&
-      tower.energy > TOWER_MINIMUM_ENERGY &&
-      totalWorkers >= WORKERS_MINIMUM &&
-      lowestHitsStructure.hits < TOWER_REPAIR_MAX_HEALTH) {
-      //Only repair if enough energy is saved up (in case of attacks)
-      //and enough workers are supplying the base.
-      tower.repair(lowestHitsStructure);
     }
   }
 }; //End main loop.
