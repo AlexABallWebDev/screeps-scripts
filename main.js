@@ -96,7 +96,7 @@ module.exports.loop = function() {
     name = spawn.createBiggestWorkerCreep(energyCapacity, 'upgrader');
   } else {
     //Excess creeps will be of this role.
-    //name = spawn.createBiggestWorkerCreep(energyCapacity, 'builder');
+    name = spawn.createBiggestWorkerCreep(energyCapacity, 'builder');
   }
 
   //For each creep, have it act (run) according to its role.
