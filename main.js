@@ -26,13 +26,23 @@ module.exports.loop = function() {
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
     if (creep.memory.role == 'harvester') {
+      Memory.creepInfo.harvesters[name] = creep.id;
       roleHarvester.run(creep);
     }
     if (creep.memory.role == 'upgrader') {
+      Memory.creepInfo.upgraders[name] = creep.id;
       roleUpgrader.run(creep);
     }
     if (creep.memory.role == 'builder') {
+      Memory.creepInfo.builders[name] = creep.id;
       roleBuilder.run(creep);
     }
   }
-}; //End main loop.
+
+  console.log("harvesters count: " +
+    Object.keys(Memory.creepInfo.harvesters).length);
+  console.log("upgraders count: " +
+    Object.keys(Memory.creepInfo.upgraders).length);
+  console.log("builders count: " +
+    Object.keys(Memory.creepInfo.builders).length);
+};

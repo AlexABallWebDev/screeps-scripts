@@ -27,8 +27,13 @@ function respawn() {
       //record when my colony last respawned
       Memory.startTime = Game.time;
       Memory.startingRoomControllerLevel = 1;
-      Memory.creepNum = 0;
+
       Memory.myMessages = [];
+
+      Memory.creepInfo = {};
+      Memory.creepInfo.harvesters = {};
+      Memory.creepInfo.upgraders = {};
+      Memory.creepInfo.builders = {};
       saveMessage("Respawn complete. Welcome back, commander.");
     } else {
       Memory.respawnComplete = false;
