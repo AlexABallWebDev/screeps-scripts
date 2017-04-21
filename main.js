@@ -38,11 +38,4 @@ module.exports.loop = function() {
       roleBuilder.run(creep);
     }
   }
-
-  console.log("harvesters count: " +
-    Object.keys(Memory.creepInfo.harvesters).length);
-  console.log("upgraders count: " +
-    Object.keys(Memory.creepInfo.upgraders).length);
-  console.log("builders count: " +
-    Object.keys(Memory.creepInfo.builders).length);
 };

@@ -20,8 +20,10 @@ function saveMessage(message) {
 
 //bootstrapper for colony respawn
 function respawn() {
-  if (_.size(Game.rooms) == 1 && !Memory.respawnComplete && Game.spawns.Spawn1) {
-    if (Game.spawns.Spawn1.room.controller.level == 1) {
+  if (_.size(Game.rooms) == 1 &&
+    Game.spawns.Spawn1 &&
+    Game.spawns.Spawn1.room.controller.level == 1) {
+    if (!Memory.respawnComplete) {
       Memory.respawnComplete = true;
 
       //record when my colony last respawned
@@ -35,9 +37,9 @@ function respawn() {
       Memory.creepInfo.upgraders = {};
       Memory.creepInfo.builders = {};
       saveMessage("Respawn complete. Welcome back, commander.");
-    } else {
-      Memory.respawnComplete = false;
     }
+  } else {
+    Memory.respawnComplete = false;
   }
 }
 
