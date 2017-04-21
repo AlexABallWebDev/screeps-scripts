@@ -46,21 +46,12 @@ module.exports.loop = function() {
   }
 
   if (Object.keys(harvesters).length < 2) {
-    spawnFunctions.spawn(spawn, 'harvester');
+    spawnFunctions.createCreepWithRole(spawn, 'harvester');
   } else if (Object.keys(upgraders).length < 2) {
-    spawnFunctions.spawn(spawn, 'upgrader');
+    spawnFunctions.createCreepWithRole(spawn, 'upgrader');
   } else if (Object.keys(builders).length < 2) {
-    spawnFunctions.spawn(spawn, 'upgrader');
+    spawnFunctions.createCreepWithRole(spawn, 'builder');
   }
 
-  if (spawn.spawning) {
-    let spawningCreep = Game.creeps[spawn.spawning.name];
-    spawn.room.visual.text(
-      '🛠️' + spawningCreep.memory.role,
-      spawn.pos.x + 1,
-      spawn.pos.y, {
-        align: 'left',
-        opacity: 0.8
-      });
-  }
+  spawnFunctions.displayCreateCreepVisual(spawn);
 };
