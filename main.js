@@ -44,10 +44,13 @@ module.exports.loop = function() {
   }
 
   if (Object.keys(harvesters).length < 2) {
-    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE], undefined, {
-      role: 'harvester'
-    });
-    console.log('Spawning new harvester: ' + newName);
+    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE],
+      undefined, {
+        role: 'harvester'
+      });
+    if (newName != -6) {
+      console.log('Spawning new harvester: ' + newName);
+    }
   }
 
   if (spawn.spawning) {
