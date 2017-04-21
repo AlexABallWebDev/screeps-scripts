@@ -40,10 +40,10 @@ function respawn() {
 }
 
 //simple diagnostics recording when a spawn's room controller levels up.
-function checkForLevelUp(spawn) {
-  if (Memory.startingRoomControllerLevel < spawn.room.controller.level) {
-    Memory.startingRoomControllerLevel = spawn.room.controller.level;
-    let levelUpMessage = spawn.room.name + " controller level up to: " +
+function checkForLevelUp(room) {
+  if (Memory.startingRoomControllerLevel < room.controller.level) {
+    Memory.startingRoomControllerLevel = room.controller.level;
+    let levelUpMessage = room.name + " controller level up to: " +
       Memory.startingRoomControllerLevel + " at colony lifetime: " +
       (Game.time - Memory.startTime);
     saveMessage(levelUpMessage);

@@ -23,7 +23,7 @@ module.exports.loop = function() {
 
   let spawn = Game.spawns.Spawn1;
 
-  FUNCTIONS.checkForLevelUp(spawn);
+  FUNCTIONS.checkForLevelUp(spawn.room);
 
   let harvesters = {};
   let upgraders = {};
