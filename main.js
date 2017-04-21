@@ -7,6 +7,8 @@ scripts for the JavaScript-based MMO Screeps.
 
 require('tower').runTowerLogic();
 
+let spawnFunctions = require('spawn');
+
 let roleHarvester = require('role.harvester');
 let roleUpgrader = require('role.upgrader');
 let roleBuilder = require('role.builder');
@@ -44,29 +46,11 @@ module.exports.loop = function() {
   }
 
   if (Object.keys(harvesters).length < 2) {
-    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE],
-      undefined, {
-        role: 'harvester'
-      });
-    if (newName != -6) {
-      console.log('Spawning new harvester: ' + newName);
-    }
+    spawnFunctions.spawn(spawn, 'harvester');
   } else if (Object.keys(upgraders).length < 2) {
-    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE],
-      undefined, {
-        role: 'upgrader'
-      });
-    if (newName != -6) {
-      console.log('Spawning new upgrader: ' + newName);
-    }
+    spawnFunctions.spawn(spawn, 'upgrader');
   } else if (Object.keys(builders).length < 2) {
-    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE],
-      undefined, {
-        role: 'builder'
-      });
-    if (newName != -6) {
-      console.log('Spawning new builder: ' + newName);
-    }
+    spawnFunctions.spawn(spawn, 'upgrader');
   }
 
   if (spawn.spawning) {
