@@ -51,6 +51,22 @@ module.exports.loop = function() {
     if (newName != -6) {
       console.log('Spawning new harvester: ' + newName);
     }
+  } else if (Object.keys(upgraders).length < 2) {
+    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE],
+      undefined, {
+        role: 'upgrader'
+      });
+    if (newName != -6) {
+      console.log('Spawning new upgrader: ' + newName);
+    }
+  } else if (Object.keys(builders).length < 2) {
+    let newName = spawn.createCreep([WORK, WORK, CARRY, MOVE],
+      undefined, {
+        role: 'builder'
+      });
+    if (newName != -6) {
+      console.log('Spawning new builder: ' + newName);
+    }
   }
 
   if (spawn.spawning) {
