@@ -32,10 +32,6 @@ function respawn() {
 
       Memory.myMessages = [];
 
-      Memory.creepInfo = {};
-      Memory.creepInfo.harvesters = {};
-      Memory.creepInfo.upgraders = {};
-      Memory.creepInfo.builders = {};
       saveMessage("Respawn complete. Welcome back, commander.");
     }
   } else {
