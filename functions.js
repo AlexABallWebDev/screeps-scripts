@@ -25,7 +25,10 @@ function saveMessage(message) {
   console.log(message);
 }
 
-//bootstrapper for colony respawn
+/**
+Bootstrapper for colony respawn. Checks if respawn occurred, then
+runs respawn specific code.
+*/
 function respawn() {
   if (_.size(Game.rooms) == 1 &&
     Game.spawns.Spawn1 &&
@@ -73,7 +76,6 @@ function bodyCost(body) {
   }, 0);
 }
 
-//Make this module available to other modules.
 module.exports = {
   clearDeadCreepMemory,
   saveMessage,
