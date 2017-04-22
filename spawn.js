@@ -6,7 +6,7 @@ Optionally, a name can be provided.
 @param {string} name = undefined
 */
 function createCreepWithMemory(spawn, memory, name = undefined) {
-  name = spawn.createCreep([WORK, WORK, CARRY, MOVE], memory);
+  name = spawn.createCreep([WORK, WORK, CARRY, MOVE], name, memory);
 
   if (name != -6) {
     console.log('Spawning new ' + memory.role + ': ' + name);
@@ -23,16 +23,9 @@ Optionally, a name can be provided.
 @param {string} name = undefined
 */
 function createCreepWithRole(spawn, role, name = undefined) {
-  name = spawn.createCreep([WORK, WORK, CARRY, MOVE],
-    name, {
-      role: role
-    });
-
-  if (name != -6) {
-    console.log('Spawning new ' + role + ': ' + name);
-  }
-
-  return name;
+  return createCreepWithMemory(spawn, {
+    role: role
+  }, name);
 }
 
 /**
