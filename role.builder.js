@@ -17,8 +17,16 @@ const roleBuilder = {
     if (creep.memory.building) {
       let targets = creep.room.find(FIND_CONSTRUCTION_SITES);
       if (targets.length) {
-        if (creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], {
+        let closestToFinished = targets[0];
+        if (targets.length > 1) {
+          for (let i = 1; i < targets.length; i++) {
+            if (targets[i].progress > closestToFinished.progress) {
+              closestToFinished = targets[i];
+            }
+          }
+        }
+        if (creep.build(closestToFinished) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(closestToFinished, {
             visualizePathStyle: {
               stroke: '#ffffff'
             }
