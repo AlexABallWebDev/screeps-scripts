@@ -44,7 +44,7 @@ module.exports.loop = function() {
   let spawn = Game.spawns.Spawn1;
   for (let roomName in Game.rooms) {
     let room = Game.rooms[roomName];
-    
+
     FUNCTIONS.checkForLevelUp(room);
 
     let spawns = room.find(FIND_MY_STRUCTURES, {
@@ -65,11 +65,11 @@ module.exports.loop = function() {
     //if so, then build a new miner which will be assigned to
     //that source.
 
-    if (Object.keys(harvesters).length < 2) {
+    if (_.size(harvesters) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
-    } else if (Object.keys(upgraders).length < 2) {
+    } else if (_.size(upgraders) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
-    } else if (Object.keys(builders).length < 2) {
+    } else if (_.size(builders) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
     }
 
