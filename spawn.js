@@ -6,10 +6,6 @@ Optionally, a name can be provided.
 @param {string} name = undefined
 */
 function createCreepWithMemory(spawn, memory, name = undefined) {
-  if (spawn.spawning) {
-    return spawn.spawning.name;
-  }
-  
   name = spawn.createCreep([WORK, WORK, CARRY, MOVE], name, memory);
 
   if (name != ERR_NOT_ENOUGH_ENERGY && name != ERR_BUSY) {
