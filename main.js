@@ -67,9 +67,9 @@ module.exports.loop = function() {
 
     if (_.size(harvesters) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
-    } else if (_.size(upgraders) < 2) {
+    } else if (_.size(upgraders) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
-    } else if (_.size(builders) < 2) {
+    } else if (_.size(builders) < 0) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
     }
 
