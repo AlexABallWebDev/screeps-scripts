@@ -16,6 +16,14 @@ let roleBuilder = require('role.builder');
 let roleMiner = require('role.miner');
 let roleCourier = require('role.courier');
 
+let roles = {
+  harvester: roleHarvester,
+  upgrader: roleUpgrader,
+  builder: roleBuilder,
+  miner: roleMiner,
+  courier: roleCourier,
+};
+
 /**Functions that are used across different modules.*/
 const FUNCTIONS = require('functions');
 
@@ -24,33 +32,17 @@ module.exports.loop = function() {
   FUNCTIONS.respawn();
   FUNCTIONS.clearDeadCreepMemory();
 
-  let harvesters = {};
-  let upgraders = {};
-  let builders = {};
-  let miners = {};
-  let couriers = {};
+  let creepsOfRole = {};
+
+  _.forEach(roles, (role, roleName) => {
+    creepsOfRole[roleName] = {};
+  });
 
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
-    if (creep.memory.role == 'harvester') {
-      harvesters[name] = creep.id;
-      roleHarvester.run(creep);
-    }
-    if (creep.memory.role == 'upgrader') {
-      upgraders[name] = creep.id;
-      roleUpgrader.run(creep);
-    }
-    if (creep.memory.role == 'builder') {
-      builders[name] = creep.id;
-      roleBuilder.run(creep);
-    }
-    if (creep.memory.role == 'miner') {
-      miners[name] = creep.id;
-      roleMiner.run(creep);
-    }
-    if (creep.memory.role == 'courier') {
-      couriers[name] = creep.id;
-      roleCourier.run(creep);
+    if (roles[creep.memory.role]) {
+      creepsOfRole[creep.memory.role][name] = creep.id;
+      roles[creep.memory.role].run(creep);
     }
   }
 
@@ -73,15 +65,15 @@ module.exports.loop = function() {
 
     if (_.size(Game.creeps) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
-    } else if (_.size(couriers) < 1) {
+    } else if (_.size(creepsOfRole.courier) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (sourceIdMissingMiner) {
       roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
-    } else if (_.size(couriers) < 2) {
+    } else if (_.size(creepsOfRole.courier) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
-    } else if (_.size(upgraders) < 2) {
+    } else if (_.size(creepsOfRole.upgraders) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
-    } else if (_.size(builders) < 1) {
+    } else if (_.size(creepsOfRole.builders) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
     }
 
