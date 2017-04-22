@@ -6,7 +6,7 @@ const TOWER_MINIMUM_ENERGY = 700;
 
 /**filter for helping a tower find a target to repair.*/
 const TOWER_REPAIR_TARGET = {
-  filter: (structure) => structure.hits < structure.hitsMax &&
+  filter: (structure) => structure.hits < structure.hitsMax / 4 &&
     structure.hits !== undefined &&
     structure.hits > 0
 };
