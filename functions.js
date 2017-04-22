@@ -28,7 +28,6 @@ function respawn() {
 
       //record when my colony last respawned
       Memory.startTime = Game.time;
-      Memory.startingRoomControllerLevel = 1;
 
       Memory.myMessages = [];
 
@@ -41,10 +40,14 @@ function respawn() {
 
 //simple diagnostics recording when a spawn's room controller levels up.
 function checkForLevelUp(room) {
-  if (Memory.startingRoomControllerLevel < room.controller.level) {
-    Memory.startingRoomControllerLevel = room.controller.level;
+  if (!room.memory.controllerLevel) {
+    room.memory.controllerLevel = 0;
+  }
+
+  if (room.memory.controllerLevel < room.controller.level) {
+    room.memory.controllerLevel = room.controller.level;
     let levelUpMessage = room.name + " controller level up to: " +
-      Memory.startingRoomControllerLevel + " at colony lifetime: " +
+      room.memory.controllerLevel + " at colony lifetime: " +
       (Game.time - Memory.startTime);
     saveMessage(levelUpMessage);
   }
