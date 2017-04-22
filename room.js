@@ -18,34 +18,42 @@ function checkForSources(room) {
 }
 
 /**
-Check if a source is missing a miner or its assigned miner will
-die within the time it takes a new miner to replace it.
+Check if a source is missing a miner.
 @param {Room} room
 */
-function buildMiners(room, spawn) {
-  let sourceIdWhichNeedsMiner;
-  let foundMissingMiner = false;
-
+function findSourceIdMissingMiner(room) {
   _.forEach(room.memory.sourceAssignments, (creepName, sourceId) => {
-    if (!foundMissingMiner && !Game.creeps[creepName]) {
-      sourceIdWhichNeedsMiner = sourceId;
-      foundMissingMiner = true;
+    if (!Game.creeps[creepName]) {
+      return sourceId;
     }
   });
 
-  if (sourceIdWhichNeedsMiner) {
+  return 0;
+}
+
+/**
+Build a miner for the given room and sourceId.
+@param {Room} room
+@param {string} sourceId
+@param {Spawn} spawn
+*/
+function buildMiner(room, sourceId, spawn) {
+  if (sourceId) {
     let newCreepName = spawnFunctions.createCreepWithMemory(spawn, {
       role: "miner",
-      assignedSourceId: sourceIdWhichNeedsMiner
+      assignedSourceId: sourceId
     });
 
     if (newCreepName != ERR_NOT_ENOUGH_ENERGY && newCreepName != ERR_BUSY) {
-      room.memory.sourceAssignments[sourceIdWhichNeedsMiner] = newCreepName;
+      room.memory.sourceAssignments[sourceId] = newCreepName;
+    } else {
+      return sourceId;
     }
   }
 }
 
 module.exports = {
   checkForSources,
-  buildMiners
+  findSourceIdMissingMiner,
+  buildMiner
 };

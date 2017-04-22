@@ -69,16 +69,20 @@ module.exports.loop = function() {
     let spawn = spawns[0];
 
     roomFunctions.checkForSources(room);
-    roomFunctions.buildMiners(room, spawn);
+    let sourceIdMissingMiner = roomFunctions.findSourceIdMissingMiner(room);
 
-    if (_.size(harvesters) < 2) {
+    if (_.size(Game.creeps) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
+    } else if (_.size(couriers) < 1) {
+      spawnFunctions.createCreepWithRole(spawn, 'courier');
+    } else if (sourceIdMissingMiner) {
+      roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
+    } else if (_.size(couriers) < 2) {
+      spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (_.size(upgraders) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
     } else if (_.size(builders) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
-    } else if (_.size(couriers) < 1) {
-      spawnFunctions.createCreepWithRole(spawn, 'courier');
     }
 
     spawnFunctions.displayCreateCreepVisual(spawn);
