@@ -1,4 +1,6 @@
-let roleBuilder = {
+const creepBehavior = require('behavior.creep');
+
+const roleBuilder = {
 
   /** @param {Creep} creep **/
   run: function(creep) {
@@ -23,13 +25,7 @@ let roleBuilder = {
           });
         }
       } else {
-        if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(creep.room.controller, {
-            visualizePathStyle: {
-              stroke: '#ffffff'
-            }
-          });
-        }
+        creepBehavior.upgradeRoomController(creep);
       }
     } else {
       let energyStorages = creep.room.find(FIND_MY_STRUCTURES, {

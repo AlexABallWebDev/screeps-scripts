@@ -1,5 +1,5 @@
 /**
-Causes the creep to gather from the nearest source.
+Gather from the nearest source.
 @param {Creep} creep
 */
 function gatherFromClosestSource(creep) {
@@ -14,8 +14,7 @@ function gatherFromClosestSource(creep) {
 }
 
 /**
-Causes the creep to drop off energy at the closest structure that is
-not full of energy.
+Drop off energy at the closest structure that is not full of energy.
 @param {Creep} creep
 */
 function dropOffEnergyAtClosestStructure(creep) {
@@ -39,8 +38,7 @@ function dropOffEnergyAtClosestStructure(creep) {
 }
 
 /**
-Causes the creep to find the biggest dropped pile of energy in the
-room and pick it up.
+Find the biggest dropped pile of energy in the room and pick it up.
 @param {Creep} creep
 */
 function pickupBiggestEnergyPile(creep) {
@@ -65,8 +63,23 @@ function pickupBiggestEnergyPile(creep) {
   }
 }
 
+/**
+Upgrade this rooms controller.
+@param {Creep} creep
+*/
+function upgradeRoomController(creep) {
+  if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(creep.room.controller, {
+      visualizePathStyle: {
+        stroke: '#ffffff'
+      }
+    });
+  }
+}
+
 module.exports = {
   gatherFromClosestSource,
   dropOffEnergyAtClosestStructure,
-  pickupBiggestEnergyPile
+  pickupBiggestEnergyPile,
+  upgradeRoomController
 };
