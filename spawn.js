@@ -1,3 +1,10 @@
+/**
+Creates a creep with the given role.
+Optionally, a name can be provided.
+@param {Spawn} spawn
+@param {string} role
+@param {string} name = undefined
+*/
 function createCreepWithRole(spawn, role, name = undefined) {
   name = spawn.createCreep([WORK, WORK, CARRY, MOVE],
     name, {
@@ -9,6 +16,10 @@ function createCreepWithRole(spawn, role, name = undefined) {
   }
 }
 
+/**
+Display a visual if the spawn is creating a creep.
+@param {Spawn} spawn
+*/
 function displayCreateCreepVisual(spawn) {
   if (spawn.spawning) {
     let spawningCreep = Game.creeps[spawn.spawning.name];

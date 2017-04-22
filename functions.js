@@ -1,8 +1,11 @@
-/**This module contains functions. These were pulled out of main.js to
- * reduce its length.
- */
+/**
+This module contains functions. These were pulled out of main.js to
+reduce its length.
+*/
 
-/**Clears memory of creeps that are not currently alive in Game.creeps.*/
+/**
+Clears memory of creeps that are not currently alive in Game.creeps.
+*/
 function clearDeadCreepMemory() {
   for (let name in Memory.creeps) {
     if (!Game.creeps[name]) {
@@ -12,7 +15,11 @@ function clearDeadCreepMemory() {
   }
 }
 
-//saves a message to memory so that I can see it after returning to the game.
+/**
+Saves a message to memory so that I can see it after returning
+to the game.
+@param {string} message
+*/
 function saveMessage(message) {
   Memory.myMessages.push(message);
   console.log(message);
@@ -38,7 +45,10 @@ function respawn() {
   }
 }
 
-//simple diagnostics recording when a spawn's room controller levels up.
+/**
+Simple diagnostics recording when a spawn's room controller levels up.
+@param {Room} room
+*/
 function checkForLevelUp(room) {
   if (!room.memory.controllerLevel) {
     room.memory.controllerLevel = 0;
@@ -53,6 +63,10 @@ function checkForLevelUp(room) {
   }
 }
 
+/**
+Calculates the cost of a given body.
+@param {array} body
+*/
 function bodyCost(body) {
   return body.reduce(function(cost, part) {
     return cost + BODYPART_COST[part];
