@@ -13,6 +13,7 @@ let roomFunctions = require('room');
 let roleHarvester = require('role.harvester');
 let roleUpgrader = require('role.upgrader');
 let roleBuilder = require('role.builder');
+let roleMiner = require('role.miner');
 
 /**Functions that are used across different modules.*/
 const FUNCTIONS = require('functions');
@@ -25,6 +26,7 @@ module.exports.loop = function() {
   let harvesters = {};
   let upgraders = {};
   let builders = {};
+  let miners = {};
 
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
@@ -39,6 +41,10 @@ module.exports.loop = function() {
     if (creep.memory.role == 'builder') {
       builders[name] = creep.id;
       roleBuilder.run(creep);
+    }
+    if (creep.memory.role == 'miner') {
+      miners[name] = creep.id;
+      roleMiner.run(creep);
     }
   }
 
@@ -57,12 +63,7 @@ module.exports.loop = function() {
     let spawn = spawns[0];
 
     roomFunctions.checkForSources(room);
-
-    //check if a source is MISSING a miner OR its assigned miner will
-    //die within the time it takes a new miner to replace it.
-
-    //if so, then build a new miner which will be assigned to
-    //that source.
+    roomFunctions.buildMiners(room, spawn);
 
     if (_.size(harvesters) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
