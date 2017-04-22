@@ -27,8 +27,6 @@ function buildMiners(room, spawn) {
   let foundMissingMiner = false;
 
   _.forEach(room.memory.sourceAssignments, (creepName, sourceId) => {
-    console.log("creepName: " + creepName);
-    console.log("sourceId: " + sourceId);
     if (!foundMissingMiner && !Game.creeps[creepName]) {
       sourceIdWhichNeedsMiner = sourceId;
       foundMissingMiner = true;
