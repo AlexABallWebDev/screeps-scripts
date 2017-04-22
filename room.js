@@ -22,13 +22,15 @@ Check if a source is missing a miner.
 @param {Room} room
 */
 function findSourceIdMissingMiner(room) {
+  let result = 0;
+  
   _.forEach(room.memory.sourceAssignments, (creepName, sourceId) => {
     if (!Game.creeps[creepName]) {
-      return sourceId;
+      result = sourceId;
     }
   });
 
-  return 0;
+  return result;
 }
 
 /**
