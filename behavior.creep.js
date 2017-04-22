@@ -52,13 +52,17 @@ function pickupBiggestEnergyPile(creep) {
     let biggestResource = droppedResources[0];
     if (droppedResources.length > 1) {
       for (let i = 1; i < droppedResources.length; i++) {
-        if (droppedResources[i].amount > biggestResource) {
+        if (droppedResources[i].amount > biggestResource.amount) {
           biggestResource = droppedResources[i];
         }
       }
     }
     if (creep.pickup(biggestResource) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(biggestResource);
+      creep.moveTo(biggestResource, {
+        visualizePathStyle: {
+          stroke: '#ffaa00'
+        }
+      });
     }
   }
 }
