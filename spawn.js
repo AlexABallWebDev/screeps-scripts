@@ -8,7 +8,7 @@ Optionally, a name can be provided.
 function createCreepWithMemory(spawn, memory, name = undefined) {
   name = spawn.createCreep([WORK, WORK, CARRY, MOVE], name, memory);
 
-  if (name != ERR_NOT_ENOUGH_ENERGY) {
+  if (name != ERR_NOT_ENOUGH_ENERGY && name != ERR_BUSY) {
     console.log('Spawning new ' + memory.role + ': ' + name);
   }
 
