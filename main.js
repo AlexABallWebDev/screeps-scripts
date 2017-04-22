@@ -8,6 +8,7 @@ scripts for the JavaScript-based MMO Screeps.
 require('tower').runTowerLogic();
 
 let spawnFunctions = require('spawn');
+let roomFunctions = require('room');
 
 let roleHarvester = require('role.harvester');
 let roleUpgrader = require('role.upgrader');
@@ -55,9 +56,7 @@ module.exports.loop = function() {
 
     let spawn = spawns[0];
 
-    //check for sources that are not known in this room.
-
-    //make any unknown sources known.
+    roomFunctions.checkForSources(room);
 
     //check if a source is MISSING a miner OR its assigned miner will
     //die within the time it takes a new miner to replace it.
