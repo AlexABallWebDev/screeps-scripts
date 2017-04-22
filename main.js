@@ -14,6 +14,7 @@ let roleHarvester = require('role.harvester');
 let roleUpgrader = require('role.upgrader');
 let roleBuilder = require('role.builder');
 let roleMiner = require('role.miner');
+let roleCourier = require('role.courier');
 
 /**Functions that are used across different modules.*/
 const FUNCTIONS = require('functions');
@@ -27,6 +28,7 @@ module.exports.loop = function() {
   let upgraders = {};
   let builders = {};
   let miners = {};
+  let couriers = {};
 
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
@@ -45,6 +47,10 @@ module.exports.loop = function() {
     if (creep.memory.role == 'miner') {
       miners[name] = creep.id;
       roleMiner.run(creep);
+    }
+    if (creep.memory.role == 'courier') {
+      couriers[name] = creep.id;
+      roleCourier.run(creep);
     }
   }
 
@@ -67,10 +73,12 @@ module.exports.loop = function() {
 
     if (_.size(harvesters) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
-    } else if (_.size(upgraders) < 1) {
+    } else if (_.size(upgraders) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
-    } else if (_.size(builders) < 0) {
+    } else if (_.size(builders) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
+    } else if (_.size(couriers) < 1) {
+      spawnFunctions.createCreepWithRole(spawn, 'courier');
     }
 
     spawnFunctions.displayCreateCreepVisual(spawn);
