@@ -3,12 +3,12 @@ check for sources that are not known in this room.
 @param {Room} room
 */
 function checkForSources(room) {
-  if (!room.memory.sourceIds) {
-    room.memory.sourceIds = {};
+  if (!room.memory.sourceAssignments) {
+    room.memory.sourceAssignments = {};
 
     _.forEach(room.find(FIND_SOURCES), (source, sourceId, sources) => {
-      if (!room.memory.sourceIds[source.id]) {
-        room.memory.sourceIds[source.id] = "none";
+      if (!room.memory.sourceAssignments[source.id]) {
+        room.memory.sourceAssignments[source.id] = "none";
       }
     });
   }
