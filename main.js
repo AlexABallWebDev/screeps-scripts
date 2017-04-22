@@ -7,16 +7,16 @@ scripts for the JavaScript-based MMO Screeps.
 
 require('tower').runTowerLogic();
 
-let spawnFunctions = require('spawn');
-let roomFunctions = require('room');
+const spawnFunctions = require('spawn');
+const roomFunctions = require('room');
 
-let roleHarvester = require('role.harvester');
-let roleUpgrader = require('role.upgrader');
-let roleBuilder = require('role.builder');
-let roleMiner = require('role.miner');
-let roleCourier = require('role.courier');
+const roleHarvester = require('role.harvester');
+const roleUpgrader = require('role.upgrader');
+const roleBuilder = require('role.builder');
+const roleMiner = require('role.miner');
+const roleCourier = require('role.courier');
 
-let roles = {
+const roles = {
   harvester: roleHarvester,
   upgrader: roleUpgrader,
   builder: roleBuilder,
@@ -24,7 +24,7 @@ let roles = {
   courier: roleCourier,
 };
 
-/**Functions that are used across different modules.*/
+/**Diagnostic and utility functions*/
 const FUNCTIONS = require('functions');
 
 //Begin main loop.
@@ -34,9 +34,9 @@ module.exports.loop = function() {
 
   let creepsOfRole = {};
 
-  _.forEach(roles, (role, roleName) => {
+  for (let roleName in roles) {
     creepsOfRole[roleName] = {};
-  });
+  }
 
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
@@ -69,7 +69,7 @@ module.exports.loop = function() {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (sourceIdMissingMiner) {
       roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
-    } else if (_.size(creepsOfRole.courier) < 3) {
+    } else if (_.size(creepsOfRole.courier) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (_.size(creepsOfRole.upgrader) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
