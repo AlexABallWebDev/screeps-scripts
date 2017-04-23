@@ -32,7 +32,8 @@ function dropOffEnergyAtNearbyStructure(creep) {
   if (targets.length > 0) {
     let target = targets[0];
     for (let i = 1; i < targets.length; i++) {
-      if (targets[i].structureType == STRUCTURE_SPAWN) {
+      if (targets[i].structureType == STRUCTURE_SPAWN ||
+        targets[i].structureType == STRUCTURE_EXTENSION) {
         target = targets[i];
       }
     }
