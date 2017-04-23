@@ -71,9 +71,50 @@ function placeUpgraderContainer(room, startPosition) {
   room.createConstructionSite(lastStep.x, lastStep.y, STRUCTURE_CONTAINER);
 }
 
+/**
+Places construction sites for extensions on the squares diagonal to
+the given position.
+@param {Room} room
+@param {RoomPosition} position
+*/
+function addExtensionsToDiagonals(room, position) {
+  //find corners
+  let corners = [];
+  corners.push(findDiagonal(position, TOP_LEFT));
+  corners.push(findDiagonal(position, TOP_RIGHT));
+  corners.push(findDiagonal(position, BOTTOM_RIGHT));
+  corners.push(findDiagonal(position, BOTTOM_LEFT));
+
+  //build on corners
+  corners.forEach((corner) => {
+    room.createConstructionSite(corner, STRUCTURE_EXTENSION);
+  });
+}
+
+/**
+Find the corner position for the given position and direction
+@param {Room} room
+@param {number} direction
+*/
+function findDiagonal(position, direction) {
+  switch (direction) {
+    case TOP_LEFT:
+      return new RoomPosition(position.x - 1, position.y - 1, position.roomName);
+    case TOP_RIGHT:
+      return new RoomPosition(position.x + 1, position.y - 1, position.roomName);
+    case BOTTOM_RIGHT:
+      return new RoomPosition(position.x + 1, position.y + 1, position.roomName);
+    case BOTTOM_LEFT:
+      return new RoomPosition(position.x - 1, position.y + 1, position.roomName);
+    default:
+      return 0;
+  }
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
   buildMiner,
-  placeUpgraderContainer
+  placeUpgraderContainer,
+  addExtensionsToDiagonals
 };

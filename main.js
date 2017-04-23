@@ -82,5 +82,7 @@ module.exports.loop = function() {
     if (!Memory.flags[room.name + " upContainer"]) {
       roomFunctions.placeUpgraderContainer(room, spawn.pos);
     }
+
+    roomFunctions.addExtensionsToDiagonals(room, spawn.pos);
   }
 };
