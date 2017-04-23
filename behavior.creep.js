@@ -3,7 +3,7 @@ Gather from the nearest source.
 @param {Creep} creep
 */
 function gatherFromClosestSource(creep) {
-  var sources = creep.room.find(FIND_SOURCES);
+  let sources = creep.room.find(FIND_SOURCES);
   if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
     creep.moveTo(sources[0], {
       visualizePathStyle: {
@@ -18,7 +18,7 @@ Drop off energy at the closest structure that is not full of energy.
 @param {Creep} creep
 */
 function dropOffEnergyAtClosestStructure(creep) {
-  var targets = creep.room.find(FIND_STRUCTURES, {
+  let targets = creep.room.find(FIND_STRUCTURES, {
     filter: (structure) => {
       return (structure.structureType == STRUCTURE_EXTENSION ||
           structure.structureType == STRUCTURE_SPAWN ||
@@ -28,7 +28,7 @@ function dropOffEnergyAtClosestStructure(creep) {
         (structure.store && structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
     }
   });
-  console.log(JSON.stringify(targets));
+
   if (targets.length > 0) {
     if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(targets[0], {
