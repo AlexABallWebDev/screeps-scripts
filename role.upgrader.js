@@ -16,6 +16,7 @@ const roleUpgrader = {
 
     if (creep.memory.upgrading) {
       creepBehavior.upgradeRoomController(creep);
+      creepBehavior.repairUpContainer(creep);
     } else {
       creepBehavior.retrieveEnergyForUpgrading(creep);
     }

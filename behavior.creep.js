@@ -97,14 +97,8 @@ retrieve energy from spawn.
 @param {Creep} creep
 */
 function retrieveEnergyForUpgrading(creep) {
-  //check for upContainer first
-  let upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
-  let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
-    upContainerFlagPos.x,
-    upContainerFlagPos.y);
-
-  if (lookResults.length) {
-    let upContainer = lookResults[0];
+  let upContainer = getUpContainer(creep);
+  if (getUpContainer) {
     if (creep.withdraw(upContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(upContainer, {
         visualizePathStyle: {
@@ -129,10 +123,43 @@ function retrieveEnergyForUpgrading(creep) {
   }
 }
 
+/**
+returns the upContainer for the creep's room. If there is no upContainer,
+returns 0.
+@param {Creep} creep
+*/
+function getUpContainer(creep) {
+  let upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
+  let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
+    upContainerFlagPos.x,
+    upContainerFlagPos.y);
+
+  if (lookResults.length) {
+    let upContainer = lookResults[0];
+    return upContainer;
+  }
+
+  return 0;
+}
+
+/**
+Repair the upContainer. Note that this function does not move the creep towards
+the upContainer.
+@param {Creep} creep
+*/
+function repairUpContainer(creep) {
+  let upContainer = getUpContainer(creep);
+  if (upContainer && upContainer.hits < upContainer.hitsMax) {
+    creep.repair(upContainer);
+  }
+}
+
 module.exports = {
   gatherFromClosestSource,
   dropOffEnergyAtNearbyStructure,
   pickupBiggestEnergyPile,
   upgradeRoomController,
-  retrieveEnergyForUpgrading
+  retrieveEnergyForUpgrading,
+  getUpContainer,
+  repairUpContainer
 };

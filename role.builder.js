@@ -34,6 +34,7 @@ const roleBuilder = {
         }
       } else {
         creepBehavior.upgradeRoomController(creep);
+        creepBehavior.repairUpContainer(creep);
       }
     } else {
       creepBehavior.retrieveEnergyForUpgrading(creep);
