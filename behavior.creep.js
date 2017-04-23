@@ -72,7 +72,8 @@ Upgrade this rooms controller.
 @param {Creep} creep
 */
 function upgradeRoomController(creep) {
-  if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+  creep.upgradeController(creep.room.controller);
+  if (!creep.pos.isNearTo(creep.room.controller)) {
     creep.moveTo(creep.room.controller, {
       visualizePathStyle: {
         stroke: '#ffffff'
