@@ -155,33 +155,42 @@ function addExtensionsToDiagonals(room, position) {
 }
 
 /**
+Returns the concentric square layer to build new extensions in for the given
+number of extensions.
+@param {number} extensionCount
+*/
+function checkExtensionLayer(extensionCount) {
+  let layer = 2;
+  extensionCount -= Math.pow(layer, 2);
+
+  while (extensionCount >= 0) {
+    layer++;
+    extensionCount -= (Math.pow(layer, 2) - Math.pow(layer - 2, 2));
+  }
+  return layer;
+}
+
+/**
 Places extension construction sites around the given corners until the
 maximum number of extensions have been placed in the given room.
 @param {Room} room
 */
-function AddExtensionsToRoom(room, position) {
+function addExtensionsToRoom(room, position) {
   let maxExtensions = CONTROLLER_STRUCTURES.extension[room.controller.level];
 
   //skip every other square so creeps have room to move.
   const STEPS = 2;
-  let sideLength = 1;
+  let extensionCount = countExtensions(room);
 
-  if (countExtensions(room) < maxExtensions) {
+  if (extensionCount < maxExtensions) {
+    let layer = checkExtensionLayer(extensionCount);
+    let sideLength = layer - 1;
 
-    addExtensionsToDiagonals(room, position);
-
-    //start by moving diagonally upleft
-    position = findAdjacent(position, TOP_LEFT);
-    console.log("moved TOP_LEFT");
-    addExtensionsToDiagonals(room, position);
-
-    //move up until done with left side - 1.
-    for (let i = sideLength - 1; i > 0; i--) {
-      for (let i = 0; i < STEPS; i++) {
-        position = findAdjacent(position, TOP);
-      }
-      console.log("moved TOP");
-      addExtensionsToDiagonals(room, position);
+    //start by moving diagonally TOP_LEFT to the corner of the square.
+    for (let i = sideLength; i > 0; i--) {
+      position = findAdjacent(position, TOP_LEFT);
+      console.log("moved TOP_LEFT");
+      room.createConstructionSite(position, STRUCTURE_EXTENSION);
     }
 
     //move right until done with top
@@ -190,7 +199,7 @@ function AddExtensionsToRoom(room, position) {
         position = findAdjacent(position, RIGHT);
       }
       console.log("moved RIGHT");
-      addExtensionsToDiagonals(room, position);
+      room.createConstructionSite(position, STRUCTURE_EXTENSION);
     }
 
     //move down until done with right side.
@@ -199,7 +208,7 @@ function AddExtensionsToRoom(room, position) {
         position = findAdjacent(position, BOTTOM);
       }
       console.log("moved BOTTOM");
-      addExtensionsToDiagonals(room, position);
+      room.createConstructionSite(position, STRUCTURE_EXTENSION);
     }
 
     //move left until done with bottom.
@@ -208,10 +217,17 @@ function AddExtensionsToRoom(room, position) {
         position = findAdjacent(position, LEFT);
       }
       console.log("moved LEFT");
-      addExtensionsToDiagonals(room, position);
+      room.createConstructionSite(position, STRUCTURE_EXTENSION);
     }
 
-    sideLength++;
+    //move up until done with left side.
+    for (let i = sideLength; i > 0; i--) {
+      for (let i = 0; i < STEPS; i++) {
+        position = findAdjacent(position, TOP);
+      }
+      console.log("moved TOP");
+      room.createConstructionSite(position, STRUCTURE_EXTENSION);
+    }
   }
 }
 
@@ -224,5 +240,5 @@ module.exports = {
   getCorners,
   countExtensions,
   addExtensionsToDiagonals,
-  AddExtensionsToRoom
+  addExtensionsToRoom
 };
