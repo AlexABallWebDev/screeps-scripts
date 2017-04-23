@@ -69,7 +69,7 @@ module.exports.loop = function() {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (sourceIdMissingMiner) {
       roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
-    } else if (_.size(creepsOfRole.courier) < 2) {
+    } else if (_.size(creepsOfRole.courier) < 3) {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (_.size(creepsOfRole.upgrader) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
