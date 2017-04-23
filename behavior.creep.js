@@ -22,10 +22,13 @@ function dropOffEnergyAtClosestStructure(creep) {
     filter: (structure) => {
       return (structure.structureType == STRUCTURE_EXTENSION ||
           structure.structureType == STRUCTURE_SPAWN ||
-          structure.structureType == STRUCTURE_TOWER) &&
-        structure.energy < structure.energyCapacity;
+          structure.structureType == STRUCTURE_TOWER ||
+          structure.structureType == STRUCTURE_CONTAINER) &&
+        structure.energy < structure.energyCapacity ||
+        (structure.store && structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
     }
   });
+  console.log(JSON.stringify(targets));
   if (targets.length > 0) {
     if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(targets[0], {
@@ -88,17 +91,35 @@ retrieve energy from spawn.
 @param {Creep} creep
 */
 function retrieveEnergyForUpgrading(creep) {
-  let energyStorages = creep.room.find(FIND_MY_STRUCTURES, {
-    filter: {
-      structureType: STRUCTURE_SPAWN
+  //check for upContainer first
+  let upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
+  let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
+    upContainerFlagPos.x,
+    upContainerFlagPos.y);
+
+  if (lookResults.length) {
+    let upContainer = lookResults[0];
+    if (creep.withdraw(upContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(upContainer, {
+        visualizePathStyle: {
+          stroke: '#ffaa00'
+        }
+      });
     }
-  });
-  if (creep.withdraw(energyStorages[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-    creep.moveTo(energyStorages[0], {
-      visualizePathStyle: {
-        stroke: '#ffaa00'
+  } else {
+    //if not found, check for spawn and retrieve from there.
+    let spawns = creep.room.find(FIND_MY_STRUCTURES, {
+      filter: {
+        structureType: STRUCTURE_SPAWN
       }
     });
+    if (creep.withdraw(spawns[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(spawns[0], {
+        visualizePathStyle: {
+          stroke: '#ffaa00'
+        }
+      });
+    }
   }
 }
 
