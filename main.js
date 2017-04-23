@@ -73,7 +73,7 @@ module.exports.loop = function() {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
     } else if (_.size(creepsOfRole.builder) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
-    } else if (_.size(creepsOfRole.upgrader) < 2) {
+    } else if (_.size(creepsOfRole.upgrader) < 1) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
     }
 
