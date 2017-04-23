@@ -36,18 +36,7 @@ const roleBuilder = {
         creepBehavior.upgradeRoomController(creep);
       }
     } else {
-      let energyStorages = creep.room.find(FIND_MY_STRUCTURES, {
-        filter: {
-          structureType: STRUCTURE_SPAWN
-        }
-      });
-      if (creep.withdraw(energyStorages[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(energyStorages[0], {
-          visualizePathStyle: {
-            stroke: '#ffaa00'
-          }
-        });
-      }
+      creepBehavior.retrieveEnergyForUpgrading(creep);
     }
   }
 };

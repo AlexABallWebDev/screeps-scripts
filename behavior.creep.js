@@ -82,9 +82,30 @@ function upgradeRoomController(creep) {
   }
 }
 
+/**
+Retrieve energy from an upgrader container. If one is not found,
+retrieve energy from spawn.
+@param {Creep} creep
+*/
+function retrieveEnergyForUpgrading(creep) {
+  let energyStorages = creep.room.find(FIND_MY_STRUCTURES, {
+    filter: {
+      structureType: STRUCTURE_SPAWN
+    }
+  });
+  if (creep.withdraw(energyStorages[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(energyStorages[0], {
+      visualizePathStyle: {
+        stroke: '#ffaa00'
+      }
+    });
+  }
+}
+
 module.exports = {
   gatherFromClosestSource,
   dropOffEnergyAtClosestStructure,
   pickupBiggestEnergyPile,
-  upgradeRoomController
+  upgradeRoomController,
+  retrieveEnergyForUpgrading
 };
