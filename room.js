@@ -116,5 +116,6 @@ module.exports = {
   findSourceIdMissingMiner,
   buildMiner,
   placeUpgraderContainer,
-  addExtensionsToDiagonals
+  addExtensionsToDiagonals,
+  findDiagonal
 };
