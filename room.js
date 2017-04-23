@@ -78,17 +78,14 @@ the given position.
 @param {RoomPosition} position
 */
 function addExtensionsToDiagonals(room, position) {
-  //find corners
-  let corners = [];
-  corners.push(findDiagonal(position, TOP_LEFT));
-  corners.push(findDiagonal(position, TOP_RIGHT));
-  corners.push(findDiagonal(position, BOTTOM_RIGHT));
-  corners.push(findDiagonal(position, BOTTOM_LEFT));
+  let corners = getCorners(position);
 
   //build on corners
   corners.forEach((corner) => {
     room.createConstructionSite(corner, STRUCTURE_EXTENSION);
   });
+
+  return corners;
 }
 
 /**
@@ -111,11 +108,62 @@ function findDiagonal(position, direction) {
   }
 }
 
+/**
+Finds the squares diagonal to the given position and returns them in an array.
+Returned in order of TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT.
+@param {RoomPosition} position
+*/
+function getCorners(position) {
+  let corners = [];
+  corners.push(findDiagonal(position, TOP_LEFT));
+  corners.push(findDiagonal(position, TOP_RIGHT));
+  corners.push(findDiagonal(position, BOTTOM_RIGHT));
+  corners.push(findDiagonal(position, BOTTOM_LEFT));
+
+  return corners;
+}
+
+/**
+Returns the number of extensions and extension construction sites
+in the room.
+@param {Room} room
+*/
+function countExtensions(room) {
+  let extensions = room.find(FIND_MY_STRUCTURES, {
+    filter: {
+      structureType: STRUCTURE_EXTENSION
+    }
+  });
+
+  let extensionConstructionSites = room.find(FIND_MY_CONSTRUCTION_SITES, {
+    filter: {
+      structureType: STRUCTURE_EXTENSION
+    }
+  });
+
+  return _.size(extensions.concat(extensionConstructionSites));
+}
+
+/**
+Places extension construction sites around the given corners until the
+maximum number of extensions have been placed in the given room.
+@param {Room} room
+*/
+function recursivelyAddExtensionsToDiagonals(room, corners) {
+  let maxExtensions = CONTROLLER_STRUCTURES.extension[room.controller.level];
+  if (countExtensions(room) < maxExtensions) {
+    //console.log("we need more extensions!");
+  }
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
   buildMiner,
   placeUpgraderContainer,
   addExtensionsToDiagonals,
-  findDiagonal
+  findDiagonal,
+  getCorners,
+  countExtensions,
+  recursivelyAddExtensionsToDiagonals
 };

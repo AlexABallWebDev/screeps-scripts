@@ -84,5 +84,6 @@ module.exports.loop = function() {
     }
 
     roomFunctions.addExtensionsToDiagonals(room, spawn.pos);
+    roomFunctions.recursivelyAddExtensionsToDiagonals(room, [spawn.pos]);
   }
 };
