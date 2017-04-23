@@ -23,7 +23,7 @@ Check if a source is missing a miner.
 */
 function findSourceIdMissingMiner(room) {
   let result = 0;
-  
+
   _.forEach(room.memory.sourceAssignments, (creepName, sourceId) => {
     if (!Game.creeps[creepName]) {
       result = sourceId;
@@ -54,8 +54,26 @@ function buildMiner(room, sourceId, spawn) {
   }
 }
 
+/**
+Locates an open position for a container that a creep can move on that
+is adjacent to the given room's controller, marks it with a flag, and
+creates a constructionSite for the container.
+@param {Room} room
+@param {RoomPosition} startPosition
+*/
+function placeUpgraderContainer(room, startPosition) {
+  let steps = startPosition.findPathTo(room.controller.pos);
+  let lastStep = steps[steps.length - 2];
+  let flagName = room.name + " upContainer";
+
+  room.createFlag(lastStep.x, lastStep.y, flagName, COLOR_PURPLE);
+  Memory.flags[flagName] = Game.flags[flagName].pos;
+  room.createConstructionSite(lastStep.x, lastStep.y, STRUCTURE_CONTAINER);
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
-  buildMiner
+  buildMiner,
+  placeUpgraderContainer
 };

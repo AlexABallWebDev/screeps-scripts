@@ -71,12 +71,16 @@ module.exports.loop = function() {
       roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
     } else if (_.size(creepsOfRole.courier) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'courier');
-    } else if (_.size(creepsOfRole.upgrader) < 1) {
+    } else if (_.size(creepsOfRole.upgrader) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'upgrader');
-    } else if (_.size(creepsOfRole.builder) < 1) {
+    } else if (_.size(creepsOfRole.builder) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
     }
 
     spawnFunctions.displayCreateCreepVisual(spawn);
+
+    if (!Memory.flags[room.name + " upContainer"]) {
+      roomFunctions.placeUpgraderContainer(room, spawn.pos);
+    }
   }
 };
