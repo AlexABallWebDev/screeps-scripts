@@ -83,7 +83,7 @@ module.exports.loop = function() {
       roomFunctions.placeUpgraderContainer(room, spawn.pos);
     }
 
-    roomFunctions.addExtensionsToDiagonals(room, spawn.pos);
-    roomFunctions.recursivelyAddExtensionsToDiagonals(room, [spawn.pos]);
+    // roomFunctions.AddExtensionsToRoom(room, spawn.pos);
+    console.log(JSON.stringify(Game.cpu.getUsed()));
   }
 };

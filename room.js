@@ -72,37 +72,28 @@ function placeUpgraderContainer(room, startPosition) {
 }
 
 /**
-Places construction sites for extensions on the squares diagonal to
-the given position.
-@param {Room} room
-@param {RoomPosition} position
-*/
-function addExtensionsToDiagonals(room, position) {
-  let corners = getCorners(position);
-
-  //build on corners
-  corners.forEach((corner) => {
-    room.createConstructionSite(corner, STRUCTURE_EXTENSION);
-  });
-
-  return corners;
-}
-
-/**
-Find the corner position for the given position and direction
+Find an adjacent position for the given position and direction
 @param {Room} room
 @param {number} direction
 */
-function findDiagonal(position, direction) {
+function findAdjacent(position, direction) {
   switch (direction) {
-    case TOP_LEFT:
-      return new RoomPosition(position.x - 1, position.y - 1, position.roomName);
+    case TOP:
+      return new RoomPosition(position.x, position.y - 1, position.roomName);
     case TOP_RIGHT:
       return new RoomPosition(position.x + 1, position.y - 1, position.roomName);
+    case RIGHT:
+      return new RoomPosition(position.x + 1, position.y, position.roomName);
     case BOTTOM_RIGHT:
       return new RoomPosition(position.x + 1, position.y + 1, position.roomName);
+    case BOTTOM:
+      return new RoomPosition(position.x, position.y + 1, position.roomName);
     case BOTTOM_LEFT:
       return new RoomPosition(position.x - 1, position.y + 1, position.roomName);
+    case LEFT:
+      return new RoomPosition(position.x - 1, position.y, position.roomName);
+    case TOP_LEFT:
+      return new RoomPosition(position.x - 1, position.y - 1, position.roomName);
     default:
       return 0;
   }
@@ -115,10 +106,10 @@ Returned in order of TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT.
 */
 function getCorners(position) {
   let corners = [];
-  corners.push(findDiagonal(position, TOP_LEFT));
-  corners.push(findDiagonal(position, TOP_RIGHT));
-  corners.push(findDiagonal(position, BOTTOM_RIGHT));
-  corners.push(findDiagonal(position, BOTTOM_LEFT));
+  corners.push(findAdjacent(position, TOP_LEFT));
+  corners.push(findAdjacent(position, TOP_RIGHT));
+  corners.push(findAdjacent(position, BOTTOM_RIGHT));
+  corners.push(findAdjacent(position, BOTTOM_LEFT));
 
   return corners;
 }
@@ -145,14 +136,82 @@ function countExtensions(room) {
 }
 
 /**
+Places construction sites for extensions on the squares diagonal to
+the given position.
+@param {Room} room
+@param {RoomPosition} position
+*/
+function addExtensionsToDiagonals(room, position) {
+  let corners = getCorners(position);
+
+  console.log("Adding extensions at diagonals of location: " + JSON.stringify(position));
+
+  //build on corners
+  corners.forEach((corner) => {
+    room.createConstructionSite(corner, STRUCTURE_EXTENSION);
+  });
+
+  return corners;
+}
+
+/**
 Places extension construction sites around the given corners until the
 maximum number of extensions have been placed in the given room.
 @param {Room} room
 */
-function recursivelyAddExtensionsToDiagonals(room, corners) {
+function AddExtensionsToRoom(room, position) {
   let maxExtensions = CONTROLLER_STRUCTURES.extension[room.controller.level];
+
+  //skip every other square so creeps have room to move.
+  const STEPS = 2;
+  let sideLength = 1;
+
   if (countExtensions(room) < maxExtensions) {
-    //console.log("we need more extensions!");
+
+    addExtensionsToDiagonals(room, position);
+
+    //start by moving diagonally upleft
+    position = findAdjacent(position, TOP_LEFT);
+    console.log("moved TOP_LEFT");
+    addExtensionsToDiagonals(room, position);
+
+    //move up until done with left side - 1.
+    for (let i = sideLength - 1; i > 0; i--) {
+      for (let i = 0; i < STEPS; i++) {
+        position = findAdjacent(position, TOP);
+      }
+      console.log("moved TOP");
+      addExtensionsToDiagonals(room, position);
+    }
+
+    //move right until done with top
+    for (let i = sideLength; i > 0; i--) {
+      for (let i = 0; i < STEPS; i++) {
+        position = findAdjacent(position, RIGHT);
+      }
+      console.log("moved RIGHT");
+      addExtensionsToDiagonals(room, position);
+    }
+
+    //move down until done with right side.
+    for (let i = sideLength; i > 0; i--) {
+      for (let i = 0; i < STEPS; i++) {
+        position = findAdjacent(position, BOTTOM);
+      }
+      console.log("moved BOTTOM");
+      addExtensionsToDiagonals(room, position);
+    }
+
+    //move left until done with bottom.
+    for (let i = sideLength; i > 0; i--) {
+      for (let i = 0; i < STEPS; i++) {
+        position = findAdjacent(position, LEFT);
+      }
+      console.log("moved LEFT");
+      addExtensionsToDiagonals(room, position);
+    }
+
+    sideLength++;
   }
 }
 
@@ -161,9 +220,9 @@ module.exports = {
   findSourceIdMissingMiner,
   buildMiner,
   placeUpgraderContainer,
-  addExtensionsToDiagonals,
-  findDiagonal,
+  findAdjacent,
   getCorners,
   countExtensions,
-  recursivelyAddExtensionsToDiagonals
+  addExtensionsToDiagonals,
+  AddExtensionsToRoom
 };
