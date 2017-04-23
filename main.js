@@ -66,11 +66,15 @@ module.exports.loop = function() {
     if (_.size(Game.creeps) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'harvester');
     } else if (_.size(creepsOfRole.courier) < 1) {
-      spawnFunctions.createCreepWithRole(spawn, 'courier');
+      spawn.createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], undefined, {
+        role: "courier"
+      });
     } else if (sourceIdMissingMiner) {
       roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
-    } else if (_.size(creepsOfRole.courier) < 4) {
-      spawnFunctions.createCreepWithRole(spawn, 'courier');
+    } else if (_.size(creepsOfRole.courier) < 3) {
+      spawn.createCreep([CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], undefined, {
+        role: "courier"
+      });
     } else if (_.size(creepsOfRole.builder) < 2) {
       spawnFunctions.createCreepWithRole(spawn, 'builder');
     } else if (_.size(creepsOfRole.upgrader) < 1) {
