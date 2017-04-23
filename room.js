@@ -171,6 +171,33 @@ function checkExtensionLayer(extensionCount) {
 }
 
 /**
+Places construction sites in a line, starting at position, placing
+numberOfConstructionSites sites of type structureType spaced dotLength apart.
+dotLength is optional and defaults to 0.
+Returns the position of the last constructionSite placed.
+@param {RoomPosition} position
+@param {number} direction
+@param {number} structureType
+@param {number} numberOfConstructionSites
+@param {number} dotLength = 0
+*/
+function placeConstructionSitesInALine(position, direction, structureType,
+  numberOfConstructionSites,
+  dotLength = 0) {
+  let positionOfLastConstructionSite = position;
+
+  for (let i = numberOfConstructionSites; i > 0; i--) {
+    Game.rooms[position.roomName].createConstructionSite(position, structureType);
+    positionOfLastConstructionSite = position;
+    for (let i = 0; i < dotLength + 1; i++) {
+      position = findAdjacent(position, direction);
+    }
+  }
+
+  return positionOfLastConstructionSite;
+}
+
+/**
 Places extension construction sites around the given corners until the
 maximum number of extensions have been placed in the given room.
 @param {Room} room
@@ -179,55 +206,24 @@ function addExtensionsToRoom(room, position) {
   let maxExtensions = CONTROLLER_STRUCTURES.extension[room.controller.level];
 
   //skip every other square so creeps have room to move.
-  const STEPS = 2;
+  const DOT_LENGTH = 1;
   let extensionCount = countExtensions(room);
 
   if (extensionCount < maxExtensions) {
     let layer = checkExtensionLayer(extensionCount);
-    let sideLength = layer - 1;
 
     //start by moving diagonally TOP_LEFT to the corner of the square.
-    for (let i = sideLength; i > 0; i--) {
+    for (let i = layer - 1; i > 0; i--) {
       position = findAdjacent(position, TOP_LEFT);
-      console.log("moved TOP_LEFT");
-      room.createConstructionSite(position, STRUCTURE_EXTENSION);
     }
 
-    //move right until done with top
-    for (let i = sideLength; i > 0; i--) {
-      for (let i = 0; i < STEPS; i++) {
-        position = findAdjacent(position, RIGHT);
-      }
-      console.log("moved RIGHT");
-      room.createConstructionSite(position, STRUCTURE_EXTENSION);
-    }
-
-    //move down until done with right side.
-    for (let i = sideLength; i > 0; i--) {
-      for (let i = 0; i < STEPS; i++) {
-        position = findAdjacent(position, BOTTOM);
-      }
-      console.log("moved BOTTOM");
-      room.createConstructionSite(position, STRUCTURE_EXTENSION);
-    }
-
-    //move left until done with bottom.
-    for (let i = sideLength; i > 0; i--) {
-      for (let i = 0; i < STEPS; i++) {
-        position = findAdjacent(position, LEFT);
-      }
-      console.log("moved LEFT");
-      room.createConstructionSite(position, STRUCTURE_EXTENSION);
-    }
-
-    //move up until done with left side.
-    for (let i = sideLength; i > 0; i--) {
-      for (let i = 0; i < STEPS; i++) {
-        position = findAdjacent(position, TOP);
-      }
-      console.log("moved TOP");
-      room.createConstructionSite(position, STRUCTURE_EXTENSION);
-    }
+    //then place the sides of the square. Traces from top left, to top right,
+    //to bottom right, to bottom left, finally back to top left.
+    _.forEach([RIGHT, BOTTOM, LEFT, TOP], (direction) => {
+      position = placeConstructionSitesInALine(position, direction, STRUCTURE_EXTENSION,
+        layer,
+        DOT_LENGTH);
+    });
   }
 }
 
@@ -240,5 +236,7 @@ module.exports = {
   getCorners,
   countExtensions,
   addExtensionsToDiagonals,
+  checkExtensionLayer,
+  placeConstructionSitesInALine,
   addExtensionsToRoom
 };
