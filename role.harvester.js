@@ -7,7 +7,7 @@ const roleHarvester = {
     if (creep.carry.energy < creep.carryCapacity) {
       creepBehavior.gatherFromClosestSource(creep);
     } else {
-      creepBehavior.dropOffEnergyAtClosestStructure(creep);
+      creepBehavior.dropOffEnergyAtNearbyStructure(creep);
     }
   }
 };

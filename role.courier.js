@@ -7,7 +7,7 @@ const roleCourier = {
     if (creep.carry.energy < creep.carryCapacity) {
       creepBehavior.pickupBiggestEnergyPile(creep);
     } else {
-      creepBehavior.dropOffEnergyAtClosestStructure(creep);
+      creepBehavior.dropOffEnergyAtNearbyStructure(creep);
     }
   }
 };

@@ -14,10 +14,10 @@ function gatherFromClosestSource(creep) {
 }
 
 /**
-Drop off energy at the closest structure that is not full of energy.
+Drop off energy at a structure that is not full of energy. Prioritizes spawns.
 @param {Creep} creep
 */
-function dropOffEnergyAtClosestStructure(creep) {
+function dropOffEnergyAtNearbyStructure(creep) {
   let targets = creep.room.find(FIND_STRUCTURES, {
     filter: (structure) => {
       return (structure.structureType == STRUCTURE_EXTENSION ||
@@ -30,8 +30,14 @@ function dropOffEnergyAtClosestStructure(creep) {
   });
 
   if (targets.length > 0) {
-    if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(targets[0], {
+    let target = targets[0];
+    for (let i = 1; i < targets.length; i++) {
+      if (targets[i].structureType == STRUCTURE_SPAWN) {
+        target = targets[i];
+      }
+    }
+    if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(target, {
         visualizePathStyle: {
           stroke: '#ffffff'
         }
@@ -125,7 +131,7 @@ function retrieveEnergyForUpgrading(creep) {
 
 module.exports = {
   gatherFromClosestSource,
-  dropOffEnergyAtClosestStructure,
+  dropOffEnergyAtNearbyStructure,
   pickupBiggestEnergyPile,
   upgradeRoomController,
   retrieveEnergyForUpgrading
