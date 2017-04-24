@@ -62,9 +62,9 @@ module.exports.loop = function() {
 
     const CREEP_BODY = {
       harvester: [WORK, CARRY, MOVE],
-      courier: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE],
+      courier: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY],
       miner: [WORK, WORK, MOVE, WORK, WORK, MOVE, WORK],
-      builder: [WORK, WORK, CARRY, MOVE, CARRY, WORK, MOVE],
+      builder: [WORK, WORK, CARRY, MOVE, CARRY, MOVE, WORK],
       upgrader: [WORK, WORK, CARRY, MOVE, WORK, WORK]
     };
 
