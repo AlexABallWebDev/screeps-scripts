@@ -99,7 +99,7 @@ retrieve energy from spawn.
 */
 function retrieveEnergyForUpgrading(creep) {
   let upContainer = getUpContainer(creep);
-  if (getUpContainer) {
+  if (upContainer) {
     if (creep.withdraw(upContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(upContainer, {
         visualizePathStyle: {
