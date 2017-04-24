@@ -46,7 +46,6 @@ module.exports.loop = function() {
     }
   }
 
-  let spawn = Game.spawns.Spawn1;
   for (let roomName in Game.rooms) {
     let room = Game.rooms[roomName];
 
@@ -64,21 +63,17 @@ module.exports.loop = function() {
     let sourceIdMissingMiner = roomFunctions.findSourceIdMissingMiner(room);
 
     if (_.size(Game.creeps) < 2) {
-      spawnFunctions.createCreepWithRole(spawn, 'harvester');
+      spawnFunctions.createCreepWithRole(spawn, "harvester", [WORK, CARRY, MOVE]);
     } else if (_.size(creepsOfRole.courier) < 1) {
-      spawn.createCreep([CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], undefined, {
-        role: "courier"
-      });
+      spawnFunctions.createCreepWithRole(spawn, "courier", [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]);
     } else if (sourceIdMissingMiner) {
-      roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn);
+      roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn, [WORK, WORK, MOVE]);
     } else if (_.size(creepsOfRole.courier) < 3) {
-      spawn.createCreep([CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], undefined, {
-        role: "courier"
-      });
+      spawnFunctions.createCreepWithRole(spawn, "courier", [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]);
     } else if (_.size(creepsOfRole.builder) < 2) {
-      spawnFunctions.createCreepWithRole(spawn, 'builder');
+      spawnFunctions.createCreepWithRole(spawn, "builder", [WORK, WORK, CARRY, MOVE]);
     } else if (_.size(creepsOfRole.upgrader) < 1) {
-      spawnFunctions.createCreepWithRole(spawn, 'upgrader');
+      spawnFunctions.createCreepWithRole(spawn, "upgrader", [WORK, WORK, CARRY, MOVE]);
     }
 
     spawnFunctions.displayCreateCreepVisual(spawn);

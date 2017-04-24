@@ -38,19 +38,21 @@ Build a miner for the given room and sourceId.
 @param {Room} room
 @param {string} sourceId
 @param {Spawn} spawn
+@param {array} body = [WORK, WORK, CARRY, MOVE]
+@param {String} name = undefined
 */
-function buildMiner(room, sourceId, spawn) {
+function buildMiner(room, sourceId, spawn, body = undefined, name = undefined) {
   if (sourceId) {
     let newCreepName = spawnFunctions.createCreepWithMemory(spawn, {
       role: "miner",
       assignedSourceId: sourceId
-    });
+    }, body, name);
 
     if (newCreepName != ERR_NOT_ENOUGH_ENERGY && newCreepName != ERR_BUSY) {
       room.memory.sourceAssignments[sourceId] = newCreepName;
-    } else {
-      return sourceId;
     }
+
+    return newCreepName;
   }
 }
 

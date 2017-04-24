@@ -1,12 +1,14 @@
 /**
 Creates a creep with the given memory.
-Optionally, a name can be provided.
+Optionally, a body and name can be provided.
 @param {Spawn} spawn
 @param {Object} memory
+@param {array} body = [WORK, WORK, CARRY, MOVE]
 @param {string} name = undefined
 */
-function createCreepWithMemory(spawn, memory, name = undefined) {
-  name = spawn.createCreep([WORK, WORK, CARRY, MOVE], name, memory);
+function createCreepWithMemory(spawn, memory, body = [WORK, WORK, CARRY, MOVE],
+  name = undefined) {
+  name = spawn.createCreep(body, name, memory);
 
   if (name != ERR_NOT_ENOUGH_ENERGY && name != ERR_BUSY) {
     console.log('Spawning new ' + memory.role + ': ' + name);
@@ -17,15 +19,17 @@ function createCreepWithMemory(spawn, memory, name = undefined) {
 
 /**
 Creates a creep with the given role.
-Optionally, a name can be provided.
+Optionally, a body and name can be provided.
 @param {Spawn} spawn
 @param {string} role
+@param {array} body = [WORK, WORK, CARRY, MOVE]
 @param {string} name = undefined
 */
-function createCreepWithRole(spawn, role, name = undefined) {
+function createCreepWithRole(spawn, role, body = [WORK, WORK, CARRY, MOVE],
+  name = undefined) {
   return createCreepWithMemory(spawn, {
     role: role
-  }, name);
+  }, body, name);
 }
 
 /**
