@@ -131,13 +131,15 @@ returns 0.
 */
 function getUpContainer(creep) {
   let upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
-  let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
-    upContainerFlagPos.x,
-    upContainerFlagPos.y);
+  if (upContainerFlagPos) {
+    let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
+      upContainerFlagPos.x,
+      upContainerFlagPos.y);
 
-  if (lookResults.length) {
-    let upContainer = lookResults[0];
-    return upContainer;
+    if (lookResults.length) {
+      let upContainer = lookResults[0];
+      return upContainer;
+    }
   }
 
   return 0;
