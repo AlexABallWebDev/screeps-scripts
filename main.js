@@ -31,6 +31,7 @@ const FUNCTIONS = require('functions');
 module.exports.loop = function() {
   FUNCTIONS.respawn();
   FUNCTIONS.clearDeadCreepMemory();
+  FUNCTIONS.clearMissingFlagMemory();
 
   let creepsOfRole = {};
 

@@ -16,6 +16,18 @@ function clearDeadCreepMemory() {
 }
 
 /**
+Clears memory of flags that are not currently in Game.flags.
+*/
+function clearMissingFlagMemory() {
+  for (let name in Memory.flags) {
+    if (!Game.flags[name]) {
+      delete Memory.flags[name];
+      console.log('Clearing non-existing flag memory:', name);
+    }
+  }
+}
+
+/**
 Saves a message to memory so that I can see it after returning
 to the game.
 @param {string} message
@@ -72,6 +84,7 @@ function checkForLevelUp(room) {
 
 module.exports = {
   clearDeadCreepMemory,
+  clearMissingFlagMemory,
   saveMessage,
   respawn,
   checkForLevelUp
