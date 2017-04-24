@@ -66,20 +66,9 @@ function checkForLevelUp(room) {
   }
 }
 
-/**
-Calculates the cost of a given body.
-@param {array} body
-*/
-function bodyCost(body) {
-  return body.reduce(function(cost, part) {
-    return cost + BODYPART_COST[part];
-  }, 0);
-}
-
 module.exports = {
   clearDeadCreepMemory,
   saveMessage,
   respawn,
-  checkForLevelUp,
-  bodyCost
+  checkForLevelUp
 };
