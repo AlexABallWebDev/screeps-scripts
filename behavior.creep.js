@@ -135,11 +135,13 @@ function getUpContainer(creep) {
     let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
       upContainerFlagPos.x,
       upContainerFlagPos.y);
-    _.forEach(lookResults, (structure) => {
-      if (structure.structureType == STRUCTURE_CONTAINER) {
-        return structure;
+    if (lookResults.length) {
+      for (let i = 0; i < lookResults.length; i++) {
+        if (lookResults[i].structureType == STRUCTURE_CONTAINER) {
+          return lookResults[i];
+        }
       }
-    });
+    }
   }
 
   return 0;
