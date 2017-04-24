@@ -40,6 +40,10 @@ function respawn() {
       Memory.startTime = Game.time;
 
       Memory.myMessages = [];
+      Memory.creeps = {};
+      Memory.flags = {};
+      Memory.rooms = {};
+      Memory.spawns = {};
 
       saveMessage("Respawn complete. Welcome back, commander.");
     }
