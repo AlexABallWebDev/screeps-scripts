@@ -20,7 +20,7 @@ function trimExtraParts(room, body) {
   if (cost > room.energyCapacityAvailable) {
     let trimmedBody = [];
     let newCost = 0;
-    for(let i = 0; i < body.length; i++) {
+    for (let i = 0; i < body.length; i++) {
       if (newCost + BODYPART_COST[body[i]] > room.energyCapacityAvailable) {
         return trimmedBody;
       }
@@ -41,11 +41,12 @@ Optionally, a body and name can be provided.
 @param {array} body = [WORK, WORK, CARRY, MOVE]
 @param {string} name = undefined
 */
-function createCreepWithMemory(spawn, memory, body = [WORK, WORK, CARRY, MOVE],
+function createCreepWithMemory(spawn, memory, body = [WORK, CARRY, MOVE, MOVE],
   name = undefined) {
   let trimmedBody = trimExtraParts(spawn.room, body);
-  
-  name = spawn.createCreep(trimmedBody, name, memory);
+  let sortedBody = sortBody(trimmedBody);
+
+  name = spawn.createCreep(sortedBody, name, memory);
 
   if (name != ERR_NOT_ENOUGH_ENERGY && name != ERR_BUSY) {
     console.log('Spawning new ' + memory.role + ': ' + name);
@@ -86,10 +87,42 @@ function displayCreateCreepVisual(spawn) {
   }
 }
 
+/**
+Sorts a body and returns the sorted body.
+Default priorities:
+[TOUGH]: 0,
+[WORK]: 1,
+[MOVE]: 2,
+[CARRY]: 3,
+[CLAIM]: 4,
+[HEAL]: 5,
+[RANGED_ATTACK]: 6,
+[ATTACK]: 7
+@param {array} body
+@param {Object} priorities = default priorities
+*/
+function sortBody(body, priorities = {
+  [TOUGH]: 0,
+  [WORK]: 1,
+  [MOVE]: 2,
+  [CARRY]: 3,
+  [CLAIM]: 4,
+  [HEAL]: 5,
+  [RANGED_ATTACK]: 6,
+  [ATTACK]: 7
+}) {
+  let sortedBody = _.sortBy(body, function(part) {
+    return priorities[part];
+  });
+
+  return sortedBody;
+}
+
 module.exports = {
   bodyCost,
   trimExtraParts,
   createCreepWithMemory,
   createCreepWithRole,
-  displayCreateCreepVisual
+  displayCreateCreepVisual,
+  sortBody
 };
