@@ -48,10 +48,10 @@ function dropOffEnergyAtNearbyStructure(creep) {
 }
 
 /**
-Find the biggest dropped pile of energy in the room and pick it up.
+Find the biggest dropped pile of energy in the room and return it.
 @param {Creep} creep
 */
-function pickupBiggestEnergyPile(creep) {
+function findBiggestResourcePile(creep) {
   let droppedResources = creep.room.find(FIND_DROPPED_RESOURCES, {
     filter: {
       resourceType: RESOURCE_ENERGY
@@ -67,6 +67,18 @@ function pickupBiggestEnergyPile(creep) {
         }
       }
     }
+
+    return biggestResource;
+  }
+}
+
+/**
+Find the biggest dropped pile of energy in the room and pick it up.
+@param {Creep} creep
+*/
+function pickupBiggestEnergyPile(creep) {
+  let biggestResource = findBiggestResourcePile(creep);
+  if (biggestResource) {
     if (creep.pickup(biggestResource) == ERR_NOT_IN_RANGE) {
       creep.moveTo(biggestResource, {
         visualizePathStyle: {
@@ -162,6 +174,7 @@ function repairUpContainer(creep) {
 module.exports = {
   gatherFromClosestSource,
   dropOffEnergyAtNearbyStructure,
+  findBiggestResourcePile,
   pickupBiggestEnergyPile,
   upgradeRoomController,
   retrieveEnergyForUpgrading,
