@@ -3,7 +3,7 @@ Gather from the nearest active source.
 @param {Creep} creep
 */
 function gatherFromClosestSource(creep) {
-  let source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+  let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
   if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
     creep.moveTo(source, {
       visualizePathStyle: {
