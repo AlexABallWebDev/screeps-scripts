@@ -61,11 +61,19 @@ module.exports.loop = function() {
     let spawn = spawns[0];
 
     const CREEP_BODY = {
-      harvester: [WORK, CARRY, MOVE],
-      courier: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY],
+      harvester: [CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK,
+        CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK
+      ],
+      courier: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, MOVE, CARRY,
+        MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY
+      ],
       miner: [WORK, WORK, MOVE, WORK, WORK, MOVE, WORK],
-      builder: [WORK, WORK, CARRY, MOVE, CARRY, MOVE, WORK],
-      upgrader: [WORK, WORK, CARRY, MOVE, WORK, WORK]
+      builder: [WORK, WORK, CARRY, MOVE, MOVE, MOVE, CARRY, WORK, MOVE, CARRY,
+        WORK, MOVE, CARRY, WORK, MOVE, CARRY, WORK, MOVE, CARRY, WORK, MOVE, CARRY, WORK
+      ],
+      upgrader: [WORK, WORK, CARRY, MOVE, WORK, WORK, MOVE, WORK, WORK,
+        MOVE, WORK, WORK, MOVE, WORK, WORK, MOVE, WORK, WORK, MOVE, WORK, WORK, MOVE
+      ]
     };
 
     roomFunctions.checkForSources(room);
