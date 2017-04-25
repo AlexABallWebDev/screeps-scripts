@@ -27,13 +27,13 @@ const roles = {
 };
 
 /**Diagnostic and utility functions*/
-const FUNCTIONS = require('functions');
+const utilityFunctions = require('functions');
 
 //Begin main loop.
 module.exports.loop = function() {
-  FUNCTIONS.respawn();
-  FUNCTIONS.clearDeadCreepMemory();
-  FUNCTIONS.clearMissingFlagMemory();
+  utilityFunctions.respawn();
+  utilityFunctions.clearDeadCreepMemory();
+  utilityFunctions.clearMissingFlagMemory();
 
   let creepsOfRole = {};
 
@@ -52,7 +52,7 @@ module.exports.loop = function() {
   for (let roomName in Game.rooms) {
     let room = Game.rooms[roomName];
 
-    FUNCTIONS.checkForLevelUp(room);
+    utilityFunctions.checkForLevelUp(room);
 
     let spawns = room.find(FIND_MY_STRUCTURES, {
       filter: {
