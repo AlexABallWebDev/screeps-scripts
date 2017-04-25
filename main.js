@@ -64,9 +64,7 @@ module.exports.loop = function() {
 
     const CREEP_BODY = {
       defender: [ATTACK, ATTACK, MOVE, MOVE, ATTACK, ATTACK, MOVE, MOVE],
-      harvester: [CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK,
-        CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK
-      ],
+      harvester: [WORK, MOVE, CARRY, MOVE],
       courier: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, MOVE, CARRY,
         MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY
       ],
