@@ -10,6 +10,7 @@ require('tower').runTowerLogic();
 const spawnFunctions = require('spawn');
 const roomFunctions = require('room');
 
+const roleDefender = require("role.defender");
 const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
@@ -17,6 +18,7 @@ const roleMiner = require('role.miner');
 const roleCourier = require('role.courier');
 
 const roles = {
+  defender: roleDefender,
   harvester: roleHarvester,
   upgrader: roleUpgrader,
   builder: roleBuilder,
@@ -61,6 +63,7 @@ module.exports.loop = function() {
     let spawn = spawns[0];
 
     const CREEP_BODY = {
+      defender: [ATTACK, ATTACK, MOVE, MOVE, ATTACK, ATTACK, MOVE, MOVE],
       harvester: [CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK,
         CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK
       ],
@@ -79,7 +82,9 @@ module.exports.loop = function() {
     roomFunctions.checkForSources(room);
     let sourceIdMissingMiner = roomFunctions.findSourceIdMissingMiner(room);
 
-    if (_.size(Game.creeps) < 2) {
+    if (_.size(room.find(FIND_HOSTILE_CREEPS)) > 0 && _.size(creepsOfRole.defender) < 2) {
+      spawnFunctions.createCreepWithRole(spawn, "defender", CREEP_BODY.defender);
+    } else if (_.size(Game.creeps) < 2) {
       spawnFunctions.createCreepWithRole(spawn, "harvester", CREEP_BODY.harvester);
     } else if (_.size(creepsOfRole.courier) < 1) {
       spawnFunctions.createCreepWithRole(spawn, "courier", CREEP_BODY.courier);
