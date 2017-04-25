@@ -98,6 +98,7 @@ Default priorities:
 [HEAL]: 5,
 [RANGED_ATTACK]: 6,
 [ATTACK]: 7
+drivingMove: 8
 @param {array} body
 @param {Object} priorities = default priorities
 */
@@ -109,9 +110,17 @@ function sortBody(body, priorities = {
   [CLAIM]: 4,
   [HEAL]: 5,
   [RANGED_ATTACK]: 6,
-  [ATTACK]: 7
+  [ATTACK]: 7,
+  drivingMove: 8
 }) {
+  let drivingMovePartSet = false;
+
   let sortedBody = _.sortBy(body, function(part) {
+    //put one move part at the end so the creep can always move
+    if (!drivingMovePartSet && part == MOVE) {
+      drivingMovePartSet = true;
+      return priorities.drivingMove;
+    }
     return priorities[part];
   });
 
