@@ -182,6 +182,25 @@ function repairUpContainer(creep) {
   }
 }
 
+/**
+Signs the room controller with my sign.
+@param {Creep} creep
+*/
+function signRoomController(creep) {
+  let message = Memory.controllerSign;
+  if (!message) {
+    message = "";
+  }
+
+  if (creep.signController(creep.room.controller, message) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(creep.room.controller, {
+      visualizePathStyle: {
+        stroke: '#800080'
+      }
+    });
+  }
+}
+
 module.exports = {
   gatherFromClosestSource,
   dropOffEnergyAtNearbyStructure,
@@ -190,5 +209,6 @@ module.exports = {
   upgradeRoomController,
   retrieveEnergyForUpgrading,
   getUpContainer,
-  repairUpContainer
+  repairUpContainer,
+  signRoomController
 };

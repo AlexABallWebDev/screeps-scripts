@@ -57,6 +57,8 @@ function respawn() {
       Memory.rooms = {};
       Memory.spawns = {};
 
+      Memory.controllerSign = "ALL YOUR BASE ARE BELONG TO US.";
+
       saveMessage("Respawn complete. Welcome back, commander.");
     }
   } else {
