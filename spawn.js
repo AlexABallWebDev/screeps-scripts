@@ -78,7 +78,7 @@ function displayCreateCreepVisual(spawn) {
   if (spawn.spawning) {
     let spawningCreep = Game.creeps[spawn.spawning.name];
     let progressPercentage = Math.round(((spawn.spawning.needTime -
-      spawn.spawning.remainingTime) / spawn.spawning.needTime) * 100);
+      (spawn.spawning.remainingTime - 1)) / spawn.spawning.needTime) * 100);
     spawn.room.visual.text(
       '🛠️' + spawningCreep.memory.role + " " + spawningCreep.name +
       " (" + progressPercentage + "%)",
