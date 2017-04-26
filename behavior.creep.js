@@ -30,6 +30,31 @@ function findClosestSpawnOrExtension(creep) {
 }
 
 /**
+Sorts an array of targets by the given priority list (optional). isUnderAttack
+can be used to give towers higher priority during an attack.
+@param {array} targets
+@param {boolean} isUnderAttack
+@param {Object} priorities
+*/
+function sortStructureEnergyDropoffTargets(targets, isUnderAttack = false, priorities = {
+  underAttackTower: 0,
+  [STRUCTURE_SPAWN]: 1,
+  [STRUCTURE_EXTENSION]: 2,
+  [STRUCTURE_TOWER]: 3,
+  [STRUCTURE_CONTAINER]: 4
+}) {
+  let sortedTargets = _.sortBy(targets, function(target) {
+    //if under attack, prioritize towers higher than other buildings.
+    if (isUnderAttack && priorities[target.structureType] == priorities[STRUCTURE_TOWER]) {
+      return priorities[underAttackTower];
+    }
+    return priorities[target.structureType];
+  });
+
+  return sortedTargets;
+}
+
+/**
 Drop off energy at a structure that is not full of energy. Prioritizes spawns
 and extensions.
 @param {Creep} creep
@@ -47,16 +72,16 @@ function dropOffEnergyAtNearbyStructure(creep) {
   });
 
   if (targets.length > 0) {
-    let target = targets[0];
-    //prioritize spawns and extensions
-    for (let i = 1; i < targets.length; i++) {
-      //if a spawn/extension is found, target the closest one.
-      if (targets[i].structureType == STRUCTURE_SPAWN ||
-        targets[i].structureType == STRUCTURE_EXTENSION) {
-        target = findClosestSpawnOrExtension(creep);
-        break;
-      }
+    //prioritize targets with higher priorities at smaller indices
+    let sortedTargets = sortStructureEnergyDropoffTargets(targets);
+    let target = sortedTargets[0];
+
+    //if a spawn/extension is found, target the closest one.
+    if (target.structureType == STRUCTURE_SPAWN ||
+      target.structureType == STRUCTURE_EXTENSION) {
+      target = findClosestSpawnOrExtension(creep);
     }
+
     if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(target, {
         visualizePathStyle: {
@@ -224,6 +249,7 @@ function signRoomController(creep) {
 module.exports = {
   gatherFromClosestSource,
   findClosestSpawnOrExtension,
+  sortStructureEnergyDropoffTargets,
   dropOffEnergyAtNearbyStructure,
   findBiggestResourcePile,
   pickupBiggestEnergyPile,
