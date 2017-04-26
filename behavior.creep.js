@@ -118,6 +118,17 @@ function retrieveEnergyForUpgrading(creep) {
           stroke: '#ffaa00'
         }
       });
+    } else {
+      //if in range, but the upContainer pos is open, move to it.
+      let upContainerCreeps = upContainer.pos.lookFor(LOOK_CREEPS);
+      if (upContainerCreeps.length <= 0) {
+        creep.moveTo(upContainer, {
+          visualizePathStyle: {
+            stroke: '#ffaa00'
+          }
+        });
+      }
+
     }
   } else {
     //if not found, check for spawn and retrieve from there.
