@@ -77,8 +77,11 @@ Display a visual if the spawn is creating a creep.
 function displayCreateCreepVisual(spawn) {
   if (spawn.spawning) {
     let spawningCreep = Game.creeps[spawn.spawning.name];
+    let progressPercentage = Math.round(((spawn.spawning.needTime -
+      spawn.spawning.remainingTime) / spawn.spawning.needTime) * 100);
     spawn.room.visual.text(
-      '🛠️' + spawningCreep.memory.role,
+      '🛠️' + spawningCreep.memory.role + " " + spawningCreep.name +
+      " (" + progressPercentage + "%)",
       spawn.pos.x + 1,
       spawn.pos.y, {
         align: 'left',
