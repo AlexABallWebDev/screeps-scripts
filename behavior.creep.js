@@ -14,7 +14,24 @@ function gatherFromClosestSource(creep) {
 }
 
 /**
-Drop off energy at a structure that is not full of energy. Prioritizes spawns.
+Returns the closest spawn or extension to the given creep.
+@param {Creep} creep
+*/
+function findClosestSpawnOrExtension(creep) {
+  let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+    filter: (structure) => {
+      return (structure.structureType == STRUCTURE_EXTENSION ||
+          structure.structureType == STRUCTURE_SPAWN) &&
+        structure.energy < structure.energyCapacity;
+    }
+  });
+
+  return target;
+}
+
+/**
+Drop off energy at a structure that is not full of energy. Prioritizes spawns
+and extensions.
 @param {Creep} creep
 */
 function dropOffEnergyAtNearbyStructure(creep) {
@@ -31,10 +48,13 @@ function dropOffEnergyAtNearbyStructure(creep) {
 
   if (targets.length > 0) {
     let target = targets[0];
+    //prioritize spawns and extensions
     for (let i = 1; i < targets.length; i++) {
+      //if a spawn/extension is found, target the closest one.
       if (targets[i].structureType == STRUCTURE_SPAWN ||
         targets[i].structureType == STRUCTURE_EXTENSION) {
-        target = targets[i];
+        target = findClosestSpawnOrExtension(creep);
+        break;
       }
     }
     if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -203,6 +223,7 @@ function signRoomController(creep) {
 
 module.exports = {
   gatherFromClosestSource,
+  findClosestSpawnOrExtension,
   dropOffEnergyAtNearbyStructure,
   findBiggestResourcePile,
   pickupBiggestEnergyPile,
