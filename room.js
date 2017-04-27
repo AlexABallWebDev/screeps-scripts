@@ -229,6 +229,52 @@ function addExtensionsToRoom(room, position) {
   }
 }
 
+/**
+Places a construction site for the given structureType as close to the
+endPosition as possible, while still placing it adjacent to (but not on) the
+path between startPosition and endPosition.
+@param {RoomPosition} startPosition
+@param {RoomPosition} endPosition
+@param {number} structureType
+*/
+function placeBuildingAdjacentToPathDestination(startPosition, endPosition, structureType) {
+  let room = Game.rooms[startPosition.roomName];
+  let path = startPosition.findPathTo(endPosition, {
+    ignoreCreeps: true
+  });
+
+  if (path.length) {
+    const FIRST_STEP = 0;
+    const LAST_STEP = path.length - 1;
+    for (let stepNumber = LAST_STEP - 1; stepNumber > FIRST_STEP; stepNumber--) {
+      let step = path[stepNumber];
+      let previousStep = path[stepNumber - 1];
+      let nextStep = path[stepNumber + 1];
+
+      let adjacentObjects = room.lookAtArea(step.y - 1, step.x - 1,
+        step.y + 1, step.x + 1);
+
+      //check each adjacent position to this position
+      for (let yCoordinate in adjacentObjects) {
+        yCoordinate = parseInt(yCoordinate);
+        for (let xCoordinate in adjacentObjects[yCoordinate]) {
+          xCoordinate = parseInt(xCoordinate);
+
+          //if the position we are checking is not on the path, try to build here.
+          if (!(xCoordinate == previousStep.x && yCoordinate == previousStep.y) &&
+            !(xCoordinate == nextStep.x && yCoordinate == nextStep.y)) {
+
+            let constructionSiteResult = room.createConstructionSite(xCoordinate, yCoordinate, structureType);
+            if (constructionSiteResult == OK) {
+              return OK;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
@@ -240,5 +286,6 @@ module.exports = {
   addExtensionsToDiagonals,
   checkExtensionLayer,
   placeConstructionSitesInALine,
-  addExtensionsToRoom
+  addExtensionsToRoom,
+  placeBuildingAdjacentToPathDestination
 };
