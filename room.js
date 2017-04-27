@@ -262,10 +262,11 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
           //if the position we are checking is not on the path, try to build here.
           if (!(xCoordinate == previousStep.x && yCoordinate == previousStep.y) &&
             !(xCoordinate == nextStep.x && yCoordinate == nextStep.y)) {
+            let constructionSitePosition = new RoomPosition(xCoordinate, yCoordinate, room.name);
 
-            let constructionSiteResult = room.createConstructionSite(xCoordinate, yCoordinate, structureType);
+            let constructionSiteResult = room.createConstructionSite(constructionSitePosition, structureType);
             if (constructionSiteResult == OK) {
-              return OK;
+              return constructionSitePosition;
             }
           }
         }
