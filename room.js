@@ -293,6 +293,24 @@ function getAdjacentObjects(position, isArray = false) {
   return adjacentObjects;
 }
 
+/**
+Creates tower assignments in memory for the given room.
+@param {Room} room
+*/
+function createTowerAssignments(room) {
+  if (!room.memory.towerAssignments) {
+    room.memory.towerAssignments = {};
+
+    //add sources to the tower assignments list.
+    let sources = room.find(FIND_SOURCES);
+    if (sources.length) {
+      for (let source in sources) {
+        room.memory.towerAssignments[sources[source].id] = [];
+      }
+    }
+  }
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
@@ -306,5 +324,6 @@ module.exports = {
   placeConstructionSitesInALine,
   addExtensionsToRoom,
   placeBuildingAdjacentToPathDestination,
-  getAdjacentObjects
+  getAdjacentObjects,
+  createTowerAssignments
 };
