@@ -5,7 +5,7 @@ screeps-scripts
 scripts for the JavaScript-based MMO Screeps.
 */
 
-require('tower').runTowerLogic();
+const towerFunctions = require('tower');
 
 const spawnFunctions = require('spawn');
 const roomFunctions = require('room');
@@ -34,6 +34,8 @@ module.exports.loop = function() {
   utilityFunctions.respawn();
   utilityFunctions.clearDeadCreepMemory();
   utilityFunctions.clearMissingFlagMemory();
+
+  towerFunctions.runTowerLogic();
 
   let creepsOfRole = {};
 
