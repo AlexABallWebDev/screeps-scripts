@@ -251,8 +251,7 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
       let previousStep = path[stepNumber - 1];
       let nextStep = path[stepNumber + 1];
 
-      let adjacentObjects = room.lookAtArea(step.y - 1, step.x - 1,
-        step.y + 1, step.x + 1);
+      let adjacentObjects = getAdjacentObjects(new RoomPosition(step.x, step.y, room.name));
 
       //check each adjacent position to this position
       for (let yCoordinate in adjacentObjects) {
@@ -275,6 +274,24 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
   }
 }
 
+/**
+Finds and returns an object (or array if isArray is true) containing
+the objects in adjacent positions to the given position. This object (or array)
+is found from room.lookAtArea.
+@param {RoomPosition} position
+@param {boolean} isArray = false
+*/
+function getAdjacentObjects(position, isArray = false) {
+  let room = Game.rooms[position.roomName];
+  let adjacentObjects = room.lookAtArea(position.y - 1, position.x - 1,
+    position.y + 1, position.x + 1, isArray);
+
+  //remove objects at the given position so we are left with only adjacent objects.
+  adjacentObjects[position.y][position.x] = undefined;
+
+  return adjacentObjects;
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
@@ -287,5 +304,6 @@ module.exports = {
   checkExtensionLayer,
   placeConstructionSitesInALine,
   addExtensionsToRoom,
-  placeBuildingAdjacentToPathDestination
+  placeBuildingAdjacentToPathDestination,
+  getAdjacentObjects
 };
