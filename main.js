@@ -109,6 +109,6 @@ module.exports.loop = function() {
     // console.log(JSON.stringify(room.memory.towerAssignments));
     roomFunctions.createTowerAssignments(room);
 
-    roomFunctions.placeTowers(room);
+    roomFunctions.placeTowers(room, spawn.pos);
   }
 };
