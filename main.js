@@ -109,34 +109,6 @@ module.exports.loop = function() {
     // console.log(JSON.stringify(room.memory.towerAssignments));
     roomFunctions.createTowerAssignments(room);
 
-    if (_.size(room.find(FIND_MY_STRUCTURES, {
-        filter: {
-          structureType: STRUCTURE_TOWER
-        }
-      }).concat(room.find(FIND_MY_CONSTRUCTION_SITES, {
-        filter: {
-          structureType: STRUCTURE_TOWER
-        }
-      }))) < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level]) {
-
-      //iterate over tower assignments, find the lowest tower count.
-      if (room.memory.towerAssignments) {
-        let lowestTowerAssignment;
-        let lowestTowerCount = 0;
-        for (let assignmentObjectId in room.memory.towerAssignments) {
-          if (room.memory.towerAssignments[assignmentObjectId].length <= lowestTowerCount) {
-            lowestTowerCount = room.memory.towerAssignments[assignmentObjectId].length;
-            lowestTowerAssignment = Game.getObjectById(assignmentObjectId);
-          }
-        }
-
-        //build a tower near the lowest count tower assignment and add it to the assignment.
-        let towerPosition = roomFunctions.placeBuildingAdjacentToPathDestination(spawn.pos, lowestTowerAssignment.pos, STRUCTURE_TOWER);
-        let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
-
-        //save tower flag to towerAssignments
-        room.memory.towerAssignments[lowestTowerAssignment.id].push(towerFlagName);
-      }
-    }
+    roomFunctions.placeTowers(room);
   }
 };

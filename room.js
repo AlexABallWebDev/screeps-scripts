@@ -311,6 +311,42 @@ function createTowerAssignments(room) {
   }
 }
 
+/**
+Places tower flags and constructionSites based on tower assignments for the
+given room if the max number of towers in the room has not been reached.
+@param {Room} room
+*/
+function placeTowers(room) {
+  if (room.memory.towerAssignments) {
+    let numberOfTowersAssigned = 0;
+    _.forEach(room.memory.towerAssignments, (towerFlagsArray) => {
+      _.forEach(towerFlagsArray, (towerFlag) => {
+        numberOfTowersAssigned++;
+      });
+    });
+
+    if (numberOfTowersAssigned < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level]) {
+
+      //iterate over tower assignments, find the lowest tower count.
+      let lowestTowerAssignment;
+      let lowestTowerCount = 0;
+      for (let assignmentObjectId in room.memory.towerAssignments) {
+        if (room.memory.towerAssignments[assignmentObjectId].length <= lowestTowerCount) {
+          lowestTowerCount = room.memory.towerAssignments[assignmentObjectId].length;
+          lowestTowerAssignment = Game.getObjectById(assignmentObjectId);
+        }
+      }
+
+      //build a tower near the lowest count tower assignment and add it to the assignment.
+      let towerPosition = roomFunctions.placeBuildingAdjacentToPathDestination(spawn.pos, lowestTowerAssignment.pos, STRUCTURE_TOWER);
+      let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
+
+      //save tower flag to towerAssignments
+      room.memory.towerAssignments[lowestTowerAssignment.id].push(towerFlagName);
+    }
+  }
+}
+
 module.exports = {
   checkForSources,
   findSourceIdMissingMiner,
@@ -325,5 +361,6 @@ module.exports = {
   addExtensionsToRoom,
   placeBuildingAdjacentToPathDestination,
   getAdjacentObjects,
-  createTowerAssignments
+  createTowerAssignments,
+  placeTowers
 };
