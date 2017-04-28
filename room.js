@@ -305,7 +305,7 @@ function createTowerAssignments(room) {
     let sources = room.find(FIND_SOURCES);
     if (sources.length) {
       for (let source in sources) {
-        room.memory.towerAssignments[sources[source].id] = [];
+        room.memory.towerAssignments[sources[source].id] = {};
       }
     }
   }
@@ -319,8 +319,8 @@ given room if the max number of towers in the room has not been reached.
 function placeTowers(room, startPosition) {
   if (room.memory.towerAssignments) {
     let numberOfTowersAssigned = 0;
-    _.forEach(room.memory.towerAssignments, (towerFlagsArray) => {
-      _.forEach(towerFlagsArray, (towerFlag) => {
+    _.forEach(room.memory.towerAssignments, (towerFlagsContainer) => {
+      _.forEach(towerFlagsContainer, (towerFlagPosition, towerFlagName) => {
         numberOfTowersAssigned++;
       });
     });
@@ -331,19 +331,23 @@ function placeTowers(room, startPosition) {
       let lowestTowerAssignment;
       let lowestTowerCount = CONTROLLER_STRUCTURES[STRUCTURE_TOWER][8];
       for (let assignmentObjectId in room.memory.towerAssignments) {
-        if (room.memory.towerAssignments[assignmentObjectId].length <= lowestTowerCount) {
-          lowestTowerCount = room.memory.towerAssignments[assignmentObjectId].length;
+        let towerCount = _.size(room.memory.towerAssignments[assignmentObjectId]);
+        if (towerCount < lowestTowerCount) {
+          lowestTowerCount = towerCount;
           lowestTowerAssignment = Game.getObjectById(assignmentObjectId);
         }
       }
 
-      //build a tower near the lowest count tower assignment and add it to the assignment.
-      let towerPosition = placeBuildingAdjacentToPathDestination(startPosition, lowestTowerAssignment.pos, STRUCTURE_TOWER);
-      let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
+      if (lowestTowerAssignment) {
+        //build a tower near the lowest count tower assignment and add it to the assignment.
+        let towerPosition = placeBuildingAdjacentToPathDestination(startPosition, lowestTowerAssignment.pos, STRUCTURE_TOWER);
+        let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
 
-      //save tower flag to towerAssignments
-      room.memory.towerAssignments[lowestTowerAssignment.id].push(towerFlagName);
-      Memory.flags[towerFlagName] = Game.flags[towerFlagName].pos;
+        //save tower flag to towerAssignments
+        room.memory.towerAssignments[lowestTowerAssignment.id][towerFlagName] = Game.flags[towerFlagName].pos;
+        Memory.flags[towerFlagName] = Game.flags[towerFlagName].pos;
+
+      }
     }
   }
 }
