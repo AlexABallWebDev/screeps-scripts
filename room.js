@@ -267,11 +267,18 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
             let constructionSiteResult = room.createConstructionSite(constructionSitePosition, structureType);
             if (constructionSiteResult == OK) {
               return constructionSitePosition;
+            } else if (constructionSiteResult == ERR_RCL_NOT_ENOUGH) {
+              console.log("room.js: placeBuildingAdjacentToPathDestination attempted " +
+                "to place constructionSite for " + structureType + " failed due to max # " +
+                "of structures of this type at this RCL.");
+              return ERR_RCL_NOT_ENOUGH;
             }
           }
         }
       }
     }
+    console.log("room.js: placeBuildingAdjacentToPathDestination constructionSite " +
+      "not found.");
   }
 }
 
@@ -341,12 +348,13 @@ function placeTowers(room, startPosition) {
       if (lowestTowerAssignment) {
         //build a tower near the lowest count tower assignment and add it to the assignment.
         let towerPosition = placeBuildingAdjacentToPathDestination(startPosition, lowestTowerAssignment.pos, STRUCTURE_TOWER);
-        let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
+        if (towerPosition && towerPosition != ERR_RCL_NOT_ENOUGH) {
+          let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
 
-        //save tower flag to towerAssignments
-        room.memory.towerAssignments[lowestTowerAssignment.id][towerFlagName] = Game.flags[towerFlagName].pos;
-        Memory.flags[towerFlagName] = Game.flags[towerFlagName].pos;
-
+          //save tower flag to towerAssignments
+          room.memory.towerAssignments[lowestTowerAssignment.id][towerFlagName] = Game.flags[towerFlagName].pos;
+          Memory.flags[towerFlagName] = Game.flags[towerFlagName].pos;
+        }
       }
     }
   }
