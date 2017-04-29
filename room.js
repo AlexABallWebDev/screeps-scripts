@@ -321,6 +321,7 @@ function createTowerAssignments(room) {
 /**
 Places tower flags and constructionSites based on tower assignments for the
 given room if the max number of towers in the room has not been reached.
+Also replaces towers by placing a tower constructionSite on tower flags.
 @param {Room} room
 */
 function placeTowers(room, startPosition) {
@@ -329,6 +330,8 @@ function placeTowers(room, startPosition) {
     _.forEach(room.memory.towerAssignments, (towerFlagsContainer) => {
       _.forEach(towerFlagsContainer, (towerFlagPosition, towerFlagName) => {
         numberOfTowersAssigned++;
+        //replace dead towers
+        room.createConstructionSite(towerFlagPosition.x, towerFlagPosition.y, STRUCTURE_TOWER);
       });
     });
 
