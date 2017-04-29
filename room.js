@@ -102,21 +102,6 @@ function findAdjacent(position, direction) {
 }
 
 /**
-Finds the squares diagonal to the given position and returns them in an array.
-Returned in order of TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT.
-@param {RoomPosition} position
-*/
-function getCorners(position) {
-  let corners = [];
-  corners.push(findAdjacent(position, TOP_LEFT));
-  corners.push(findAdjacent(position, TOP_RIGHT));
-  corners.push(findAdjacent(position, BOTTOM_RIGHT));
-  corners.push(findAdjacent(position, BOTTOM_LEFT));
-
-  return corners;
-}
-
-/**
 Returns the number of extensions and extension construction sites
 in the room.
 @param {Room} room
@@ -135,25 +120,6 @@ function countExtensions(room) {
   });
 
   return _.size(extensions.concat(extensionConstructionSites));
-}
-
-/**
-Places construction sites for extensions on the squares diagonal to
-the given position.
-@param {Room} room
-@param {RoomPosition} position
-*/
-function addExtensionsToDiagonals(room, position) {
-  let corners = getCorners(position);
-
-  console.log("Adding extensions at diagonals of location: " + JSON.stringify(position));
-
-  //build on corners
-  corners.forEach((corner) => {
-    room.createConstructionSite(corner, STRUCTURE_EXTENSION);
-  });
-
-  return corners;
 }
 
 /**
@@ -369,9 +335,7 @@ module.exports = {
   buildMiner,
   placeUpgraderContainer,
   findAdjacent,
-  getCorners,
   countExtensions,
-  addExtensionsToDiagonals,
   checkExtensionLayer,
   placeConstructionSitesInALine,
   addExtensionsToRoom,
