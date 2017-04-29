@@ -90,7 +90,10 @@ module.exports.loop = function() {
     } else if (_.size(creepsOfRole.courier) < 1) {
       spawnFunctions.createCreepWithRole(spawn, "courier", CREEP_BODY.courier);
     } else if (sourceIdMissingMiner) {
-      roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn, CREEP_BODY.miner);
+      let minerName = roomFunctions.buildMiner(room, sourceIdMissingMiner, spawn, CREEP_BODY.miner);
+      if (minerName == ERR_NOT_ENOUGH_ENERGY && _.size(creepsOfRole.miner) < 1 && _.size(creepsOfRole.harvester) < 2) {
+        spawnFunctions.createCreepWithRole(spawn, "harvester", CREEP_BODY.harvester);
+      }
     } else if (_.size(creepsOfRole.courier) < 3) {
       spawnFunctions.createCreepWithRole(spawn, "courier", CREEP_BODY.courier);
     } else if (_.size(room.find(FIND_MY_CONSTRUCTION_SITES)) > 0 && _.size(creepsOfRole.builder) < 2) {
@@ -107,7 +110,6 @@ module.exports.loop = function() {
 
     roomConstruction.addExtensionsToRoom(room, spawn.pos);
 
-    // console.log(JSON.stringify(room.memory.towerAssignments));
     roomFunctions.createTowerAssignments(room);
 
     roomConstruction.placeTowers(room, spawn.pos);
