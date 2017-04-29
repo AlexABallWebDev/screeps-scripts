@@ -2,8 +2,9 @@ let spawnFunctions = require('spawn');
 let roomPositionFunctions = require('roomPosition');
 
 /**
-check for sources that are not known in this room and add
-them to the list of possible sourceAssignments for this room.
+Check for sources that are not known in this room and create
+a list of possible sourceAssignments for this room.
+Also marks miningSpots with flags.
 @param {Room} room
 */
 function checkForSources(room) {
@@ -13,6 +14,17 @@ function checkForSources(room) {
     _.forEach(room.find(FIND_SOURCES), (source) => {
       if (!room.memory.sourceAssignments[source.id]) {
         room.memory.sourceAssignments[source.id] = "none";
+        let adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true);
+        let miningSpotNumber = 0;
+        for (let i in adjacentObjects) {
+          if (adjacentObjects[i].terrain && adjacentObjects[i].terrain != "wall") {
+            let flagPosition = new RoomPosition(adjacentObjects[i].x, adjacentObjects[i].y, room.name);
+            let flagName = source.id + " miningSpot " + miningSpotNumber;
+            flagName = flagPosition.createFlag(flagName, COLOR_YELLOW);
+            Memory.flags[flagName] = flagPosition;
+            miningSpotNumber++;
+          }
+        }
       }
     });
   }
