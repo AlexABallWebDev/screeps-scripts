@@ -9,6 +9,7 @@ const towerFunctions = require('tower');
 
 const spawnFunctions = require('spawn');
 const roomFunctions = require('room');
+const roomConstruction = require('roomConstruction');
 
 const roleDefender = require("role.defender");
 const roleHarvester = require('role.harvester');
@@ -101,14 +102,14 @@ module.exports.loop = function() {
     spawnFunctions.displayCreateCreepVisual(spawn);
 
     if (!Memory.flags[room.name + " upContainer"]) {
-      roomFunctions.placeUpgraderContainer(room, spawn.pos);
+      roomConstruction.placeUpgraderContainer(room, spawn.pos);
     }
 
-    roomFunctions.addExtensionsToRoom(room, spawn.pos);
+    roomConstruction.addExtensionsToRoom(room, spawn.pos);
 
     // console.log(JSON.stringify(room.memory.towerAssignments));
     roomFunctions.createTowerAssignments(room);
 
-    roomFunctions.placeTowers(room, spawn.pos);
+    roomConstruction.placeTowers(room, spawn.pos);
   }
 };
