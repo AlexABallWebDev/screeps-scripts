@@ -1,3 +1,5 @@
+let roomPositionFunctions = require('roomPosition');
+
 /**
 Locates an open position for a container that a creep can move on that
 is adjacent to the given room's controller, marks it with a flag, and
