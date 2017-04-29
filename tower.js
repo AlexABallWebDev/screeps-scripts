@@ -21,24 +21,35 @@ function runTowerLogic() {
 
     let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
-    //prioritize shooting enemy creeps over repairing structures.
+    //prioritize shooting enemy creeps over healing or repairing structures.
     if (closestHostile) {
       tower.attack(closestHostile);
     } else {
-      let structures = tower.room.find(FIND_MY_STRUCTURES, TOWER_REPAIR_TARGET);
-
-      let lowestHitsStructure;
-      for (let structure of structures) {
-        if (lowestHitsStructure === undefined ||
-          structure.hits < lowestHitsStructure.hits) {
-          lowestHitsStructure = structure;
+      let damagedCreeps = tower.room.find(FIND_MY_CREEPS, {
+        filter: (creep) => {
+          return creep.hits < creep.hitsMax;
         }
-      }
-      //Only repair if enough energy is saved up (in case of attacks)
-      if (lowestHitsStructure &&
-        tower.energy > TOWER_MINIMUM_ENERGY &&
-        lowestHitsStructure.hits < TOWER_REPAIR_MAX_HEALTH) {
-        tower.repair(lowestHitsStructure);
+      });
+
+      //prioritize healing creeps over repairing structures
+      if (damagedCreeps.length) {
+        tower.heal(damagedCreeps[0]);
+      } else {
+        let structures = tower.room.find(FIND_MY_STRUCTURES, TOWER_REPAIR_TARGET);
+
+        let lowestHitsStructure;
+        for (let structure of structures) {
+          if (lowestHitsStructure === undefined ||
+            structure.hits < lowestHitsStructure.hits) {
+            lowestHitsStructure = structure;
+          }
+        }
+        //Only repair if enough energy is saved up (in case of attacks)
+        if (lowestHitsStructure &&
+          tower.energy > TOWER_MINIMUM_ENERGY &&
+          lowestHitsStructure.hits < TOWER_REPAIR_MAX_HEALTH) {
+          tower.repair(lowestHitsStructure);
+        }
       }
     }
   }
