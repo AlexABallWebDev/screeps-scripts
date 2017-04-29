@@ -1,4 +1,5 @@
 let spawnFunctions = require('spawn');
+let roomPositionFunctions = require('roomPosition');
 
 /**
 check for sources that are not known in this room and add
@@ -73,33 +74,7 @@ function placeUpgraderContainer(room, startPosition) {
   room.createConstructionSite(lastStep.x, lastStep.y, STRUCTURE_CONTAINER);
 }
 
-/**
-Find an adjacent position for the given position and direction
-@param {Room} room
-@param {number} direction
-*/
-function findAdjacent(position, direction) {
-  switch (direction) {
-    case TOP:
-      return new RoomPosition(position.x, position.y - 1, position.roomName);
-    case TOP_RIGHT:
-      return new RoomPosition(position.x + 1, position.y - 1, position.roomName);
-    case RIGHT:
-      return new RoomPosition(position.x + 1, position.y, position.roomName);
-    case BOTTOM_RIGHT:
-      return new RoomPosition(position.x + 1, position.y + 1, position.roomName);
-    case BOTTOM:
-      return new RoomPosition(position.x, position.y + 1, position.roomName);
-    case BOTTOM_LEFT:
-      return new RoomPosition(position.x - 1, position.y + 1, position.roomName);
-    case LEFT:
-      return new RoomPosition(position.x - 1, position.y, position.roomName);
-    case TOP_LEFT:
-      return new RoomPosition(position.x - 1, position.y - 1, position.roomName);
-    default:
-      return 0;
-  }
-}
+
 
 /**
 Returns the number of extensions and extension construction sites
@@ -158,7 +133,7 @@ function placeConstructionSitesInALine(position, direction, structureType,
     Game.rooms[position.roomName].createConstructionSite(position, structureType);
     positionOfLastConstructionSite = position;
     for (let i = 0; i < dotLength + 1; i++) {
-      position = findAdjacent(position, direction);
+      position = roomPositionFunctions.findAdjacent(position, direction);
     }
   }
 
@@ -182,7 +157,7 @@ function addExtensionsToRoom(room, position) {
 
     //start by moving diagonally TOP_LEFT to the corner of the square.
     for (let i = layer - 1; i > 0; i--) {
-      position = findAdjacent(position, TOP_LEFT);
+      position = roomPositionFunctions.findAdjacent(position, TOP_LEFT);
     }
 
     //then place the sides of the square. Traces from top left, to top right,
@@ -217,7 +192,7 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
       let previousStep = path[stepNumber - 1];
       let nextStep = path[stepNumber + 1];
 
-      let adjacentObjects = getAdjacentObjects(new RoomPosition(step.x, step.y, room.name));
+      let adjacentObjects = roomPositionFunctions.getAdjacentObjects(new RoomPosition(step.x, step.y, room.name));
 
       //check each adjacent position to this position
       for (let yCoordinate in adjacentObjects) {
@@ -246,24 +221,6 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
     console.log("room.js: placeBuildingAdjacentToPathDestination constructionSite " +
       "not found.");
   }
-}
-
-/**
-Finds and returns an object (or array if isArray is true) containing
-the objects in adjacent positions to the given position. This object (or array)
-is found from room.lookAtArea.
-@param {RoomPosition} position
-@param {boolean} isArray = false
-*/
-function getAdjacentObjects(position, isArray = false) {
-  let room = Game.rooms[position.roomName];
-  let adjacentObjects = room.lookAtArea(position.y - 1, position.x - 1,
-    position.y + 1, position.x + 1, isArray);
-
-  //remove objects at the given position so we are left with only adjacent objects.
-  adjacentObjects[position.y][position.x] = undefined;
-
-  return adjacentObjects;
 }
 
 /**
@@ -334,13 +291,11 @@ module.exports = {
   findSourceIdMissingMiner,
   buildMiner,
   placeUpgraderContainer,
-  findAdjacent,
   countExtensions,
   checkExtensionLayer,
   placeConstructionSitesInALine,
   addExtensionsToRoom,
   placeBuildingAdjacentToPathDestination,
-  getAdjacentObjects,
   createTowerAssignments,
   placeTowers
 };
