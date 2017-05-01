@@ -1,6 +1,33 @@
 let roomPositionFunctions = require('roomPosition');
 
 /**
+Wrapper for room.createConstructionSite(). Returns ERR_INVALID_TARGET if there
+is a flag that does not match the given flagName in the given x,y position. If no
+flagName is given, then ERR_INVALID_TARGET will be returned if any flag is in
+the given x,y position. Otherwise, this function should behave
+like room.createConstructionSite().
+@param {Room} room
+@param {number} x
+@param {number} y
+@param {string} structureType
+@param {string} flagName
+*/
+function createConstructionSite(room, x, y, structureType, flagName = undefined) {
+  //get objects on the given position
+  let flags = room.lookforat(LOOK_FLAGS, x, y);
+
+  if (flags.length) {
+    for (let i = 0; i < flags.length; i++) {
+      if (flagName != flags[i].name) {
+        return ERR_INVALID_TARGET;
+      }
+    }
+  }
+
+  return room.createConstructionSite(x, y, structureType);
+}
+
+/**
 Locates an open position for a container that a creep can move on that
 is adjacent to the given room's controller, marks it with a flag, and
 creates a constructionSite for the container.
