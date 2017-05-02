@@ -42,8 +42,13 @@ function placeUpgraderContainer(room, startPosition) {
     let upContainerPosition = placeBuildingAdjacentToPathDestination(startPosition,
       room.controller.pos, STRUCTURE_CONTAINER);
 
-    room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
-    Memory.flags[flagName] = Game.flags[flagName].pos;
+    if (upContainerPosition != ERR_RCL_NOT_ENOUGH) {
+      room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
+      Memory.flags[flagName] = Game.flags[flagName].pos;
+    } else {
+      console.log("roomConstruction.js: placeUpgraderContainer failed to place upgraderContainer " +
+        "due to ERR_RCL_NOT_ENOUGH error.");
+    }
   } else {
     createConstructionSite(room, flag.x, flag.y, STRUCTURE_CONTAINER, flagName);
   }
@@ -176,13 +181,14 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
           //if the position we are checking is not on the path, try to build here.
           if (!(xCoordinate == previousStep.x && yCoordinate == previousStep.y) &&
             !(xCoordinate == nextStep.x && yCoordinate == nextStep.y)) {
-            let constructionSitePosition = new RoomPosition(xCoordinate, yCoordinate, room.name);
 
-            let constructionSiteResult = room.createConstructionSite(constructionSitePosition, structureType);
+            let constructionSiteResult = createConstructionSite(room, xCoordinate, yCoordinate, structureType);
+
             if (constructionSiteResult == OK) {
+              let constructionSitePosition = new RoomPosition(xCoordinate, yCoordinate, room.name);
               return constructionSitePosition;
             } else if (constructionSiteResult == ERR_RCL_NOT_ENOUGH) {
-              console.log("room.js: placeBuildingAdjacentToPathDestination attempted " +
+              console.log("roomConstruction.js: placeBuildingAdjacentToPathDestination attempted " +
                 "to place constructionSite for " + structureType + " failed due to max # " +
                 "of structures of this type at this RCL.");
               return ERR_RCL_NOT_ENOUGH;
@@ -191,7 +197,7 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
         }
       }
     }
-    console.log("room.js: placeBuildingAdjacentToPathDestination constructionSite " +
+    console.log("roomConstruction.js: placeBuildingAdjacentToPathDestination constructionSite " +
       "not found.");
   }
 }
@@ -205,14 +211,32 @@ Also replaces towers by placing a tower constructionSite on tower flags.
 function placeTowers(room, startPosition) {
   if (room.memory.towerAssignments) {
     let numberOfTowersAssigned = 0;
-    _.forEach(room.memory.towerAssignments, (towerFlagsContainer) => {
+    let towerAssignmentsToRemove = [];
+    _.forEach(room.memory.towerAssignments, (towerFlagsContainer, towerAssignmentName) => {
       _.forEach(towerFlagsContainer, (towerFlagPosition, towerFlagName) => {
-        numberOfTowersAssigned++;
-        //replace dead towers
-        createConstructionSite(room, towerFlagPosition.x, towerFlagPosition.y,
-          STRUCTURE_TOWER, towerFlagName);
+        //mark tower assignments that are missing a flag.
+        if (!Memory.flags[towerFlagName]) {
+          towerAssignmentsToRemove.push({
+            towerAssignmentName: towerAssignmentName,
+            towerFlagName: towerFlagName
+          });
+        } else {
+          numberOfTowersAssigned++;
+          //replace dead towers
+          createConstructionSite(room, towerFlagPosition.x, towerFlagPosition.y,
+            STRUCTURE_TOWER, towerFlagName);
+        }
       });
     });
+
+    //remove tower assignments that do not have a flag
+    if (towerAssignmentsToRemove.length) {
+      for (let i = 0; i < towerAssignmentsToRemove.length; i++) {
+        let towerAssignmentName = towerAssignmentsToRemove[i].towerAssignmentName;
+        let towerFlagName = towerAssignmentsToRemove[i].towerFlagName;
+        room.memory.towerAssignments[towerAssignmentName][towerFlagName] = undefined;
+      }
+    }
 
     if (numberOfTowersAssigned < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level]) {
 
