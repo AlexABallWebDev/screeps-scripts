@@ -209,7 +209,8 @@ function placeTowers(room, startPosition) {
       _.forEach(towerFlagsContainer, (towerFlagPosition, towerFlagName) => {
         numberOfTowersAssigned++;
         //replace dead towers
-        room.createConstructionSite(towerFlagPosition.x, towerFlagPosition.y, STRUCTURE_TOWER);
+        createConstructionSite(room, towerFlagPosition.x, towerFlagPosition.y,
+          STRUCTURE_TOWER, towerFlagName);
       });
     });
 
