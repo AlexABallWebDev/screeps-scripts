@@ -33,6 +33,9 @@ to the game.
 @param {string} message
 */
 function saveMessage(message) {
+  if (!Memory.myMessages) {
+    Memory.myMessages = [];
+  }
   Memory.myMessages.push(message);
   console.log(message);
 }
