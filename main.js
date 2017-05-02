@@ -105,9 +105,7 @@ module.exports.loop = function() {
 
       spawnFunctions.displayCreateCreepVisual(spawn);
 
-      if (!Memory.flags[room.name + " upContainer"]) {
-        roomConstruction.placeUpgraderContainer(room, spawn.pos);
-      }
+      roomConstruction.placeUpgraderContainer(room, spawn.pos);
 
       roomConstruction.addExtensionsToRoom(room, spawn.pos);
 
