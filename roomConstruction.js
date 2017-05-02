@@ -35,16 +35,16 @@ creates a constructionSite for the container.
 @param {RoomPosition} startPosition
 */
 function placeUpgraderContainer(room, startPosition) {
-  if (!Memory.flags[room.name + " upContainer"]) {
+  let flagName = room.name + " upContainer";
+  let flag = Memory.flags[flagName];
+  if (!flag) {
     let upContainerPosition = placeBuildingAdjacentToPathDestination(startPosition,
       room.controller.pos, STRUCTURE_CONTAINER);
-
-    let flagName = room.name + " upContainer";
 
     room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
     Memory.flags[flagName] = Game.flags[flagName].pos;
   } else {
-    //TODO replace upContainer
+    createConstructionSite(room, flag.x, flag.y, STRUCTURE_CONTAINER, flagName);
   }
 }
 
