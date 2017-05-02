@@ -41,7 +41,17 @@ function getAdjacentObjects(position, isArray = false) {
     position.y + 1, position.x + 1, isArray);
 
   //remove objects at the given position so we are left with only adjacent objects.
-  adjacentObjects[position.y][position.x] = undefined;
+  if (isArray) {
+    for (let i = 0; i < adjacentObjects.length; i++) {
+      let adjacentObject = adjacentObjects[i];
+      if (adjacentObject.x == position.x && adjacentObject.y == position.y) {
+        adjacentObjects.splice(i, 1);
+        i--;
+      }
+    }
+  } else {
+    adjacentObjects[position.y][position.x] = undefined;
+  }
 
   return adjacentObjects;
 }
