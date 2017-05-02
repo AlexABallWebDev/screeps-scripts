@@ -29,8 +29,9 @@ function createConstructionSite(room, x, y, structureType, flagName = undefined)
 
 /**
 Locates an open position for a container that a creep can move on that
-is adjacent to the given room's controller, marks it with a flag, and
+is near to the given room's controller, marks it with a flag, and
 creates a constructionSite for the container.
+Also attempts to rebuild the container if there is no container on the flag.
 @param {Room} room
 @param {RoomPosition} startPosition
 */
