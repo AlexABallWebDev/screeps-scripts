@@ -14,7 +14,7 @@ like room.createConstructionSite().
 */
 function createConstructionSite(room, x, y, structureType, flagName = undefined) {
   //get objects on the given position
-  let flags = room.lookforat(LOOK_FLAGS, x, y);
+  let flags = room.lookForAt(LOOK_FLAGS, x, y);
 
   if (flags.length) {
     for (let i = 0; i < flags.length; i++) {
@@ -98,7 +98,7 @@ function placeConstructionSitesInALine(position, direction, structureType,
   let positionOfLastConstructionSite = position;
 
   for (let i = numberOfConstructionSites; i > 0; i--) {
-    Game.rooms[position.roomName].createConstructionSite(position, structureType);
+    createConstructionSite(Game.rooms[position.roomName], position.x, position.y, structureType);
     positionOfLastConstructionSite = position;
     for (let i = 0; i < dotLength + 1; i++) {
       position = roomPositionFunctions.findAdjacent(position, direction);
