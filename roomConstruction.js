@@ -76,22 +76,6 @@ function countExtensions(room) {
 }
 
 /**
-Returns the concentric square layer to build new extensions in for the given
-number of extensions.
-@param {number} extensionCount
-*/
-function checkExtensionLayer(extensionCount) {
-  let layer = 2;
-  extensionCount -= Math.pow(layer, 2);
-
-  while (extensionCount >= 0) {
-    layer++;
-    extensionCount -= (Math.pow(layer, 2) - Math.pow(layer - 2, 2));
-  }
-  return layer;
-}
-
-/**
 Places construction sites in a line, starting at position, placing
 numberOfConstructionSites sites of type structureType spaced dotLength apart.
 dotLength is optional and defaults to 0.
@@ -139,13 +123,15 @@ function addExtensionsToRoom(room, position) {
 
     if (room.memory.extensionSquareLayerCount === undefined) {
       room.memory.extensionSquareLayerCount = 0;
-    } else if (room.memory.extensionSquareLayerCount <= MAX_EXTENSION_SQUARE_LAYER_COUNTER) {
+    }
+
+    layer += room.memory.extensionSquareLayerCount;
+
+    if (room.memory.extensionSquareLayerCount <= MAX_EXTENSION_SQUARE_LAYER_COUNTER) {
       room.memory.extensionSquareLayerCount++;
     } else {
       console.log("roomConstruction.js: Attempting to place extensions at layer: " + layer);
     }
-
-    layer += room.memory.extensionSquareLayerCount;
 
     //start by moving diagonally TOP_LEFT to the corner of the square.
     for (let i = layer - 1; i > 0; i--) {
