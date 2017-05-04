@@ -131,7 +131,21 @@ function addExtensionsToRoom(room, position) {
   let extensionCount = countExtensions(room);
 
   if (extensionCount < maxExtensions) {
-    let layer = checkExtensionLayer(extensionCount);
+    //2nd layer is 1 square away (corners of a square around the position).
+    //This is the first layer that we care about.
+    let layer = 2;
+
+    const MAX_EXTENSION_SQUARE_LAYER_COUNTER = 25;
+
+    if (room.memory.extensionSquareLayerCount === undefined) {
+      room.memory.extensionSquareLayerCount = 0;
+    } else if (room.memory.extensionSquareLayerCount <= MAX_EXTENSION_SQUARE_LAYER_COUNTER) {
+      room.memory.extensionSquareLayerCount++;
+    } else {
+      console.log("roomConstruction.js: Attempting to place extensions at layer: " + layer);
+    }
+
+    layer += room.memory.extensionSquareLayerCount;
 
     //start by moving diagonally TOP_LEFT to the corner of the square.
     for (let i = layer - 1; i > 0; i--) {
@@ -145,6 +159,8 @@ function addExtensionsToRoom(room, position) {
         layer,
         DOT_LENGTH);
     });
+  } else {
+    room.memory.extensionSquareLayerCount = 0;
   }
 }
 
