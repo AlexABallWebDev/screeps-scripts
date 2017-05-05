@@ -39,8 +39,21 @@ function findSourceIdMissingMiner(room) {
   let result = 0;
 
   _.forEach(room.memory.sourceAssignments, (sourceAssignment, sourceId) => {
-    if (!Game.creeps[sourceAssignment.minerName]) {
+    let miner = Game.creeps[sourceAssignment.minerName];
+    if (!miner) {
       result = sourceId;
+    } else if (!miner.spawning && sourceAssignment.path && sourceAssignment.path.length) {
+      //if the miner will die in the time it takes a new miner to arrive,
+      //then we need a new miner.
+      let distanceFromSource = sourceAssignment.path.length;
+      let MINER_TICKS_PER_MOVE = 3;
+      console.log(miner.name + " has " + miner.ticksToLive + " ticks to live.");
+      console.log(miner.name + "'s source is " + distanceFromSource + " away from spawn.");
+      console.log(miner.name + " distanceFromSource*MINER_TICKS_PER_MOVE: " + distanceFromSource * MINER_TICKS_PER_MOVE);
+      if (miner.ticksToLive < distanceFromSource * MINER_TICKS_PER_MOVE) {
+        console.log(miner.name + " is being replaced!");
+        result = sourceId;
+      }
     }
   });
 
@@ -62,7 +75,9 @@ function buildMiner(room, sourceId, spawn, body = undefined, name = undefined) {
       assignedSourceId: sourceId
     }, body, name);
 
-    let minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId));
+    let minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId), {
+      ignoreCreeps: true
+    });
     room.memory.sourceAssignments[sourceId].path = minerPath;
 
     if (newCreepName != ERR_NOT_ENOUGH_ENERGY && newCreepName != ERR_BUSY) {
