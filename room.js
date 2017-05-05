@@ -1,5 +1,6 @@
 let spawnFunctions = require('spawn');
 let roomPositionFunctions = require('roomPosition');
+let creepBody = require('creepBody');
 
 /**
 Check for sources that are not known in this room and create
@@ -46,9 +47,8 @@ function findSourceIdMissingMiner(room) {
       //if the miner will die in the time it takes a new miner to arrive,
       //then we need a new miner.
       let distanceFromSource = sourceAssignment.path.length;
-      let MINER_TICKS_PER_MOVE = 3;
-      let MINER_BODY_LENGTH = 7;
-      let MINER_SPAWN_TIME = MINER_BODY_LENGTH * CREEP_SPAWN_TIME;
+      let MINER_TICKS_PER_MOVE = creepBody.calculateTicksPerMove(creepBody.miner);
+      let MINER_SPAWN_TIME = creepBody.calculateSpawnTime(creepBody.miner);
       if (miner.ticksToLive < (distanceFromSource * MINER_TICKS_PER_MOVE) + MINER_SPAWN_TIME) {
         result = sourceId;
       }
