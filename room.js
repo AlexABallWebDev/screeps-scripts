@@ -13,7 +13,8 @@ function checkForSources(room) {
 
     _.forEach(room.find(FIND_SOURCES), (source) => {
       if (!room.memory.sourceAssignments[source.id]) {
-        room.memory.sourceAssignments[source.id] = "none";
+        room.memory.sourceAssignments[source.id] = {};
+        room.memory.sourceAssignments[source.id].minerName = "none";
         let adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true);
         let miningSpotNumber = 0;
         for (let i in adjacentObjects) {
@@ -37,8 +38,8 @@ Check if a source is missing a miner.
 function findSourceIdMissingMiner(room) {
   let result = 0;
 
-  _.forEach(room.memory.sourceAssignments, (creepName, sourceId) => {
-    if (!Game.creeps[creepName]) {
+  _.forEach(room.memory.sourceAssignments, (sourceAssignment, sourceId) => {
+    if (!Game.creeps[sourceAssignment.minerName]) {
       result = sourceId;
     }
   });
@@ -61,8 +62,11 @@ function buildMiner(room, sourceId, spawn, body = undefined, name = undefined) {
       assignedSourceId: sourceId
     }, body, name);
 
+    let minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId));
+    room.memory.sourceAssignments[sourceId].path = minerPath;
+
     if (newCreepName != ERR_NOT_ENOUGH_ENERGY && newCreepName != ERR_BUSY) {
-      room.memory.sourceAssignments[sourceId] = newCreepName;
+      room.memory.sourceAssignments[sourceId].minerName = newCreepName;
     }
 
     return newCreepName;
