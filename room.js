@@ -47,11 +47,9 @@ function findSourceIdMissingMiner(room) {
       //then we need a new miner.
       let distanceFromSource = sourceAssignment.path.length;
       let MINER_TICKS_PER_MOVE = 3;
-      console.log(miner.name + " has " + miner.ticksToLive + " ticks to live.");
-      console.log(miner.name + "'s source is " + distanceFromSource + " away from spawn.");
-      console.log(miner.name + " distanceFromSource*MINER_TICKS_PER_MOVE: " + distanceFromSource * MINER_TICKS_PER_MOVE);
-      if (miner.ticksToLive < distanceFromSource * MINER_TICKS_PER_MOVE) {
-        console.log(miner.name + " is being replaced!");
+      let MINER_BODY_LENGTH = 7;
+      let MINER_SPAWN_TIME = MINER_BODY_LENGTH * CREEP_SPAWN_TIME;
+      if (miner.ticksToLive < (distanceFromSource * MINER_TICKS_PER_MOVE) + MINER_SPAWN_TIME) {
         result = sourceId;
       }
     }
