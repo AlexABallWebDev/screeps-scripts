@@ -51,7 +51,7 @@ Build a miner for the given room and sourceId.
 @param {Room} room
 @param {string} sourceId
 @param {Spawn} spawn
-@param {array} body = [WORK, WORK, CARRY, MOVE]
+@param {array} body = undefined
 @param {String} name = undefined
 */
 function buildMiner(room, sourceId, spawn, body = undefined, name = undefined) {
