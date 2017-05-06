@@ -16,7 +16,7 @@ function createCreepWithMemory(spawn, memory, body = [WORK, CARRY, MOVE, MOVE],
   name = spawn.createCreep(sortedBody, name, memory);
 
   if (name != ERR_NOT_ENOUGH_ENERGY && name != ERR_BUSY) {
-    console.log('Spawning new ' + memory.role + ': ' + name);
+    console.log('Room ' + spawn.room.name + ': Spawning new ' + memory.role + ': ' + name);
   }
 
   return name;
