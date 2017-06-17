@@ -159,6 +159,21 @@ path between startPosition and endPosition.
 @param {number} structureType
 */
 function placeBuildingAdjacentToPathDestination(startPosition, endPosition, structureType) {
+  return placeBuildingAdjacentToPath(startPosition, endPosition, structureType);
+}
+
+/**
+Places a construction site for the given structureType as close to the
+endPosition as possible, starting stepsFromDestination from the given
+endPosition, while still placing it adjacent to (but not on) the path between
+startPosition and endPosition.
+@param {RoomPosition} startPosition
+@param {RoomPosition} endPosition
+@param {number} structureType
+@param {number} stepsFromDestination
+*/
+function placeBuildingAdjacentToPath(startPosition, endPosition, structureType,
+  stepsFromDestination = 1) {
   let room = Game.rooms[startPosition.roomName];
   let path = startPosition.findPathTo(endPosition, {
     ignoreCreeps: true
@@ -166,7 +181,7 @@ function placeBuildingAdjacentToPathDestination(startPosition, endPosition, stru
 
   if (path.length) {
     const FIRST_STEP = 0;
-    const LAST_STEP = path.length - 1;
+    const LAST_STEP = path.length - stepsFromDestination;
     for (let stepNumber = LAST_STEP - 1; stepNumber > FIRST_STEP; stepNumber--) {
       let step = path[stepNumber];
       let previousStep = path[stepNumber - 1];
