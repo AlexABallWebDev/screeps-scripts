@@ -59,6 +59,7 @@ function respawn() {
       Memory.flags = {};
       Memory.rooms = {};
       Memory.spawns = {};
+      Memory.expansionQueue = [];
 
       Memory.controllerSign = "ALL YOUR BASE ARE BELONG TO US.";
 
