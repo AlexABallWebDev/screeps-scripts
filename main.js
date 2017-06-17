@@ -50,10 +50,12 @@ module.exports.loop = function() {
       creepsOfRole[roleName] = {};
     }
 
-    for (let name in Game.creeps) {
-      let creep = Game.creeps[name];
+    let roomCreeps = room.find(FIND_MY_CREEPS);
+
+    for (let creepIndex in roomCreeps) {
+      let creep = roomCreeps[creepIndex];
       if (roles[creep.memory.role]) {
-        creepsOfRole[creep.memory.role][name] = creep.id;
+        creepsOfRole[creep.memory.role][creep.name] = creep.id;
         roles[creep.memory.role].run(creep);
       }
     }
