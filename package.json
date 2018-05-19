@@ -1,0 +1,26 @@
+{
+  "name": "screeps-scripts",
+  "version": "1.0.0",
+  "description": "Screeps scripts",
+  "main": "main.js",
+  "dependencies": {
+    "@types/screeps": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexABallWebDev/screeps-scripts.git"
+  },
+  "keywords": [
+    "screeps"
+  ],
+  "author": "Alex Ball",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexABallWebDev/screeps-scripts/issues"
+  },
+  "homepage": "https://github.com/AlexABallWebDev/screeps-scripts#readme"
+}
