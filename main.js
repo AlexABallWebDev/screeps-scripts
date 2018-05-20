@@ -19,6 +19,7 @@ const roleBuilder = require('role.builder');
 const roleMiner = require('role.miner');
 const roleCourier = require('role.courier');
 const roleClaimer = require('role.claimer');
+const roleColonist = require('role.colonist');
 
 const roles = {
   defender: roleDefender,
@@ -28,6 +29,7 @@ const roles = {
   miner: roleMiner,
   courier: roleCourier,
   claimer: roleClaimer,
+  colonist: roleColonist,
 };
 
 /**Diagnostic and utility functions*/
@@ -51,15 +53,48 @@ module.exports.loop = function() {
     roomFunctions.checkForSources(room);
 
     // if there is a newClaim in one of my rooms, delete it and replace
-    // it with a newColony.
+    // it with a newColony if there is not already a newColony.
     let claimFlag = Game.flags['newClaim'];
-    if (claimFlag && 
+    if (claimFlag &&
+      !Game.flags['newColony'] &&
       Game.rooms[claimFlag.pos.roomName] &&
       Game.rooms[claimFlag.pos.roomName].controller &&
       Game.rooms[claimFlag.pos.roomName].controller.my) {
       // replace newClaim with newColony in the same position
       claimFlag.pos.createFlag('newColony', COLOR_PURPLE);
       claimFlag.remove();
+    }
+
+    // if there is a newColony in one of my rooms, check if
+    // there is a spawn in it. if so, then delete the newColony flag.
+    // If not, check if there is a
+    // constructionSite for a spawn in it. if not, place a constructionSite
+    // on the position of the newColony flag.
+    let colonyFlag = Game.flags['newColony'];
+    if (colonyFlag) {
+      if (!colonyFlag.room.controller.my) {
+        // If the colony is in a room that is not mine, abandon it.
+        console.log('Colony room not owned by me. Abandoning colony: ' + colonyFlag.room.name);
+        Memory.colonySpawnSiteID = undefined;
+        colonyFlag.remove();
+      } else if (!Memory.colonySpawnSiteID) {
+        // If the spawn constructionSite is not in memory, get it.
+        colonyFlag.pos.createConstructionSite(STRUCTURE_SPAWN);
+        let colonySpawnSites = colonyFlag.room.find(FIND_MY_CONSTRUCTION_SITES, {
+          filter: {
+            structureType: STRUCTURE_SPAWN
+          }
+        });
+        if (colonySpawnSites.length && colonySpawnSites[0].id) {
+          Memory.colonySpawnSiteID = colonySpawnSites[0].id;
+        }
+      } else if (!Game.getObjectById(Memory.colonySpawnSiteID)) {
+        // If we can't find the spawn constructionSite, it either finished
+        // or was destroyed. Either way, delete the colony flag.
+        console.log('Colony spawn finished/destroyed. removing colony flag in: ' + colonyFlag.room.name);
+        Memory.colonySpawnSiteID = undefined;
+        colonyFlag.remove();
+      }
     }
 
     let creepsOfRole = {};

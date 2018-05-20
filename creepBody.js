@@ -12,6 +12,9 @@ module.exports = {
     MOVE, CARRY, WORK, MOVE, WORK, WORK, MOVE, CARRY, WORK, MOVE, WORK, WORK, MOVE
   ],
   claimer: [CLAIM, MOVE],
+  colonist: [WORK, MOVE, CARRY, MOVE, MOVE, WORK, MOVE, CARRY, MOVE, WORK,
+    MOVE, CARRY, MOVE, WORK, MOVE, CARRY, MOVE, WORK, MOVE, CARRY
+  ],
 
   /**
   Calculates the spawn time for a creep with the given body and returns it.
