@@ -59,6 +59,7 @@ function respawn() {
       Memory.flags = {};
       Memory.rooms = {};
       Memory.spawns = {};
+      Memory.colonists = {};
 
       Memory.controllerSign = "ALL YOUR BASE ARE BELONG TO US.";
 
@@ -80,8 +81,8 @@ function checkForLevelUp(room) {
 
   if (room.memory.controllerLevel < room.controller.level) {
     room.memory.controllerLevel = room.controller.level;
-    let levelUpMessage = room.name + " controller level up to: " +
-      room.memory.controllerLevel + " at colony lifetime: " +
+    let levelUpMessage = room.name + ' controller level up to: ' +
+      room.memory.controllerLevel + ' at respawn lifetime: ' +
       (Game.time - Memory.startTime);
     saveMessage(levelUpMessage);
   }

@@ -41,8 +41,16 @@ module.exports.loop = function() {
   utilityFunctions.clearDeadCreepMemory();
   utilityFunctions.clearMissingFlagMemory();
 
+  // cleanup dead claimer
   if (Memory.claimerName && !Game.creeps[Memory.claimerName]) {
     Memory.claimerName = undefined;
+  }
+
+  // cleanup dead colonists
+  for (let name in Memory.colonistNames) {
+    if (!Game.creeps[name]) {
+      delete Memory.colonistNames[name];
+    }
   }
 
   towerFunctions.runTowerLogic();
@@ -149,6 +157,11 @@ module.exports.loop = function() {
           let claimerName = spawnFunctions.createCreepWithRole(spawn, 'claimer', creepBody.claimer);
           if (typeof claimerName == 'string') {
             Memory.claimerName = claimerName;
+          }
+        } else if (Game.flags['newColony'] && _.size(Memory.colonistNames) < 3) {
+          let colonistName = spawnFunctions.createCreepWithRole(spawn, 'colonist', creepBody.colonist);
+          if (typeof colonistName == 'string') {
+            Memory.colonistNames[colonistName] = colonistName;
           }
         }
 
