@@ -11,6 +11,7 @@ module.exports = {
   upgrader: [WORK, WORK, CARRY, MOVE, CARRY, WORK, MOVE, WORK, WORK,
     MOVE, CARRY, WORK, MOVE, WORK, WORK, MOVE, CARRY, WORK, MOVE, WORK, WORK, MOVE
   ],
+  claimer: [CLAIM, MOVE],
 
   /**
   Calculates the spawn time for a creep with the given body and returns it.

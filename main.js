@@ -18,6 +18,7 @@ const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleMiner = require('role.miner');
 const roleCourier = require('role.courier');
+const roleClaimer = require('role.claimer');
 
 const roles = {
   defender: roleDefender,
@@ -26,6 +27,7 @@ const roles = {
   builder: roleBuilder,
   miner: roleMiner,
   courier: roleCourier,
+  claimer: roleClaimer,
 };
 
 /**Diagnostic and utility functions*/
@@ -37,12 +39,28 @@ module.exports.loop = function() {
   utilityFunctions.clearDeadCreepMemory();
   utilityFunctions.clearMissingFlagMemory();
 
+  if (Memory.claimerName && !Game.creeps[Memory.claimerName]) {
+    Memory.claimerName = undefined;
+  }
+
   towerFunctions.runTowerLogic();
 
   for (let roomName in Game.rooms) {
     let room = Game.rooms[roomName];
 
     roomFunctions.checkForSources(room);
+
+    // if there is a newClaim in one of my rooms, delete it and replace
+    // it with a newColony.
+    let claimFlag = Game.flags['newClaim'];
+    if (claimFlag && 
+      Game.rooms[claimFlag.pos.roomName] &&
+      Game.rooms[claimFlag.pos.roomName].controller &&
+      Game.rooms[claimFlag.pos.roomName].controller.my) {
+      // replace newClaim with newColony in the same position
+      claimFlag.pos.createFlag('newColony', COLOR_PURPLE);
+      claimFlag.remove();
+    }
 
     let creepsOfRole = {};
 
@@ -92,6 +110,11 @@ module.exports.loop = function() {
           spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
         } else if (_.size(creepsOfRole.upgrader) < 2) {
           spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
+        } else if (Game.flags['newClaim'] && !Memory.claimerName) {
+          let claimerName = spawnFunctions.createCreepWithRole(spawn, 'claimer', creepBody.claimer);
+          if (typeof claimerName == 'string') {
+            Memory.claimerName = claimerName;
+          }
         }
 
         spawnFunctions.displayCreateCreepVisual(spawn);
