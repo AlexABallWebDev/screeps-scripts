@@ -1,4 +1,4 @@
-const creepBehavior = require('behavior.creep');
+const creepBehavior = require('./behavior.creep');
 
 const roleHarvester = {
 

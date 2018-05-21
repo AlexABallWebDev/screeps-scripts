@@ -1,5 +1,3 @@
-const creepBehavior = require('behavior.creep');
-
 const roleDefender = {
   /** @param {Creep} creep **/
   run: function(creep) {

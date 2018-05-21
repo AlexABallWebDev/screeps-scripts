@@ -1,4 +1,4 @@
-let roomPositionFunctions = require('roomPosition');
+let roomPositionFunctions = require('./roomPosition');
 
 /**
 Wrapper for room.createConstructionSite(). Returns ERR_INVALID_TARGET if there

@@ -1,4 +1,4 @@
-let creepBody = require('creepBody');
+let creepBody = require('./creepBody');
 
 /**
 Creates a creep with the given memory.

@@ -1,6 +1,6 @@
-let spawnFunctions = require('spawn');
-let roomPositionFunctions = require('roomPosition');
-let creepBody = require('creepBody');
+let spawnFunctions = require('./spawn');
+let roomPositionFunctions = require('./roomPosition');
+let creepBody = require('./creepBody');
 
 /**
 Check for sources that are not known in this room and create
