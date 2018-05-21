@@ -99,7 +99,7 @@ module.exports.loop = function() {
         if (colonySpawnSites.length && colonySpawnSites[0].id) {
           Memory.colonySpawnSiteID = colonySpawnSites[0].id;
         }
-      } else if (!Game.getObjectById(Memory.colonySpawnSiteID)) {
+      } else if (Memory.colonySpawnSiteID && !Game.getObjectById(Memory.colonySpawnSiteID)) {
         // If we can't find the spawn constructionSite, it either finished
         // or was destroyed. Either way, delete the colony flag.
         console.log('Colony spawn finished/destroyed. removing colony flag in: ' + colonyFlag.room.name);
