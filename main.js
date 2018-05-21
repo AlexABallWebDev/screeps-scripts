@@ -53,6 +53,12 @@ module.exports.loop = function() {
     }
   }
 
+  // count my rooms (used for determining if I can expand)
+  let myRooms = _.filter(Game.rooms, (room) => {
+    return room.controller && room.controller.my;
+  });
+  let myRoomCount = _.size(myRooms);
+
   towerFunctions.runTowerLogic();
 
   for (let roomName in Game.rooms) {
@@ -153,7 +159,7 @@ module.exports.loop = function() {
           spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
         } else if (_.size(creepsOfRole.upgrader) < 2) {
           spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
-        } else if (Game.flags['newClaim'] && !Memory.claimerName) {
+        } else if (myRoomCount < Game.gcl.level && Game.flags['newClaim'] && !Memory.claimerName) {
           let claimerName = spawnFunctions.createCreepWithRole(spawn, 'claimer', creepBody.claimer);
           if (typeof claimerName == 'string') {
             Memory.claimerName = claimerName;
