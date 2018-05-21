@@ -59,7 +59,7 @@ function respawn() {
       Memory.flags = {};
       Memory.rooms = {};
       Memory.spawns = {};
-      Memory.colonists = {};
+      Memory.colonistNames = {};
 
       Memory.controllerSign = "ALL YOUR BASE ARE BELONG TO US.";
 
