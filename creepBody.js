@@ -113,6 +113,9 @@ module.exports = {
       }
     }
 
+    if (!body.length) {
+      console.log('Empty trimmedBody being returned.');
+    }
     return body;
   }
 };

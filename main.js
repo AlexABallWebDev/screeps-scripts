@@ -156,7 +156,9 @@ module.exports.loop = function() {
           spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
         } else if (_.size(creepsOfRole.upgrader) < 2) {
           spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
-        } else if (myRoomCount < Game.gcl.level && Game.flags['newClaim'] && !Memory.claimerName) {
+        } else if (myRoomCount < Game.gcl.level &&
+          Game.flags['newClaim'] && !Memory.claimerName &&
+          creepBody.bodyCost(creepBody.claimer) <= room.energyCapacityAvailable) {
           let claimerName = spawnFunctions.createCreepWithRole(spawn, 'claimer', creepBody.claimer);
           if (typeof claimerName == 'string') {
             Memory.claimerName = claimerName;
