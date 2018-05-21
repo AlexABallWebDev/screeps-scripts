@@ -79,11 +79,8 @@ module.exports.loop = function() {
       claimFlag.remove();
     }
 
-    // if there is a newColony in one of my rooms, check if
-    // there is a spawn in it. if so, then delete the newColony flag.
-    // If not, check if there is a
-    // constructionSite for a spawn in it. if not, place a constructionSite
-    // on the position of the newColony flag.
+    // handle a new colony. Decides to build a spawn in,
+    // abandon, or finish a colony.
     let colonyFlag = Game.flags['newColony'];
     if (colonyFlag) {
       if (!colonyFlag.room.controller.my) {
