@@ -4,6 +4,7 @@ screeps-scripts
 
 scripts for the JavaScript-based MMO Screeps.
 */
+import { ErrorMapper } from "utils/ErrorMapper";
 
 const towerFunctions = require('./tower');
 
@@ -21,7 +22,7 @@ const roleCourier = require('./role.courier');
 const roleClaimer = require('./role.claimer');
 const roleColonist = require('./role.colonist');
 
-const roles = {
+const roles: any = {
   defender: roleDefender,
   harvester: roleHarvester,
   upgrader: roleUpgrader,
@@ -39,7 +40,7 @@ const profiler = require('screeps-profiler');
 profiler.enable();
 
 //Begin main loop.
-module.exports.loop = function() {
+export const loop = ErrorMapper.wrapLoop(() => {
   profiler.wrap(function() {
     utilityFunctions.respawn();
     utilityFunctions.clearDeadCreepMemory();
@@ -58,9 +59,7 @@ module.exports.loop = function() {
     }
 
     // count my rooms (used for determining if I can expand)
-    let myRooms = _.filter(Game.rooms, (room) => {
-      return room.controller && room.controller.my;
-    });
+    let myRooms = _.filter(Game.rooms, { controller: { my: true}});
     let myRoomCount = _.size(myRooms);
 
     towerFunctions.runTowerLogic();
@@ -77,7 +76,7 @@ module.exports.loop = function() {
         !Game.flags['newColony'] &&
         Game.rooms[claimFlag.pos.roomName] &&
         Game.rooms[claimFlag.pos.roomName].controller &&
-        Game.rooms[claimFlag.pos.roomName].controller.my) {
+        Game.rooms[claimFlag.pos.roomName].controller!.my) {
         // replace newClaim with newColony in the same position
         claimFlag.pos.createFlag('newColony', COLOR_PURPLE);
         claimFlag.remove();
@@ -87,18 +86,16 @@ module.exports.loop = function() {
       // abandon, or finish a colony.
       let colonyFlag = Game.flags['newColony'];
       if (colonyFlag) {
-        if (!colonyFlag.room.controller.my) {
+        if (!colonyFlag.room!.controller!.my) {
           // If the colony is in a room that is not mine, abandon it.
-          console.log('Colony room not owned by me. Abandoning colony: ' + colonyFlag.room.name);
+          console.log('Colony room not owned by me. Abandoning colony: ' + colonyFlag.room!.name);
           Memory.colonySpawnSiteID = undefined;
           colonyFlag.remove();
         } else if (!Memory.colonySpawnSiteID) {
           // If the spawn constructionSite is not in memory, get it.
           colonyFlag.pos.createConstructionSite(STRUCTURE_SPAWN);
-          let colonySpawnSites = colonyFlag.room.find(FIND_MY_CONSTRUCTION_SITES, {
-            filter: {
-              structureType: STRUCTURE_SPAWN
-            }
+          let colonySpawnSites = colonyFlag.room!.find(FIND_MY_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => constructionSite.structureType === STRUCTURE_SPAWN
           });
           if (colonySpawnSites.length && colonySpawnSites[0].id) {
             Memory.colonySpawnSiteID = colonySpawnSites[0].id;
@@ -106,13 +103,13 @@ module.exports.loop = function() {
         } else if (Memory.colonySpawnSiteID && !Game.getObjectById(Memory.colonySpawnSiteID)) {
           // If we can't find the spawn constructionSite, it either finished
           // or was destroyed. Either way, delete the colony flag.
-          console.log('Colony spawn finished/destroyed. removing colony flag in: ' + colonyFlag.room.name);
+          console.log('Colony spawn finished/destroyed. removing colony flag in: ' + colonyFlag.room!.name);
           Memory.colonySpawnSiteID = undefined;
           colonyFlag.remove();
         }
       }
 
-      let creepsOfRole = {};
+      let creepsOfRole: any = {};
 
       for (let roleName in roles) {
         creepsOfRole[roleName] = {};
@@ -134,9 +131,7 @@ module.exports.loop = function() {
         roomFunctions.createTowerAssignments(room);
 
         let spawns = room.find(FIND_MY_STRUCTURES, {
-          filter: {
-            structureType: STRUCTURE_SPAWN
-          }
+          filter: (structure) => structure.structureType === STRUCTURE_SPAWN
         });
 
         for (let spawnIndex in spawns) {
@@ -185,4 +180,4 @@ module.exports.loop = function() {
       }
     }
   });
-};
+});
