@@ -41,7 +41,7 @@ profiler.enable();
 
 //Begin main loop.
 export const loop = ErrorMapper.wrapLoop(() => {
-  profiler.wrap(function() {
+  profiler.wrap(() => {
     utilityFunctions.respawn();
     utilityFunctions.clearDeadCreepMemory();
     utilityFunctions.clearMissingFlagMemory();
