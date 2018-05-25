@@ -7,10 +7,11 @@ export class ErrorMapper {
 
   public static get consumer(): SourceMapConsumer {
     if (this._consumer == null) {
-      this._consumer = new SourceMapConsumer(require("main.js.map"));
+      // Cast to any due to Typescript overprotectiveness.
+      this._consumer = new SourceMapConsumer(require("main.js.map")) as any;
     }
 
-    return this._consumer;
+    return this._consumer!;
   }
 
   // Cache previously mapped traces to improve performance
