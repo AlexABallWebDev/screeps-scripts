@@ -36,7 +36,7 @@ const roles: any = {
 /**Diagnostic and utility functions*/
 const utilityFunctions = require('./functions');
 
-const profiler = require('screeps-profiler');
+import profiler from "screeps-profiler";
 profiler.enable();
 
 //Begin main loop.

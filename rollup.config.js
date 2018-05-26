@@ -14,6 +14,21 @@ if (!dest) {
   throw new Error('Invalid upload destination');
 }
 
+// In Screeps, require works different and expects actual code
+// This "plugin" merely prepends "module.exports = " to the source map so that it can be loaded in Screeps properly
+function exportSourceMaps() {
+  return {
+    name: "export-source-maps",
+    ongenerate: function(options, bundle) {
+      let oldToString = bundle.map.toString;
+      bundle.map.toString = function() {
+        console.log("Adding module export to source map");
+        return "module.exports = " + oldToString.apply(this, arguments);
+      }
+    }
+  };
+}
+
 export default {
   input: 'src/main.ts',
   output: {
@@ -27,6 +42,7 @@ export default {
     resolve(),
     commonjs(),
     typescript({tsconfig: './tsconfig.json'}),
-    screeps({config: cfg, dryRun: cfg == null})
+    screeps({config: cfg, dryRun: cfg == null}),
+    exportSourceMaps()
   ]
 };
