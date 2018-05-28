@@ -1,4 +1,4 @@
-let roomPositionFunctions = require('./roomPosition');
+import * as roomPositionFunctions from "./roomPosition";
 
 /**
 Wrapper for room.createConstructionSite(). Returns ERR_INVALID_TARGET if there
@@ -9,10 +9,11 @@ like room.createConstructionSite().
 @param {Room} room
 @param {number} x
 @param {number} y
-@param {string} structureType
+@param {BuildableStructureConstant} structureType
 @param {string} flagName
 */
-function createConstructionSite(room, x, y, structureType, flagName = undefined) {
+export function createConstructionSite(room: Room, x: number, y: number,
+  structureType: BuildableStructureConstant, flagName: string | undefined = undefined): ScreepsReturnCode {
   //get objects on the given position
   let flags = room.lookForAt(LOOK_FLAGS, x, y);
 
@@ -35,19 +36,22 @@ Also attempts to rebuild the container if there is no container on the flag.
 @param {Room} room
 @param {RoomPosition} startPosition
 */
-function placeUpgraderContainer(room, startPosition) {
+export function placeUpgraderContainer(room: Room, startPosition: RoomPosition): void {
   let flagName = room.name + " upContainer";
   let flag = Memory.flags[flagName];
   if (!flag) {
     let upContainerPosition = placeBuildingAdjacentToPathDestination(startPosition,
-      room.controller.pos, STRUCTURE_CONTAINER);
+      room.controller!.pos, STRUCTURE_CONTAINER);
 
-    if (upContainerPosition != ERR_RCL_NOT_ENOUGH) {
+    if (upContainerPosition != ERR_RCL_NOT_ENOUGH &&
+      upContainerPosition != ERR_NOT_FOUND &&
+      upContainerPosition != ERR_INVALID_TARGET) {
+      upContainerPosition = upContainerPosition as RoomPosition;
       room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
       Memory.flags[flagName] = Game.flags[flagName].pos;
     } else {
       console.log("roomConstruction.js: placeUpgraderContainer failed to place upgraderContainer " +
-        "due to ERR_RCL_NOT_ENOUGH error.");
+        "due to error: " + upContainerPosition);
     }
   } else {
     createConstructionSite(room, flag.x, flag.y, STRUCTURE_CONTAINER, flagName);
@@ -59,17 +63,13 @@ Returns the number of extensions and extension construction sites
 in the room.
 @param {Room} room
 */
-function countExtensions(room) {
-  let extensions = room.find(FIND_MY_STRUCTURES, {
-    filter: {
-      structureType: STRUCTURE_EXTENSION
-    }
+export function countExtensions(room: Room): number {
+  let extensions: any[] = room.find(FIND_MY_STRUCTURES, {
+    filter: (structure) => structure.structureType === STRUCTURE_EXTENSION
   });
 
-  let extensionConstructionSites = room.find(FIND_MY_CONSTRUCTION_SITES, {
-    filter: {
-      structureType: STRUCTURE_EXTENSION
-    }
+  let extensionConstructionSites: any[] = room.find(FIND_MY_CONSTRUCTION_SITES, {
+    filter: (constructionSite) => constructionSite.structureType === STRUCTURE_EXTENSION
   });
 
   return _.size(extensions.concat(extensionConstructionSites));
@@ -81,14 +81,14 @@ numberOfConstructionSites sites of type structureType spaced dotLength apart.
 dotLength is optional and defaults to 0.
 Returns the position of the last constructionSite placed.
 @param {RoomPosition} position
-@param {number} direction
-@param {number} structureType
+@param {DirectionConstant} direction
+@param {BuildableStructureConstant} structureType
 @param {number} numberOfConstructionSites
 @param {number} dotLength = 0
 */
-function placeConstructionSitesInALine(position, direction, structureType,
-  numberOfConstructionSites,
-  dotLength = 0) {
+export function placeConstructionSitesInALine(position: RoomPosition, direction: DirectionConstant, structureType: BuildableStructureConstant,
+  numberOfConstructionSites: number,
+  dotLength: number = 0): RoomPosition {
   let positionOfLastConstructionSite = position;
 
   for (let i = numberOfConstructionSites; i > 0; i--) {
@@ -106,9 +106,10 @@ function placeConstructionSitesInALine(position, direction, structureType,
 Places extension construction sites around the given corners until the
 maximum number of extensions have been placed in the given room.
 @param {Room} room
+@param {RoomPosition} position
 */
-function addExtensionsToRoom(room, position) {
-  let maxExtensions = CONTROLLER_STRUCTURES.extension[room.controller.level];
+export function addExtensionsToRoom(room: Room, position: RoomPosition): void {
+  let maxExtensions = CONTROLLER_STRUCTURES.extension[room.controller!.level];
 
   //skip every other square so creeps have room to move.
   const DOT_LENGTH = 1;
@@ -158,7 +159,8 @@ path between startPosition and endPosition.
 @param {RoomPosition} endPosition
 @param {number} structureType
 */
-function placeBuildingAdjacentToPathDestination(startPosition, endPosition, structureType) {
+export function placeBuildingAdjacentToPathDestination(startPosition: RoomPosition,
+  endPosition: RoomPosition, structureType: BuildableStructureConstant): RoomPosition | ScreepsReturnCode {
   return placeBuildingAdjacentToPath(startPosition, endPosition, structureType);
 }
 
@@ -169,11 +171,12 @@ endPosition, while still placing it adjacent to (but not on) the path between
 startPosition and endPosition.
 @param {RoomPosition} startPosition
 @param {RoomPosition} endPosition
-@param {number} structureType
+@param {BuildableStructureConstant} structureType
 @param {number} stepsFromDestination
 */
-function placeBuildingAdjacentToPath(startPosition, endPosition, structureType,
-  stepsFromDestination = 1) {
+export function placeBuildingAdjacentToPath(startPosition: RoomPosition,
+  endPosition: RoomPosition, structureType: BuildableStructureConstant,
+  stepsFromDestination: number = 1): RoomPosition | ERR_RCL_NOT_ENOUGH | ERR_NOT_FOUND | ERR_INVALID_TARGET {
   let room = Game.rooms[startPosition.roomName];
   let path = startPosition.findPathTo(endPosition, {
     ignoreCreeps: true
@@ -190,10 +193,10 @@ function placeBuildingAdjacentToPath(startPosition, endPosition, structureType,
       let adjacentObjects = roomPositionFunctions.getAdjacentObjects(new RoomPosition(step.x, step.y, room.name));
 
       //check each adjacent position to this position
-      for (let yCoordinate in adjacentObjects) {
-        yCoordinate = parseInt(yCoordinate);
-        for (let xCoordinate in adjacentObjects[yCoordinate]) {
-          xCoordinate = parseInt(xCoordinate);
+      for (let stringYCoordinate in adjacentObjects) {
+        const yCoordinate = parseInt(stringYCoordinate);
+        for (let stringXCoordinate in adjacentObjects[yCoordinate]) {
+          const xCoordinate = parseInt(stringXCoordinate);
 
           //if the position we are checking is not on the path, try to build here.
           if (!(xCoordinate == previousStep.x && yCoordinate == previousStep.y) &&
@@ -214,8 +217,14 @@ function placeBuildingAdjacentToPath(startPosition, endPosition, structureType,
         }
       }
     }
-    console.log("roomConstruction.js: placeBuildingAdjacentToPathDestination constructionSite " +
-      "not found.");
+    console.log("roomConstruction.js: placeBuildingAdjacentToPathDestination " +
+      "valid constructionSite not found along path between startPosition and " +
+      "endDestination.");
+    return ERR_NOT_FOUND;
+  } else {
+    console.log("roomConstruction.js: placeBuildingAdjacentToPathDestination " +
+    "cannot find path from startPosition to endDestination.");
+    return ERR_INVALID_TARGET;
   }
 }
 
@@ -224,11 +233,12 @@ Places tower flags and constructionSites based on tower assignments for the
 given room if the max number of towers in the room has not been reached.
 Also replaces towers by placing a tower constructionSite on tower flags.
 @param {Room} room
+@param {RoomPosition} startPosition
 */
-function placeTowers(room, startPosition) {
+export function placeTowers(room: Room, startPosition: RoomPosition): void {
   if (room.memory.towerAssignments) {
     let numberOfTowersAssigned = 0;
-    let towerAssignmentsToRemove = [];
+    let towerAssignmentsToRemove: any[] = [];
     _.forEach(room.memory.towerAssignments, (towerFlagsContainer, towerAssignmentName) => {
       _.forEach(towerFlagsContainer, (towerFlagPosition, towerFlagName) => {
         //mark tower assignments that are missing a flag.
@@ -255,7 +265,7 @@ function placeTowers(room, startPosition) {
       }
     }
 
-    if (numberOfTowersAssigned < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level]) {
+    if (numberOfTowersAssigned < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller!.level]) {
 
       //iterate over tower assignments, find the lowest tower count.
       let lowestTowerAssignment;
@@ -271,7 +281,10 @@ function placeTowers(room, startPosition) {
       if (lowestTowerAssignment) {
         //build a tower near the lowest count tower assignment and add it to the assignment.
         let towerPosition = placeBuildingAdjacentToPathDestination(startPosition, lowestTowerAssignment.pos, STRUCTURE_TOWER);
-        if (towerPosition && towerPosition != ERR_RCL_NOT_ENOUGH) {
+        if (towerPosition != ERR_RCL_NOT_ENOUGH &&
+          towerPosition != ERR_NOT_FOUND &&
+          towerPosition != ERR_INVALID_TARGET) {
+          towerPosition = towerPosition as RoomPosition
           let towerFlagName = towerPosition.createFlag(lowestTowerAssignment.id + " tower " + lowestTowerCount, COLOR_BLUE);
 
           //save tower flag to towerAssignments
@@ -282,12 +295,3 @@ function placeTowers(room, startPosition) {
     }
   }
 }
-
-module.exports = {
-  placeUpgraderContainer,
-  countExtensions,
-  placeConstructionSitesInALine,
-  addExtensionsToRoom,
-  placeBuildingAdjacentToPathDestination,
-  placeTowers
-};

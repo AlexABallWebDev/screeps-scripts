@@ -1,9 +1,9 @@
-const creepBehavior = require('./behavior.creep');
+import * as creepBehavior from "./behavior.creep";
 
-const roleColonist = {
+export const roleColonist = {
 
   /** @param {Creep} creep **/
-  run: function(creep) {
+  run(creep: Creep) {
     // if not in target room, go to target room.
     let colonyFlag = Game.flags['newColony'];
     if (colonyFlag && creep.room.name != colonyFlag.pos.roomName) {
@@ -36,12 +36,12 @@ const roleColonist = {
         // in memory, get it.
         if (!creep.memory.colonySpawnSiteID) {
           creep.memory.colonySpawnSiteID = creep.room.find(FIND_MY_CONSTRUCTION_SITES, {
-            filter: {
-              structureType: STRUCTURE_SPAWN
+            filter: (structure) => {
+              return structure.structureType == STRUCTURE_SPAWN;
             }
           })[0].id;
         }
-        let colonySpawn = Game.getObjectById(creep.memory.colonySpawnSiteID);
+        let colonySpawn = Game.getObjectById(creep.memory.colonySpawnSiteID) as ConstructionSite;
         if (creep.build(colonySpawn) == ERR_NOT_IN_RANGE) {
           creep.moveTo(colonySpawn, {
             visualizePathStyle: {
@@ -53,5 +53,3 @@ const roleColonist = {
     }
   }
 };
-
-module.exports = roleColonist;

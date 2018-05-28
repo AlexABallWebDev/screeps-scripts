@@ -1,17 +1,17 @@
-const creepBehavior = require('./behavior.creep');
+import * as creepBehavior from "./behavior.creep";
 
-const roleHarvester = {
+export const roleHarvester = {
 
   /** @param {Creep} creep **/
-  run: function(creep) {
+  run(creep: Creep) {
     if (creep.memory.carting && creep.carry.energy === 0) {
       creep.memory.carting = false;
-      creep.say('🌄 harvest');
+      creep.say('harvesting');
     }
 
     if (!creep.memory.carting && creep.carry.energy == creep.carryCapacity) {
       creep.memory.carting = true;
-      creep.say('🔄 carting');
+      creep.say('carting');
     }
 
     if (!creep.memory.carting) {
@@ -21,5 +21,3 @@ const roleHarvester = {
     }
   }
 };
-
-module.exports = roleHarvester;

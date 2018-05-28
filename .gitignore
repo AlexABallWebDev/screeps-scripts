@@ -1,3 +1,6 @@
+# My build script which copies built scripts to local server
+Build-Screeps.ps1
+
 # yarn lock file
 /yarn.lock
 

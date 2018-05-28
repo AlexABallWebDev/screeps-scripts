@@ -1,14 +1,13 @@
-let spawnFunctions = require('./spawn');
-let roomPositionFunctions = require('./roomPosition');
-let creepBody = require('./creepBody');
-
+import * as creepBody from "./creepBody";
+import * as roomPositionFunctions from "./roomPosition";
+import * as spawnFunctions from "./spawn";
 /**
 Check for sources that are not known in this room and create
 a list of possible sourceAssignments for this room.
 Also marks miningSpots with flags.
 @param {Room} room
 */
-function checkForSources(room) {
+export function checkForSources(room: Room): void {
   if (!room.memory.sourceAssignments) {
     room.memory.sourceAssignments = {};
 
@@ -16,12 +15,12 @@ function checkForSources(room) {
       if (!room.memory.sourceAssignments[source.id]) {
         room.memory.sourceAssignments[source.id] = {};
         room.memory.sourceAssignments[source.id].minerName = "none";
-        let adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true);
+        let adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true) as LookAtResultWithPos[];
         let miningSpotNumber = 0;
         for (let i in adjacentObjects) {
           if (adjacentObjects[i].terrain && adjacentObjects[i].terrain != "wall") {
             let flagPosition = new RoomPosition(adjacentObjects[i].x, adjacentObjects[i].y, room.name);
-            let flagName = source.id + " miningSpot " + miningSpotNumber;
+            let flagName: any = source.id + " miningSpot " + miningSpotNumber;
             flagName = flagPosition.createFlag(flagName, COLOR_YELLOW);
             Memory.flags[flagName] = flagPosition;
             miningSpotNumber++;
@@ -36,20 +35,20 @@ function checkForSources(room) {
 Check if a source is missing a miner.
 @param {Room} room
 */
-function findSourceIdMissingMiner(room) {
-  let result = 0;
+export function findSourceIdMissingMiner(room: Room): string | undefined {
+  let result: string | undefined;
 
   _.forEach(room.memory.sourceAssignments, (sourceAssignment, sourceId) => {
-    let miner = Game.creeps[sourceAssignment.minerName];
+    const miner = Game.creeps[sourceAssignment.minerName];
     if (!miner) {
       result = sourceId;
     } else if (!miner.spawning && sourceAssignment.path && sourceAssignment.path.length) {
-      //if the miner will die in the time it takes a new miner to arrive,
-      //then we need a new miner.
-      let distanceFromSource = sourceAssignment.path.length;
-      let MINER_TICKS_PER_MOVE = creepBody.calculateTicksPerMove(creepBody.miner);
-      let MINER_SPAWN_TIME = creepBody.calculateSpawnTime(creepBody.miner);
-      if (miner.ticksToLive < (distanceFromSource * MINER_TICKS_PER_MOVE) + MINER_SPAWN_TIME) {
+      // if the miner will die in the time it takes a new miner to arrive,
+      // then we need a new miner.
+      const distanceFromSource = sourceAssignment.path.length;
+      const MINER_TICKS_PER_MOVE = creepBody.calculateTicksPerMove(creepBody.miner);
+      const MINER_SPAWN_TIME = creepBody.calculateSpawnTime(creepBody.miner);
+      if (miner.ticksToLive! < (distanceFromSource * MINER_TICKS_PER_MOVE) + MINER_SPAWN_TIME) {
         result = sourceId;
       }
     }
@@ -62,18 +61,18 @@ function findSourceIdMissingMiner(room) {
 Build a miner for the given room and sourceId.
 @param {Room} room
 @param {string} sourceId
-@param {Spawn} spawn
-@param {array} body = undefined
-@param {String} name = undefined
+@param {StructureSpawn} spawn
+@param {BodyPartConstant[]} body
+@param {string} name = undefined
 */
-function buildMiner(room, sourceId, spawn, body = undefined, name = undefined) {
+export function buildMiner(room: Room, sourceId: string, spawn: StructureSpawn, body: BodyPartConstant[], name: string | undefined = undefined): string | ScreepsReturnCode | undefined {
   if (sourceId) {
-    let newCreepName = spawnFunctions.createCreepWithMemory(spawn, {
+    let newCreepName: any = spawnFunctions.createCreepWithMemory(spawn, {
       role: "miner",
       assignedSourceId: sourceId
     }, body, name);
 
-    let minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId), {
+    let minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId) as Source, {
       ignoreCreeps: true
     });
     room.memory.sourceAssignments[sourceId].path = minerPath;
@@ -82,15 +81,16 @@ function buildMiner(room, sourceId, spawn, body = undefined, name = undefined) {
       room.memory.sourceAssignments[sourceId].minerName = newCreepName;
     }
 
-    return newCreepName;
+    return newCreepName as string | ScreepsReturnCode;
   }
+  return undefined;
 }
 
 /**
 Creates tower assignments in memory for the given room.
 @param {Room} room
 */
-function createTowerAssignments(room) {
+export function createTowerAssignments(room: Room): void {
   if (!room.memory.towerAssignments) {
     room.memory.towerAssignments = {};
 
@@ -103,10 +103,3 @@ function createTowerAssignments(room) {
     }
   }
 }
-
-module.exports = {
-  checkForSources,
-  findSourceIdMissingMiner,
-  buildMiner,
-  createTowerAssignments
-};

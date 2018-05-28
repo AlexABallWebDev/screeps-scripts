@@ -1,37 +1,37 @@
-let creepBody = require('./creepBody');
+import * as creepBody from "./creepBody";
 
 /**
 Creates a creep with the given memory.
 Optionally, a body and name can be provided.
-@param {Spawn} spawn
-@param {Object} memory
-@param {array} body = [WORK, WORK, CARRY, MOVE]
+@param {StructureSpawn} spawn
+@param {any} memory
+@param {BodyPartConstant[]} body = [WORK, WORK, CARRY, MOVE]
 @param {string} name = undefined
 */
-function createCreepWithMemory(spawn, memory, body = [WORK, CARRY, MOVE, MOVE],
-  name = undefined) {
-  let trimmedBody = creepBody.trimExtraParts(spawn.room, body);
-  let sortedBody = creepBody.sortBody(trimmedBody);
+export function createCreepWithMemory(spawn: StructureSpawn, memory: any, body: BodyPartConstant[] = [WORK, CARRY, MOVE, MOVE],
+  name: any = undefined): string {
+  const trimmedBody: BodyPartConstant[] = creepBody.trimExtraParts(spawn.room, body);
+  const sortedBody = creepBody.sortBody(trimmedBody);
 
-  name = spawn.createCreep(sortedBody, name, memory);
+  const nameOutput = spawn.createCreep(sortedBody, name, memory);
 
-  if (name != ERR_NOT_ENOUGH_ENERGY && name != ERR_BUSY) {
-    console.log('Room ' + spawn.room.name + ': Spawning new ' + memory.role + ': ' + name);
+  if (nameOutput != ERR_NOT_ENOUGH_ENERGY && nameOutput != ERR_BUSY) {
+    console.log('Room ' + spawn.room.name + ': Spawning new ' + memory.role + ': ' + nameOutput);
   }
 
-  return name;
+  return nameOutput as string;
 }
 
 /**
 Creates a creep with the given role.
 Optionally, a body and name can be provided.
-@param {Spawn} spawn
+@param {StructureSpawn} spawn
 @param {string} role
-@param {array} body = [WORK, WORK, CARRY, MOVE]
+@param {BodyPartConstant[]} body = [WORK, WORK, CARRY, MOVE]
 @param {string} name = undefined
 */
-function createCreepWithRole(spawn, role, body = [WORK, WORK, CARRY, MOVE],
-  name = undefined) {
+export function createCreepWithRole(spawn: StructureSpawn, role: string, body: BodyPartConstant[] = [WORK, WORK, CARRY, MOVE],
+  name: any = undefined): string {
   return createCreepWithMemory(spawn, {
     role: role
   }, body, name);
@@ -39,9 +39,9 @@ function createCreepWithRole(spawn, role, body = [WORK, WORK, CARRY, MOVE],
 
 /**
 Display a visual if the spawn is creating a creep.
-@param {Spawn} spawn
+@param {StructureSpawn} spawn
 */
-function displayCreateCreepVisual(spawn) {
+export function displayCreateCreepVisual(spawn: StructureSpawn) {
   if (spawn.spawning) {
     let spawningCreep = Game.creeps[spawn.spawning.name];
     let progressPercentage = Math.round(((spawn.spawning.needTime -
@@ -56,9 +56,3 @@ function displayCreateCreepVisual(spawn) {
       });
   }
 }
-
-module.exports = {
-  createCreepWithMemory,
-  createCreepWithRole,
-  displayCreateCreepVisual
-};

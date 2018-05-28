@@ -5,7 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "screeps-profiler": "^2.0.1",
-    "source-map": "^0.7.3"
+    "source-map": "^0.6.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.109",

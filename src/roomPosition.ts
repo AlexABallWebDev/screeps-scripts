@@ -1,9 +1,9 @@
 /**
 Find an adjacent position for the given position and direction
 @param {RoomPosition} position
-@param {number} direction
+@param {DirectionConstant} direction
 */
-function findAdjacent(position, direction) {
+export function findAdjacent(position: RoomPosition, direction: DirectionConstant): RoomPosition {
   switch (direction) {
     case TOP:
       return new RoomPosition(position.x, position.y - 1, position.roomName);
@@ -19,14 +19,10 @@ function findAdjacent(position, direction) {
       return new RoomPosition(position.x - 1, position.y + 1, position.roomName);
     case LEFT:
       return new RoomPosition(position.x - 1, position.y, position.roomName);
-    case TOP_LEFT:
+    default: // case TOP_LEFT:
       return new RoomPosition(position.x - 1, position.y - 1, position.roomName);
-    default:
-      return 0;
   }
 }
-
-
 
 /**
 Finds and returns an object (or array if isArray is true) containing
@@ -35,28 +31,29 @@ is found from room.lookAtArea.
 @param {RoomPosition} position
 @param {boolean} isArray = false
 */
-function getAdjacentObjects(position, isArray = false) {
-  let room = Game.rooms[position.roomName];
-  let adjacentObjects = room.lookAtArea(position.y - 1, position.x - 1,
-    position.y + 1, position.x + 1, isArray);
+export function getAdjacentObjects(position: RoomPosition, isArray: boolean = false): LookAtResultMatrix | LookAtResultWithPos[] {
+  const room = Game.rooms[position.roomName];
 
-  //remove objects at the given position so we are left with only adjacent objects.
+  // remove objects at the given position so we are left with only adjacent objects.
   if (isArray) {
+    const adjacentObjects: LookAtResultWithPos[] = room.lookAtArea(position.y - 1, position.x - 1,
+      position.y + 1, position.x + 1, isArray) as LookAtResultWithPos[];
+
     for (let i = 0; i < adjacentObjects.length; i++) {
-      let adjacentObject = adjacentObjects[i];
+      const adjacentObject = adjacentObjects[i];
       if (adjacentObject.x == position.x && adjacentObject.y == position.y) {
         adjacentObjects.splice(i, 1);
         i--;
       }
     }
+
+    return adjacentObjects;
   } else {
-    adjacentObjects[position.y][position.x] = undefined;
+    const adjacentObjects: LookAtResultMatrix = room.lookAtArea(position.y - 1, position.x - 1,
+      position.y + 1, position.x + 1, isArray) as LookAtResultMatrix;
+
+    delete adjacentObjects[position.y][position.x];
+
+    return adjacentObjects;
   }
-
-  return adjacentObjects;
 }
-
-module.exports = {
-  findAdjacent,
-  getAdjacentObjects
-};

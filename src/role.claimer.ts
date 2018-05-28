@@ -1,7 +1,7 @@
-let roleClaimer = {
+export const roleClaimer = {
 /** @param {Creep} creep **/
-  run: (creep) => {
-    let claimFlag = Game.flags['newClaim'];
+  run(creep: Creep)  {
+    const claimFlag = Game.flags['newClaim'];
     if (claimFlag) {
       // Move towards the controller (even if not in the room)
       // until in range to claim the controller.
@@ -12,9 +12,9 @@ let roleClaimer = {
           }
         });
       } else {
-        let claimResult = creep.claimController(creep.room.controller);
+        let claimResult = creep.claimController(creep.room.controller!);
         if (claimResult == ERR_NOT_IN_RANGE) {
-          creep.moveTo(creep.room.controller, {
+          creep.moveTo(creep.room.controller!, {
             visualizePathStyle: {
               stroke: '#B99CFB'
             }
@@ -29,5 +29,3 @@ let roleClaimer = {
     }
   }
 };
-
-module.exports = roleClaimer;

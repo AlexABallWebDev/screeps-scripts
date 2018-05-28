@@ -1,12 +1,12 @@
 /**Only targets with less that this much health will be repaired by towers.*/
-const TOWER_REPAIR_MAX_HEALTH = 100000;
+export const TOWER_REPAIR_MAX_HEALTH = 100000;
 
 /**Minimum energy for towers to save for attacking hostile targets.*/
-const TOWER_MINIMUM_ENERGY = 700;
+export const TOWER_MINIMUM_ENERGY = 700;
 
 /**filter for helping a tower find a target to repair.*/
-const TOWER_REPAIR_TARGET = {
-  filter: (structure) => structure.hits < structure.hitsMax / 4 &&
+export const TOWER_REPAIR_TARGET = {
+  filter: (structure: Structure) => structure.hits < structure.hitsMax / 4 &&
     structure.hits !== undefined &&
     structure.hits > 0
 };
@@ -14,9 +14,9 @@ const TOWER_REPAIR_TARGET = {
 /**
 Runs tower logic for all towers.
 */
-function runTowerLogic() {
-  let towers = _.filter(Game.structures, (structure) =>
-    structure.structureType == STRUCTURE_TOWER);
+export function runTowerLogic() {
+  let towers: StructureTower[] = _.filter(Game.structures, (structure) =>
+    structure.structureType == STRUCTURE_TOWER) as StructureTower[];
   for (let tower of towers) {
 
     let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -54,7 +54,3 @@ function runTowerLogic() {
     }
   }
 }
-
-module.exports = {
-  runTowerLogic
-};

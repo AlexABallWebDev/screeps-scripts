@@ -6,7 +6,7 @@ reduce its length.
 /**
 Clears memory of creeps that are not currently alive in Game.creeps.
 */
-function clearDeadCreepMemory() {
+export function clearDeadCreepMemory(): void {
   for (let name in Memory.creeps) {
     if (!Game.creeps[name]) {
       delete Memory.creeps[name];
@@ -18,7 +18,7 @@ function clearDeadCreepMemory() {
 /**
 Clears memory of flags that are not currently in Game.flags.
 */
-function clearMissingFlagMemory() {
+export function clearMissingFlagMemory(): void {
   for (let name in Memory.flags) {
     if (!Game.flags[name]) {
       delete Memory.flags[name];
@@ -32,7 +32,7 @@ Saves a message to memory so that I can see it after returning
 to the game.
 @param {string} message
 */
-function saveMessage(message) {
+export function saveMessage(message: string): void {
   if (!Memory.myMessages) {
     Memory.myMessages = [];
   }
@@ -44,10 +44,10 @@ function saveMessage(message) {
 Bootstrapper for colony respawn. Checks if respawn occurred, then
 runs respawn specific code.
 */
-function respawn() {
+export function respawn(): void {
   if (_.size(Game.rooms) == 1 &&
     Game.spawns.Spawn1 &&
-    Game.spawns.Spawn1.room.controller.level == 1) {
+    Game.spawns.Spawn1.room.controller!.level == 1) {
     if (!Memory.respawnComplete) {
       Memory.respawnComplete = true;
 
@@ -74,24 +74,16 @@ function respawn() {
 Simple diagnostics recording when a spawn's room controller levels up.
 @param {Room} room
 */
-function checkForLevelUp(room) {
+export function checkForLevelUp(room: Room) {
   if (!room.memory.controllerLevel) {
     room.memory.controllerLevel = 0;
   }
 
-  if (room.memory.controllerLevel < room.controller.level) {
-    room.memory.controllerLevel = room.controller.level;
+  if (room.memory.controllerLevel < room.controller!.level) {
+    room.memory.controllerLevel = room.controller!.level;
     let levelUpMessage = room.name + ' controller level up to: ' +
       room.memory.controllerLevel + ' at respawn lifetime: ' +
       (Game.time - Memory.startTime);
     saveMessage(levelUpMessage);
   }
 }
-
-module.exports = {
-  clearDeadCreepMemory,
-  clearMissingFlagMemory,
-  saveMessage,
-  respawn,
-  checkForLevelUp
-};

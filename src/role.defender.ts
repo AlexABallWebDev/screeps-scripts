@@ -1,7 +1,7 @@
-const roleDefender = {
+export const roleDefender = {
   /** @param {Creep} creep **/
-  run: function(creep) {
-    let target = Game.getObjectById(creep.memory.targetHostileCreep);
+  run(creep: Creep) {
+    let target = Game.getObjectById(creep.memory.targetHostileCreep) as Creep;
     if (!target || target.room == creep.room) {
       target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
       if (target) {
@@ -19,5 +19,3 @@ const roleDefender = {
     }
   }
 };
-
-module.exports = roleDefender;

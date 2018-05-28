@@ -1,17 +1,17 @@
-const creepBehavior = require('./behavior.creep');
+import * as creepBehavior from "./behavior.creep";
 
-const roleBuilder = {
+export const roleBuilder = {
 
   /** @param {Creep} creep **/
-  run: function(creep) {
+  run(creep: Creep) {
 
     if (creep.memory.building && creep.carry.energy === 0) {
       creep.memory.building = false;
-      creep.say('🔄 refuel');
+      creep.say('refuel');
     }
     if (!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
       creep.memory.building = true;
-      creep.say('🚧 build');
+      creep.say('build');
     }
 
     if (creep.memory.building) {
@@ -41,5 +41,3 @@ const roleBuilder = {
     }
   }
 };
-
-module.exports = roleBuilder;
