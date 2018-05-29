@@ -1,6 +1,7 @@
-import * as creepBehavior from "./behavior.creep";
+import profiler from "screeps-profiler";
+import { creepBehavior } from "./behavior.creep";
 
-export const roleColonist = {
+const roleColonist = {
 
   /** @param {Creep} creep **/
   run(creep: Creep) {
@@ -53,3 +54,6 @@ export const roleColonist = {
     }
   }
 };
+
+profiler.registerObject(roleColonist, "role.colonist");
+export { roleColonist };

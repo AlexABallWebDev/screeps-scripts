@@ -1,4 +1,6 @@
-export const roleMiner = {
+import profiler from "screeps-profiler";
+
+const roleMiner = {
   /** @param {Creep} creep **/
   run(creep: Creep) {
     const source = Game.getObjectById(creep.memory.assignedSourceId) as Source;
@@ -11,3 +13,6 @@ export const roleMiner = {
     }
   }
 };
+
+profiler.registerObject(roleMiner, "role.miner");
+export { roleMiner };

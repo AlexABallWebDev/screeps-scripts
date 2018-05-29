@@ -1,4 +1,4 @@
-import * as creepBehavior from "./behavior.creep";
+import { creepBehavior } from "./behavior.creep";
 
 export const roleUpgrader = {
 

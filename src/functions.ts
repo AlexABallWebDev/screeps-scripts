@@ -1,89 +1,95 @@
+import profiler from "screeps-profiler";
+
 /**
 This module contains functions. These were pulled out of main.js to
 reduce its length.
 */
-
-/**
-Clears memory of creeps that are not currently alive in Game.creeps.
-*/
-export function clearDeadCreepMemory(): void {
-  for (let name in Memory.creeps) {
-    if (!Game.creeps[name]) {
-      delete Memory.creeps[name];
-      console.log('Clearing non-existing creep memory:', name);
+const utilityFunctions = {
+  /**
+  Clears memory of creeps that are not currently alive in Game.creeps.
+  */
+  clearDeadCreepMemory(): void {
+    for (let name in Memory.creeps) {
+      if (!Game.creeps[name]) {
+        delete Memory.creeps[name];
+        console.log('Clearing non-existing creep memory:', name);
+      }
     }
-  }
-}
+  },
 
-/**
-Clears memory of flags that are not currently in Game.flags.
-*/
-export function clearMissingFlagMemory(): void {
-  for (let name in Memory.flags) {
-    if (!Game.flags[name]) {
-      delete Memory.flags[name];
-      console.log('Clearing non-existing flag memory:', name);
+  /**
+  Clears memory of flags that are not currently in Game.flags.
+  */
+  clearMissingFlagMemory(): void {
+    for (let name in Memory.flags) {
+      if (!Game.flags[name]) {
+        delete Memory.flags[name];
+        console.log('Clearing non-existing flag memory:', name);
+      }
     }
-  }
-}
+  },
 
-/**
-Saves a message to memory so that I can see it after returning
-to the game.
-@param {string} message
-*/
-export function saveMessage(message: string): void {
-  if (!Memory.myMessages) {
-    Memory.myMessages = [];
-  }
-  Memory.myMessages.push(message);
-  console.log(message);
-}
-
-/**
-Bootstrapper for colony respawn. Checks if respawn occurred, then
-runs respawn specific code.
-*/
-export function respawn(): void {
-  if (_.size(Game.rooms) == 1 &&
-    Game.spawns.Spawn1 &&
-    Game.spawns.Spawn1.room.controller!.level == 1) {
-    if (!Memory.respawnComplete) {
-      Memory.respawnComplete = true;
-
-      //record when my colony last respawned
-      Memory.startTime = Game.time;
-
+  /**
+  Saves a message to memory so that I can see it after returning
+  to the game.
+  @param {string} message
+  */
+  saveMessage(message: string): void {
+    if (!Memory.myMessages) {
       Memory.myMessages = [];
-      Memory.creeps = {};
-      Memory.flags = {};
-      Memory.rooms = {};
-      Memory.spawns = {};
-      Memory.colonistNames = {};
-
-      Memory.controllerSign = "ALL YOUR BASE ARE BELONG TO US.";
-
-      saveMessage("Respawn complete. Welcome back, commander.");
     }
-  } else {
-    Memory.respawnComplete = false;
-  }
-}
+    Memory.myMessages.push(message);
+    console.log(message);
+  },
 
-/**
-Simple diagnostics recording when a spawn's room controller levels up.
-@param {Room} room
-*/
-export function checkForLevelUp(room: Room) {
-  if (!room.memory.controllerLevel) {
-    room.memory.controllerLevel = 0;
-  }
+  /**
+  Bootstrapper for colony respawn. Checks if respawn occurred, then
+  runs respawn specific code.
+  */
+  respawn(): void {
+    if (_.size(Game.rooms) == 1 &&
+      Game.spawns.Spawn1 &&
+      Game.spawns.Spawn1.room.controller!.level == 1) {
+      if (!Memory.respawnComplete) {
+        Memory.respawnComplete = true;
 
-  if (room.memory.controllerLevel < room.controller!.level) {
-    room.memory.controllerLevel = room.controller!.level;
-    let levelUpMessage = room.name + ' controller level up to: ' +
-      room.memory.controllerLevel + ' at respawn lifetime: ' +
-      (Game.time - Memory.startTime);
-    saveMessage(levelUpMessage);
+        //record when my colony last respawned
+        Memory.startTime = Game.time;
+
+        Memory.myMessages = [];
+        Memory.creeps = {};
+        Memory.flags = {};
+        Memory.rooms = {};
+        Memory.spawns = {};
+        Memory.colonistNames = {};
+
+        Memory.controllerSign = "ALL YOUR BASE ARE BELONG TO US.";
+
+        this.saveMessage("Respawn complete. Welcome back, commander.");
+      }
+    } else {
+      Memory.respawnComplete = false;
+    }
+  },
+
+  /**
+  Simple diagnostics recording when a spawn's room controller levels up.
+  @param {Room} room
+  */
+  checkForLevelUp(room: Room) {
+    if (!room.memory.controllerLevel) {
+      room.memory.controllerLevel = 0;
+    }
+
+    if (room.memory.controllerLevel < room.controller!.level) {
+      room.memory.controllerLevel = room.controller!.level;
+      let levelUpMessage = room.name + ' controller level up to: ' +
+        room.memory.controllerLevel + ' at respawn lifetime: ' +
+        (Game.time - Memory.startTime);
+      this.saveMessage(levelUpMessage);
+    }
   }
-}
+};
+
+profiler.registerObject(utilityFunctions, "functions");
+export { utilityFunctions };

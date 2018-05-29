@@ -1,4 +1,6 @@
-export const roleClaimer = {
+import profiler from "screeps-profiler";
+
+const roleClaimer = {
 /** @param {Creep} creep **/
   run(creep: Creep)  {
     const claimFlag = Game.flags['newClaim'];
@@ -29,3 +31,6 @@ export const roleClaimer = {
     }
   }
 };
+
+profiler.registerObject(roleClaimer, "role.claimer");
+export { roleClaimer };

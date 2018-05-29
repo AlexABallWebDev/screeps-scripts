@@ -1,6 +1,7 @@
-import * as creepBehavior from "./behavior.creep";
+import profiler from "screeps-profiler";
+import { creepBehavior } from "./behavior.creep";
 
-export const roleHarvester = {
+const roleHarvester = {
 
   /** @param {Creep} creep **/
   run(creep: Creep) {
@@ -21,3 +22,6 @@ export const roleHarvester = {
     }
   }
 };
+
+profiler.registerObject(roleHarvester, "role.harvester");
+export { roleHarvester };

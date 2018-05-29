@@ -1,4 +1,6 @@
-export const roleDefender = {
+import profiler from "screeps-profiler";
+
+const roleDefender = {
   /** @param {Creep} creep **/
   run(creep: Creep) {
     let target = Game.getObjectById(creep.memory.targetHostileCreep) as Creep;
@@ -19,3 +21,6 @@ export const roleDefender = {
     }
   }
 };
+
+profiler.registerObject(roleDefender, "role.defender");
+export { roleDefender };
