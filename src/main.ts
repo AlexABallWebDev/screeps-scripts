@@ -7,7 +7,6 @@ scripts for the JavaScript-based MMO Screeps.
 
 // 3rd party imports
 import profiler from "screeps-profiler";
-profiler.enable();
 
 import { ErrorMapper } from "utils/ErrorMapper";
 
@@ -42,6 +41,7 @@ const roles: any = {
   colonist: roleColonist,
 };
 
+// profiler.enable();
 // Begin main loop.
 export const loop = ErrorMapper.wrapLoop(() => {
   profiler.wrap(() => {
