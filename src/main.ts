@@ -41,7 +41,7 @@ const roles: any = {
   upgrader: roleUpgrader
 };
 
-// profiler.enable();
+// screepsProfiler.enable();
 // Begin main loop.
 export const loop = ErrorMapper.wrapLoop(() => {
   profiler.wrap(() => {
