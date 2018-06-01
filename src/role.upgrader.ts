@@ -24,8 +24,11 @@ export const roleUpgrader = {
     if (creep.memory.upgrading) {
       creepBehavior.upgradeRoomController(creep);
       creepBehavior.repairUpContainer(creep);
-      if (!creep.room.controller!.sign || creep.room.controller!.sign!.text !== Memory.controllerSign) {
-        creepBehavior.signRoomController(creep);
+
+      // Sign room controller if does not have my sign.
+      const message = "ALL YOUR BASE ARE BELONG TO US.";
+      if (!creep.room.controller!.sign || creep.room.controller!.sign!.text !== message) {
+        creepBehavior.signRoomController(creep, message);
       }
     } else {
       creepBehavior.retrieveEnergyForUpgrading(creep);

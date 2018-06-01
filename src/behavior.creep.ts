@@ -245,9 +245,7 @@ const creepBehavior = {
    * Signs the creep's room's controller with my sign.
    * @param {Creep} creep
    */
-  signRoomController(creep: Creep): void {
-    const message = "ALL YOUR BASE ARE BELONG TO US.";
-
+  signRoomController(creep: Creep, message: string): void {
     if (creep.signController(creep.room.controller!, message) === ERR_NOT_IN_RANGE) {
       creep.moveTo(creep.room.controller!, {
         visualizePathStyle: {
