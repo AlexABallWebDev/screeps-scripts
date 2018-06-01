@@ -1,21 +1,27 @@
 import { creepBehavior } from "./behavior.creep";
 
+/**
+ * Builder that takes energy from the upContainer of the room and builds
+ * constructionSites in its room.
+ */
 export const roleBuilder = {
-
-  /** @param {Creep} creep **/
+  /**
+   * Runs role logic on the given creep.
+   * @param {Creep} creep
+   */
   run(creep: Creep) {
 
     if (creep.memory.building && creep.carry.energy === 0) {
       creep.memory.building = false;
-      creep.say('refuel');
+      creep.say("refuel");
     }
-    if (!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
+    if (!creep.memory.building && creep.carry.energy === creep.carryCapacity) {
       creep.memory.building = true;
-      creep.say('build');
+      creep.say("build");
     }
 
     if (creep.memory.building) {
-      let targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+      const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
       if (targets.length) {
         let closestToFinished = targets[0];
         if (targets.length > 1) {
@@ -25,10 +31,10 @@ export const roleBuilder = {
             }
           }
         }
-        if (creep.build(closestToFinished) == ERR_NOT_IN_RANGE) {
+        if (creep.build(closestToFinished) === ERR_NOT_IN_RANGE) {
           creep.moveTo(closestToFinished, {
             visualizePathStyle: {
-              stroke: '#ffffff'
+              stroke: "#ffffff"
             }
           });
         }

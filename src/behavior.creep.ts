@@ -1,30 +1,34 @@
 import profiler from "screeps-profiler";
 
+/**
+ * Contains constants and methods that give Creeps commands / behavior.
+ * These can be combined into roles that are assigned to Creeps.
+ */
 const creepBehavior = {
   /**
-  Gather from the nearest active source.
-  @param {Creep} creep
-  */
+   * Gather from the closest active source to the given creep.
+   * @param {Creep} creep
+   */
   gatherFromClosestSource(creep: Creep): void {
-    let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-    if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+    const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
       creep.moveTo(source, {
         visualizePathStyle: {
-          stroke: '#ffaa00'
+          stroke: "#ffaa00"
         }
       });
     }
   },
 
   /**
-  Returns the closest spawn or extension to the given creep.
-  @param {Creep} creep
-  */
+   * Returns the closest spawn or extension to the given creep.
+   * @param {Creep} creep
+   */
   findClosestSpawnOrExtension(creep: Creep): StructureSpawn | StructureExtension {
-    let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+    const target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
       filter: (structure) => {
-        return (structure.structureType == STRUCTURE_EXTENSION ||
-            structure.structureType == STRUCTURE_SPAWN) &&
+        return (structure.structureType === STRUCTURE_EXTENSION ||
+            structure.structureType === STRUCTURE_SPAWN) &&
           structure.energy < structure.energyCapacity;
       }
     }) as StructureSpawn | StructureExtension;
@@ -33,12 +37,12 @@ const creepBehavior = {
   },
 
   /**
-  Sorts an array of targets by the given priority list (optional). isUnderAttack
-  can be used to give towers higher priority during an attack.
-  @param {Structure[]} targets
-  @param {boolean} isUnderAttack
-  @param {Object} priorities
-  */
+   * Sorts an array of targets by the given priority list (optional). isUnderAttack
+   * can be used to give towers higher priority during an attack.
+   * @param {Structure[]} targets
+   * @param {boolean} isUnderAttack
+   * @param {Object} priorities
+   */
   sortStructureEnergyDropoffTargets(targets: Structure[], isUnderAttack: boolean = false, priorities: any = {
     underAttackTower: 0,
     [STRUCTURE_SPAWN]: 1,
@@ -46,9 +50,9 @@ const creepBehavior = {
     [STRUCTURE_TOWER]: 3,
     [STRUCTURE_CONTAINER]: 4
   }): Structure[] {
-    let sortedTargets: Structure[] = _.sortBy(targets, function(target) {
-      //if under attack, prioritize towers higher than other buildings.
-      if (isUnderAttack && priorities[target.structureType] == priorities[STRUCTURE_TOWER]) {
+    const sortedTargets: Structure[] = _.sortBy(targets, (target) => {
+      // if under attack, prioritize towers higher than other buildings.
+      if (isUnderAttack && priorities[target.structureType] === priorities[STRUCTURE_TOWER]) {
         return priorities.underAttackTower as number;
       }
       return priorities[target.structureType] as number;
@@ -58,19 +62,19 @@ const creepBehavior = {
   },
 
   /**
-  Drop off energy at a structure in the same room as the creep that is not full
-  of energy. Prioritizes spawns and extensions.
-  @param {Creep} creep
-  */
+   * Drop off energy at a structure in the same room as the creep that is not full
+   * of energy. Prioritizes spawns and extensions.
+   * @param {Creep} creep
+   */
   dropOffEnergyAtNearbyStructure(creep: Creep): void {
-    let targets = creep.room.find(FIND_STRUCTURES, {
+    const targets = creep.room.find(FIND_STRUCTURES, {
       filter: (structure) => {
         // targets must be a building that is not at its energy capacity.
-        if (structure.structureType == STRUCTURE_EXTENSION ||
-          structure.structureType == STRUCTURE_SPAWN ||
-          structure.structureType == STRUCTURE_TOWER) {
+        if (structure.structureType === STRUCTURE_EXTENSION ||
+          structure.structureType === STRUCTURE_SPAWN ||
+          structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-        } else if (structure.structureType == STRUCTURE_CONTAINER) {
+        } else if (structure.structureType === STRUCTURE_CONTAINER) {
           return (structure.store && structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
         } else {
           // This is not a building that we want to drop energy off at.
@@ -80,20 +84,20 @@ const creepBehavior = {
     });
 
     if (targets.length > 0) {
-      //prioritize targets with higher priorities at smaller indices
-      let sortedTargets = this.sortStructureEnergyDropoffTargets(targets);
+      // prioritize targets with higher priorities at smaller indices
+      const sortedTargets = this.sortStructureEnergyDropoffTargets(targets);
       let target = sortedTargets[0];
 
-      //if a spawn/extension is found, target the closest one.
-      if (target.structureType == STRUCTURE_SPAWN ||
-        target.structureType == STRUCTURE_EXTENSION) {
+      // if a spawn/extension is found, target the closest one.
+      if (target.structureType === STRUCTURE_SPAWN ||
+        target.structureType === STRUCTURE_EXTENSION) {
         target = this.findClosestSpawnOrExtension(creep);
       }
 
-      if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(target, {
           visualizePathStyle: {
-            stroke: '#ffffff'
+            stroke: "#ffffff"
           }
         });
       }
@@ -101,16 +105,16 @@ const creepBehavior = {
   },
 
   /**
-  Find the biggest dropped pile of energy in the room and return it.
-  @param {Creep} creep
-  */
+   * Find the biggest dropped pile of energy in the room and return it.
+   * @param {Creep} creep
+   */
   findBiggestEnergyPile(creep: Creep): Resource<RESOURCE_ENERGY> | undefined {
     // Filter to only find energy.
-    let droppedResources: Resource<RESOURCE_ENERGY>[] = creep.room.find(FIND_DROPPED_RESOURCES, {
+    const droppedResources: Array<Resource<RESOURCE_ENERGY>> = creep.room.find(FIND_DROPPED_RESOURCES, {
       filter: (resource) => {
-        return resource.resourceType == RESOURCE_ENERGY
+        return resource.resourceType === RESOURCE_ENERGY;
       }
-    }) as Resource<RESOURCE_ENERGY>[];
+    }) as Array<Resource<RESOURCE_ENERGY>>;
     if (droppedResources.length) {
       // determine which pile of resources is biggest
       let biggestResource = droppedResources[0];
@@ -129,16 +133,16 @@ const creepBehavior = {
   },
 
   /**
-  Find the biggest dropped pile of energy in the room and pick it up.
-  @param {Creep} creep
-  */
+   * Find the biggest dropped pile of energy in the room and pick it up.
+   * @param {Creep} creep
+   */
   pickupBiggestEnergyPile(creep: Creep): void {
-    let biggestResource = this.findBiggestEnergyPile(creep);
+    const biggestResource = this.findBiggestEnergyPile(creep);
     if (biggestResource) {
-      if (creep.pickup(biggestResource) == ERR_NOT_IN_RANGE) {
+      if (creep.pickup(biggestResource) === ERR_NOT_IN_RANGE) {
         creep.moveTo(biggestResource, {
           visualizePathStyle: {
-            stroke: '#ffaa00'
+            stroke: "#ffaa00"
           }
         });
       }
@@ -146,56 +150,56 @@ const creepBehavior = {
   },
 
   /**
-  Upgrade this rooms controller.
-  @param {Creep} creep
-  */
+   * Upgrade this rooms controller.
+   * @param {Creep} creep
+   */
   upgradeRoomController(creep: Creep): void {
     creep.upgradeController(creep.room.controller!);
     if (!creep.pos.isNearTo(creep.room.controller!)) {
       creep.moveTo(creep.room.controller!, {
         visualizePathStyle: {
-          stroke: '#ffffff'
+          stroke: "#ffffff"
         }
       });
     }
   },
 
   /**
-  Retrieve energy from an upgrader container. If one is not found,
-  retrieve energy from spawn.
-  @param {Creep} creep
-  */
+   * Retrieve energy from an upgrader container. If one is not found,
+   * retrieve energy from spawn.
+   * @param {Creep} creep
+   */
   retrieveEnergyForUpgrading(creep: Creep): void {
-    let upContainer = this.getUpContainer(creep);
+    const upContainer = this.getUpContainer(creep);
     if (upContainer) {
-      if (creep.withdraw(upContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      if (creep.withdraw(upContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(upContainer, {
           visualizePathStyle: {
-            stroke: '#ffaa00'
+            stroke: "#ffaa00"
           }
         });
       } else {
-        //if in range, but the upContainer pos is open, move to it.
-        let upContainerCreeps = upContainer.pos.lookFor(LOOK_CREEPS);
+        // if in range, but the upContainer pos is open, move to it.
+        const upContainerCreeps = upContainer.pos.lookFor(LOOK_CREEPS);
         if (upContainerCreeps.length <= 0) {
           creep.moveTo(upContainer, {
             visualizePathStyle: {
-              stroke: '#ffaa00'
+              stroke: "#ffaa00"
             }
           });
         }
       }
     } else {
-      //if not found, check for spawn and retrieve from there.
-      let spawns = creep.room.find(FIND_MY_STRUCTURES, {
+      // if not found, check for spawn and retrieve from there.
+      const spawns = creep.room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
-          return structure.structureType == STRUCTURE_SPAWN;
+          return structure.structureType === STRUCTURE_SPAWN;
         }
       });
-      if (creep.withdraw(spawns[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      if (creep.withdraw(spawns[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(spawns[0], {
           visualizePathStyle: {
-            stroke: '#ffaa00'
+            stroke: "#ffaa00"
           }
         });
       }
@@ -203,20 +207,20 @@ const creepBehavior = {
   },
 
   /**
-  returns the upContainer for the creep's room. If there is no upContainer,
-  returns 0.
-  @param {Creep} creep
-  */
+   * returns the upContainer for the creep's room. If there is no upContainer,
+   * returns 0.
+   * @param {Creep} creep
+   */
   getUpContainer(creep: Creep): StructureContainer | undefined {
-    let upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
+    const upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
     if (upContainerFlagPos) {
-      let lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
+      const lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
         upContainerFlagPos.x,
         upContainerFlagPos.y);
       if (lookResults.length) {
-        for (let i = 0; i < lookResults.length; i++) {
-          if (lookResults[i].structureType == STRUCTURE_CONTAINER) {
-            return lookResults[i] as StructureContainer;
+        for (const lookResult of lookResults) {
+          if (lookResult.structureType === STRUCTURE_CONTAINER) {
+            return lookResult as StructureContainer;
           }
         }
       }
@@ -226,31 +230,28 @@ const creepBehavior = {
   },
 
   /**
-  Repair the upContainer. Note that this function does not move the creep towards
-  the upContainer.
-  @param {Creep} creep
-  */
+   * Repair the upContainer in the creep's room. Note that this function does
+   * not move the creep towards the upContainer.
+   * @param {Creep} creep
+   */
   repairUpContainer(creep: Creep): void {
-    let upContainer = this.getUpContainer(creep);
+    const upContainer = this.getUpContainer(creep);
     if (upContainer && upContainer.hits < upContainer.hitsMax) {
       creep.repair(upContainer);
     }
   },
 
   /**
-  Signs the room controller with my sign.
-  @param {Creep} creep
-  */
+   * Signs the creep's room's controller with my sign.
+   * @param {Creep} creep
+   */
   signRoomController(creep: Creep): void {
-    let message = Memory.controllerSign;
-    if (!message) {
-      message = "";
-    }
+    const message = "ALL YOUR BASE ARE BELONG TO US.";
 
-    if (creep.signController(creep.room.controller!, message) == ERR_NOT_IN_RANGE) {
+    if (creep.signController(creep.room.controller!, message) === ERR_NOT_IN_RANGE) {
       creep.moveTo(creep.room.controller!, {
         visualizePathStyle: {
-          stroke: '#800080'
+          stroke: "#800080"
         }
       });
     }

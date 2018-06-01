@@ -1,11 +1,14 @@
 import profiler from "screeps-profiler";
 
+/**
+ * Contains constants and methods related to manipulating or finding roomPositions.
+ */
 const roomPositionFunctions = {
   /**
-  Find an adjacent position for the given position and direction
-  @param {RoomPosition} position
-  @param {DirectionConstant} direction
-  */
+   * Find an adjacent position for the given position and direction
+   * @param {RoomPosition} position
+   * @param {DirectionConstant} direction
+   */
   findAdjacent(position: RoomPosition, direction: DirectionConstant): RoomPosition {
     switch (direction) {
       case TOP:
@@ -28,12 +31,12 @@ const roomPositionFunctions = {
   },
 
   /**
-  Finds and returns an object (or array if isArray is true) containing
-  the objects in adjacent positions to the given position. This object (or array)
-  is found from room.lookAtArea.
-  @param {RoomPosition} position
-  @param {boolean} isArray = false
-  */
+   * Finds and returns an object (or array if isArray is true) containing
+   * the objects in adjacent positions to the given position. This object (or array)
+   * is found from room.lookAtArea.
+   * @param {RoomPosition} position
+   * @param {boolean} isArray = false
+   */
   getAdjacentObjects(position: RoomPosition, isArray: boolean = false): LookAtResultMatrix | LookAtResultWithPos[] {
     const room = Game.rooms[position.roomName];
 
@@ -44,7 +47,7 @@ const roomPositionFunctions = {
 
       for (let i = 0; i < adjacentObjects.length; i++) {
         const adjacentObject = adjacentObjects[i];
-        if (adjacentObject.x == position.x && adjacentObject.y == position.y) {
+        if (adjacentObject.x === position.x && adjacentObject.y === position.y) {
           adjacentObjects.splice(i, 1);
           i--;
         }

@@ -4,13 +4,16 @@ import { creepBody } from "./creepBody";
 import { roomPositionFunctions } from "./roomPosition";
 import { spawnFunctions } from "./spawn";
 
+/**
+ * Contains constants and methods for rooms.
+ */
 const roomFunctions = {
   /**
-  Check for sources that are not known in this room and create
-  a list of possible sourceAssignments for this room.
-  Also marks miningSpots with flags.
-  @param {Room} room
-  */
+   * Check for sources that are not known in this room and create
+   * a list of possible sourceAssignments in room.memory.
+   * Also marks miningSpots with flags so that buildings are not placed there.
+   * @param {Room} room
+   */
   checkForSources(room: Room): void {
     if (!room.memory.sourceAssignments) {
       room.memory.sourceAssignments = {};
@@ -19,11 +22,11 @@ const roomFunctions = {
         if (!room.memory.sourceAssignments[source.id]) {
           room.memory.sourceAssignments[source.id] = {};
           room.memory.sourceAssignments[source.id].minerName = "none";
-          let adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true) as LookAtResultWithPos[];
+          const adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true) as LookAtResultWithPos[];
           let miningSpotNumber = 0;
-          for (let i in adjacentObjects) {
-            if (adjacentObjects[i].terrain && adjacentObjects[i].terrain != "wall") {
-              let flagPosition = new RoomPosition(adjacentObjects[i].x, adjacentObjects[i].y, room.name);
+          for (const object of adjacentObjects) {
+            if (object.terrain && object.terrain !== "wall") {
+              const flagPosition = new RoomPosition(object.x, object.y, room.name);
               let flagName: any = source.id + " miningSpot " + miningSpotNumber;
               flagName = flagPosition.createFlag(flagName, COLOR_YELLOW);
               Memory.flags[flagName] = flagPosition;
@@ -36,9 +39,11 @@ const roomFunctions = {
   },
 
   /**
-  Check if a source is missing a miner.
-  @param {Room} room
-  */
+   * Check if any sources in this room are missing an assigned miner.
+   * If there is a source that is missing a miner, this method returns the
+   * id of that source. Returns undefined otherwise.
+   * @param {Room} room
+   */
   findSourceIdMissingMiner(room: Room): string | undefined {
     let result: string | undefined;
 
@@ -62,46 +67,17 @@ const roomFunctions = {
   },
 
   /**
-  Build a miner for the given room and sourceId.
-  @param {Room} room
-  @param {string} sourceId
-  @param {StructureSpawn} spawn
-  @param {BodyPartConstant[]} body
-  @param {string} name = undefined
-  */
-  buildMiner(room: Room, sourceId: string, spawn: StructureSpawn, body: BodyPartConstant[], name: string | undefined = undefined): string | ScreepsReturnCode | undefined {
-    if (sourceId) {
-      let newCreepName: any = spawnFunctions.createCreepWithMemory(spawn, {
-        role: "miner",
-        assignedSourceId: sourceId
-      }, body, name);
-
-      let minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId) as Source, {
-        ignoreCreeps: true
-      });
-      room.memory.sourceAssignments[sourceId].path = minerPath;
-
-      if (newCreepName != ERR_NOT_ENOUGH_ENERGY && newCreepName != ERR_BUSY) {
-        room.memory.sourceAssignments[sourceId].minerName = newCreepName;
-      }
-
-      return newCreepName as string | ScreepsReturnCode;
-    }
-    return undefined;
-  },
-
-  /**
-  Creates tower assignments in memory for the given room.
-  @param {Room} room
-  */
+   * Creates tower assignments in memory for the given room.
+   * @param {Room} room
+   */
   createTowerAssignments(room: Room): void {
     if (!room.memory.towerAssignments) {
       room.memory.towerAssignments = {};
 
-      //add sources to the tower assignments list.
-      let sources = room.find(FIND_SOURCES);
+      // add sources to the tower assignments list.
+      const sources = room.find(FIND_SOURCES);
       if (sources.length) {
-        for (let source in sources) {
+        for (const source in sources) {
           room.memory.towerAssignments[sources[source].id] = {};
         }
       }
