@@ -22,4 +22,4 @@ Run build without pushing to a server (good for testing with a local private ser
 
 ## Profiler
 
-The Screeps-Profiler is disabled to avoid using extra CPU when it is not being used. At the moment, my solution is to manually enable it by searching for "profiler.enable()" in the Screeps script window and uncomment it.
+The Screeps-Profiler is disabled to avoid using extra CPU when it is not being used. At the moment, my solution is to manually enable it by searching for "screepsProfiler.enable()" in the Screeps script window and uncomment it.
