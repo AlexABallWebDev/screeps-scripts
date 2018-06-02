@@ -20,6 +20,7 @@ const spawnFunctions = {
     body: BodyPartConstant[],
     name?: string): string | ScreepsReturnCode | undefined {
     if (sourceId) {
+      name = "miner" + Game.time;
       const newCreepName: any = this.createCreepWithMemory(spawn, {
         assignedSourceId: sourceId,
         role: "miner"
@@ -49,19 +50,23 @@ const spawnFunctions = {
    */
   createCreepWithMemory(
     spawn: StructureSpawn,
-    memory: any,
+    creepMemory: any,
     body: BodyPartConstant[] = [WORK, CARRY, MOVE, MOVE],
     name?: string): string | ScreepsReturnCode {
+    if (!name) {
+      name = creepMemory.role + Game.time;
+    }
+
     const trimmedBody: BodyPartConstant[] = creepBody.trimExtraPartsToEnergyCapacity(spawn.room, body);
     const sortedBody = creepBody.sortBody(trimmedBody);
 
-    const nameOutput = spawn.createCreep(sortedBody, name, memory);
-
-    if (nameOutput !== ERR_NOT_ENOUGH_ENERGY && nameOutput !== ERR_BUSY) {
-      console.log("Room " + spawn.room.name + ": Spawning new " + memory.role + ": " + nameOutput);
+    const returnCode = spawn.spawnCreep(sortedBody, name!, {memory: creepMemory});
+    if (returnCode === OK) {
+      console.log("Room " + spawn.room.name + ": Spawning new " + creepMemory.role + ": " + name);
+      return name!;
     }
 
-    return nameOutput;
+    return returnCode;
   },
 
   /**
