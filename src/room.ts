@@ -16,12 +16,13 @@ const roomFunctions = {
    */
   checkForSources(room: Room): void {
     if (!room.memory.sourceAssignments) {
-      room.memory.sourceAssignments = {};
+      const sourceAssignments: any = {};
 
       _.forEach(room.find(FIND_SOURCES), (source) => {
         if (!room.memory.sourceAssignments[source.id]) {
-          room.memory.sourceAssignments[source.id] = {};
-          room.memory.sourceAssignments[source.id].minerName = "none";
+          sourceAssignments[source.id] = {minerName: "none", path: []};
+
+          // mark mining spots with flags so that buildings are not placed there.
           const adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true) as LookAtResultWithPos[];
           let miningSpotNumber = 0;
           for (const object of adjacentObjects) {
@@ -35,6 +36,8 @@ const roomFunctions = {
           }
         }
       });
+
+      room.memory.sourceAssignments = sourceAssignments;
     }
   },
 

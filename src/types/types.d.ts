@@ -1,20 +1,25 @@
 interface CreepMemory { 
-  assignedSourceId: string
-  building: boolean
-  carting: boolean
-  colonizing: boolean
-  colonySpawnSiteID: string
+  assignedSourceId?: string
+  building?: boolean
+  carting?: boolean
+  colonizing?: boolean
+  colonySpawnSiteID?: string
   role: string
-  targetHostileCreep: string | undefined
-  targetResource: string | undefined
-  upgrading: boolean
+  targetHostileCreep?: string
+  targetResource?: string
+  upgrading?: boolean
+}
+
+interface SourceAssignment {
+  minerName: string
+  path: PathStep[]
 }
 
 interface RoomMemory { 
-  extensionSquareLayerCount: number
-  sourceAssignments: any
-  towerAssignments: any
-  controllerLevel: number | undefined
+  extensionSquareLayerCount?: number
+  sourceAssignments: {[name: string]: SourceAssignment}
+  towerAssignments?: any
+  controllerLevel?: number
 }
 
 interface FlagMemory {
