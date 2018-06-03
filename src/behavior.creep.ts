@@ -121,14 +121,42 @@ const creepBehavior = {
       // determine which pile of resources is biggest
       let biggestResource = droppedResources[0];
       if (droppedResources.length > 1) {
-        for (let i = 1; i < droppedResources.length; i++) {
-          if (droppedResources[i].amount > biggestResource.amount) {
-            biggestResource = droppedResources[i];
+        for (const droppedResourceIndex in droppedResources) {
+          if (droppedResources[droppedResourceIndex].amount > biggestResource.amount) {
+            biggestResource = droppedResources[droppedResourceIndex];
           }
         }
       }
 
       return biggestResource;
+    } else {
+      return undefined;
+    }
+  },
+
+  /**
+   * Find the tombstone with the most energy in the same room as the creep.
+   * @param {Creep} creep
+   */
+  findTombstoneWithMostEnergy(creep: Creep): Tombstone | undefined {
+    // Filter to only find energy.
+    const tombstones: Tombstone[] = creep.room.find(FIND_TOMBSTONES, {
+      filter: (tombstone) => {
+        return tombstone.store[RESOURCE_ENERGY] !== 0;
+      }
+    });
+    if (tombstones.length) {
+      // determine which pile of resources is biggest
+      let tombstoneWithMostEnergy = tombstones[0];
+      if (tombstones.length > 1) {
+        for (const tombstoneIndex in tombstones) {
+          if (tombstones[tombstoneIndex].store[RESOURCE_ENERGY] > tombstoneWithMostEnergy.store[RESOURCE_ENERGY]) {
+            tombstoneWithMostEnergy = tombstones[tombstoneIndex];
+          }
+        }
+      }
+
+      return tombstoneWithMostEnergy;
     } else {
       return undefined;
     }
