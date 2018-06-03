@@ -48,24 +48,26 @@ const roomConstruction = {
    * @param {RoomPosition} startPosition
    */
   placeUpgraderContainer(room: Room, startPosition: RoomPosition): void {
-    const flagName = room.name + " upContainer";
-    const flag = Memory.flags[flagName];
-    if (!flag) {
-      let upContainerPosition = this.placeBuildingAdjacentToPathDestination(startPosition,
-        room.controller!.pos, STRUCTURE_CONTAINER);
+    if (room.controller!.level >= 3) {
+      const flagName = room.name + " upContainer";
+      const flag = Memory.flags[flagName];
+      if (!flag) {
+        let upContainerPosition = this.placeBuildingAdjacentToPathDestination(startPosition,
+          room.controller!.pos, STRUCTURE_CONTAINER);
 
-      if (upContainerPosition !== ERR_RCL_NOT_ENOUGH &&
-        upContainerPosition !== ERR_NOT_FOUND &&
-        upContainerPosition !== ERR_INVALID_TARGET) {
-        upContainerPosition = upContainerPosition as RoomPosition;
-        room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
-        Memory.flags[flagName] = Game.flags[flagName].pos;
+        if (upContainerPosition !== ERR_RCL_NOT_ENOUGH &&
+          upContainerPosition !== ERR_NOT_FOUND &&
+          upContainerPosition !== ERR_INVALID_TARGET) {
+          upContainerPosition = upContainerPosition as RoomPosition;
+          room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
+          Memory.flags[flagName] = Game.flags[flagName].pos;
+        } else {
+          console.log("roomConstruction.js: placeUpgraderContainer failed to place upgraderContainer " +
+            "due to error: " + upContainerPosition);
+        }
       } else {
-        console.log("roomConstruction.js: placeUpgraderContainer failed to place upgraderContainer " +
-          "due to error: " + upContainerPosition);
+        this.createConstructionSite(room, flag.x, flag.y, STRUCTURE_CONTAINER, flagName);
       }
-    } else {
-      this.createConstructionSite(room, flag.x, flag.y, STRUCTURE_CONTAINER, flagName);
     }
   },
 

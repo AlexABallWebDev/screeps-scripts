@@ -62,6 +62,18 @@ const roomPositionFunctions = {
 
       return adjacentObjects;
     }
+  },
+
+  /**
+   * Returns the opposite direction of the given direction.
+   * @param {DirectionConstant} direction
+   */
+  reverseDirection(direction: DirectionConstant): DirectionConstant {
+    let newDirection = direction + 4;
+    if (newDirection > 8) {
+      newDirection -= 8;
+    }
+    return newDirection as DirectionConstant;
   }
 };
 

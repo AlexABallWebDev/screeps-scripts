@@ -1,5 +1,7 @@
 import profiler from "screeps-profiler";
 
+import { roomPositionFunctions } from "./roomPosition";
+
 /**
  * Contains constants and methods that give Creeps commands / behavior.
  * These can be combined into roles that are assigned to Creeps.
@@ -190,18 +192,43 @@ const creepBehavior = {
         }
       }
     } else {
-      // if not found, check for spawn and retrieve from there.
+      // if upContainer not found, check for spawn and retrieve from there.
       const spawns = creep.room.find(FIND_MY_SPAWNS);
       // Only take energy from spawn if there is excess.
       if (creep.room.energyAvailable + BODYPART_COST[MOVE] >=
-        creep.room.energyCapacityAvailable &&
-        creep.withdraw(spawns[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(spawns[0], {
-          visualizePathStyle: {
-            stroke: "#ffaa00"
-          }
-        });
+        creep.room.energyCapacityAvailable) {
+        if (creep.withdraw(spawns[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(spawns[0], {
+            visualizePathStyle: {
+              stroke: "#ffaa00"
+            }
+          });
+        }
+      } else {
+        // If there is not enough energy in the spawn, stay away to reduce congestion.
+        this.stayAtRange(creep, spawns[0].pos, 3);
       }
+    }
+  },
+
+  /**
+   * The creep will move towards the target, but will move away if it is
+   * within range of the target.
+   * @param {Creep} creep
+   * @param {RoomPosition} target
+   * @param {number} range
+   */
+  stayAtRange(creep: Creep, target: RoomPosition, range: number): void {
+    const distanceFromSpawn = creep.pos.getRangeTo(target);
+    if (distanceFromSpawn < range) {
+      const towardsSpawn = creep.pos.getDirectionTo(target);
+      creep.move(roomPositionFunctions.reverseDirection(towardsSpawn));
+    } else if (distanceFromSpawn > range) {
+      creep.moveTo(target, {
+        visualizePathStyle: {
+          stroke: "#ffffff"
+        }
+      });
     }
   },
 

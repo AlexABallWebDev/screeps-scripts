@@ -31,6 +31,7 @@ export const roleBuilder = {
             }
           }
         }
+        creepBehavior.stayAtRange(creep, closestToFinished.pos, 3);
         if (creep.build(closestToFinished) === ERR_NOT_IN_RANGE) {
           creep.moveTo(closestToFinished, {
             visualizePathStyle: {
