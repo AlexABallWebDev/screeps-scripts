@@ -54,7 +54,7 @@ const roomConstruction = {
     }));
     if (extensionCount >= 5) {
       const flagName = room.name + " upContainer";
-      const flag = Memory.flags[flagName];
+      const flag = Game.flags[flagName];
       if (!flag) {
         let upContainerPosition = this.placeBuildingAdjacentToPathDestination(startPosition,
           room.controller!.pos, STRUCTURE_CONTAINER);
@@ -64,13 +64,12 @@ const roomConstruction = {
           upContainerPosition !== ERR_INVALID_TARGET) {
           upContainerPosition = upContainerPosition as RoomPosition;
           room.createFlag(upContainerPosition.x, upContainerPosition.y, flagName, COLOR_PURPLE);
-          Memory.flags[flagName] = Game.flags[flagName].pos;
         } else {
           console.log("roomConstruction.js: placeUpgraderContainer failed to place upgraderContainer " +
             "due to error: " + upContainerPosition);
         }
       } else {
-        this.createConstructionSite(room, flag.x, flag.y, STRUCTURE_CONTAINER, flagName);
+        this.createConstructionSite(room, flag.pos.x, flag.pos.y, STRUCTURE_CONTAINER, flagName);
       }
     }
   },

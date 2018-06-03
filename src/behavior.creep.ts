@@ -96,10 +96,7 @@ const creepBehavior = {
         target = this.findClosestSpawnOrExtension(creep);
       }
 
-      const transferReturnCode = creep.transfer(target, RESOURCE_ENERGY);
-      if (transferReturnCode === ERR_FULL) {
-        this.stayAtRange(creep, target.pos, 3);
-      } else if (transferReturnCode === ERR_NOT_IN_RANGE) {
+      if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(target, {
           visualizePathStyle: {
             stroke: "#ffffff"
@@ -237,15 +234,13 @@ const creepBehavior = {
 
   /**
    * returns the upContainer for the creep's room. If there is no upContainer,
-   * returns 0.
+   * returns undefined.
    * @param {Creep} creep
    */
   getUpContainer(creep: Creep): StructureContainer | undefined {
-    const upContainerFlagPos = Memory.flags[creep.room.name + " upContainer"];
-    if (upContainerFlagPos) {
-      const lookResults = creep.room.lookForAt(LOOK_STRUCTURES,
-        upContainerFlagPos.x,
-        upContainerFlagPos.y);
+    const upContainerFlag = Game.flags[creep.room.name + " upContainer"];
+    if (upContainerFlag) {
+      const lookResults = upContainerFlag.pos.lookFor(LOOK_STRUCTURES);
       if (lookResults.length) {
         for (const lookResult of lookResults) {
           if (lookResult.structureType === STRUCTURE_CONTAINER) {
