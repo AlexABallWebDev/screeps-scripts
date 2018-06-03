@@ -96,7 +96,10 @@ const creepBehavior = {
         target = this.findClosestSpawnOrExtension(creep);
       }
 
-      if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      const transferReturnCode = creep.transfer(target, RESOURCE_ENERGY);
+      if (transferReturnCode === ERR_FULL) {
+        this.stayAtRange(creep, target.pos, 3);
+      } else if (transferReturnCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(target, {
           visualizePathStyle: {
             stroke: "#ffffff"
