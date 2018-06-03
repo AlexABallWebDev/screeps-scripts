@@ -191,12 +191,11 @@ const creepBehavior = {
       }
     } else {
       // if not found, check for spawn and retrieve from there.
-      const spawns = creep.room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-          return structure.structureType === STRUCTURE_SPAWN;
-        }
-      });
-      if (creep.withdraw(spawns[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      const spawns = creep.room.find(FIND_MY_SPAWNS);
+      // Only take energy from spawn if there is excess.
+      if (creep.room.energyAvailable + BODYPART_COST[MOVE] >=
+        creep.room.energyCapacityAvailable &&
+        creep.withdraw(spawns[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(spawns[0], {
           visualizePathStyle: {
             stroke: "#ffaa00"
