@@ -156,7 +156,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
               }
             } else if (_.size(creepsOfRole.courier) < 3) {
               spawnFunctions.createCreepWithRole(spawn, "courier", creepBody.courier);
-            } else if ((_.size(room.find(FIND_MY_CONSTRUCTION_SITES)) > 0 || room.controller!.level <= 2) &&
+            } else if ((_.size(room.find(FIND_MY_CONSTRUCTION_SITES)) > 0 || room.controller!.level <= 3) &&
             _.size(creepsOfRole.builder) < 2) {
               spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
             } else if (_.size(creepsOfRole.upgrader) < 2) {
