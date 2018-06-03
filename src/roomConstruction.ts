@@ -268,11 +268,6 @@ const roomConstruction = {
       for (const sourceId in room.memory.sourceAssignments) {
         const sourceAssignment = room.memory.sourceAssignments[sourceId];
 
-        // RESPAWN: temporary update to add towersAssigned to sourceAssignments until my next respawn.
-        if (sourceAssignment.towersAssigned === undefined) {
-          sourceAssignment.towersAssigned = 0;
-        }
-
         if (lowestTowersAssigned === undefined || sourceAssignment.towersAssigned < lowestTowersAssigned) {
           lowestTowersAssigned = sourceAssignment.towersAssigned;
           lowestTowerAssignmentSourceId = sourceId;
