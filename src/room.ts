@@ -27,9 +27,8 @@ const roomFunctions = {
         for (const object of adjacentObjects) {
           if (object.terrain && object.terrain !== "wall") {
             const flagPosition = new RoomPosition(object.x, object.y, room.name);
-            let flagName: any = source.id + " miningSpot " + miningSpotNumber;
-            flagName = flagPosition.createFlag(flagName, COLOR_YELLOW);
-            Memory.flags[flagName] = flagPosition;
+            const flagName: string = source.id + " miningSpot " + miningSpotNumber;
+            flagPosition.createFlag(flagName, COLOR_YELLOW);
             miningSpotNumber++;
           }
         }
