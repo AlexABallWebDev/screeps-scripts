@@ -48,7 +48,11 @@ const roomConstruction = {
    * @param {RoomPosition} startPosition
    */
   placeUpgraderContainer(room: Room, startPosition: RoomPosition): void {
-    if (room.controller!.level >= 3) {
+    // Only build upContainer if the room has at least 5 completed extensions.
+    const extensionCount = _.size(room.find(FIND_MY_STRUCTURES, {
+      filter: (structure) => structure.structureType === STRUCTURE_EXTENSION
+    }));
+    if (extensionCount >= 5) {
       const flagName = room.name + " upContainer";
       const flag = Memory.flags[flagName];
       if (!flag) {
