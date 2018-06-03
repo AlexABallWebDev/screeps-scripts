@@ -60,7 +60,6 @@ const utilityFunctions = {
         Memory.creeps = {};
         Memory.flags = {};
         Memory.rooms = {};
-        Memory.spawns = {};
         Memory.colonistNames = {};
 
         this.saveMessage("Respawn complete. Welcome back, commander.");
