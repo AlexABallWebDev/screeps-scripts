@@ -185,6 +185,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
           roomConstruction.addExtensionsToRoom(room, spawn.pos);
 
           roomConstruction.placeTowers(room, spawn.pos);
+
+          roomConstruction.placeStorage(room, spawn.pos);
         }
       }
     }

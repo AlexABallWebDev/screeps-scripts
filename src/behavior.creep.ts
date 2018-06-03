@@ -50,7 +50,8 @@ const creepBehavior = {
     [STRUCTURE_SPAWN]: 1,
     [STRUCTURE_EXTENSION]: 2,
     [STRUCTURE_TOWER]: 3,
-    [STRUCTURE_CONTAINER]: 4
+    [STRUCTURE_CONTAINER]: 4,
+    [STRUCTURE_STORAGE]: 5
   }): Structure[] {
     const sortedTargets: Structure[] = _.sortBy(targets, (target) => {
       // if under attack, prioritize towers higher than other buildings.
@@ -76,7 +77,8 @@ const creepBehavior = {
           structure.structureType === STRUCTURE_SPAWN ||
           structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-        } else if (structure.structureType === STRUCTURE_CONTAINER) {
+        } else if (structure.structureType === STRUCTURE_CONTAINER ||
+          structure.structureType === STRUCTURE_STORAGE) {
           return (structure.store && structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
         } else {
           // This is not a building that we want to drop energy off at.

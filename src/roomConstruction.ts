@@ -285,6 +285,22 @@ const roomConstruction = {
         room.memory.sourceAssignments[lowestTowerAssignmentSourceId].towersAssigned++;
       }
     }
+  },
+
+  /**
+   * Places the storage for this room near the room's controller.
+   * @param {Room} room
+   * @param {RoomPosition} startPosition
+   */
+  placeStorage(room: Room, startPosition: RoomPosition): void {
+    const storageCount = this.countStructuresAndConstructionSites(room, STRUCTURE_STORAGE);
+    if (storageCount < CONTROLLER_STRUCTURES[STRUCTURE_STORAGE][room.controller!.level]) {
+      this.placeBuildingAdjacentToPathDestination(
+        startPosition,
+        room.controller!.pos,
+        STRUCTURE_STORAGE
+      );
+    }
   }
 };
 
