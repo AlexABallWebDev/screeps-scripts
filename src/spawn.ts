@@ -57,7 +57,10 @@ const spawnFunctions = {
       name = creepMemory.role + Game.time;
     }
 
-    const trimmedBody: BodyPartConstant[] = creepBody.trimExtraPartsToEnergyCapacity(spawn.room, body);
+    const trimmedBody: BodyPartConstant[] = creepBody.trimExtraPartsToEnergyCapacity(
+      spawn.room.energyCapacityAvailable,
+      body
+    );
     const sortedBody = creepBody.sortBody(trimmedBody);
 
     const returnCode = spawn.spawnCreep(sortedBody, name!, {memory: creepMemory});

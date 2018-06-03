@@ -124,18 +124,18 @@ const creepBody = {
 
   /**
    * Trims parts off of the given body array until the cost of the given body is
-   * less than or equal to room.energyCapacityAvailable.
-   * @param {Room} room
+   * less than or equal to energyCapacity.
+   * @param {number} energyCapacity
    * @param {BodyPartConstant[]} body
    */
-  trimExtraPartsToEnergyCapacity(room: Room, body: BodyPartConstant[]): BodyPartConstant[] {
+  trimExtraPartsToEnergyCapacity(energyCapacity: number, body: BodyPartConstant[]): BodyPartConstant[] {
     const cost = this.bodyCost(body);
 
-    if (cost > room.energyCapacityAvailable) {
+    if (cost > energyCapacity) {
       const trimmedBody: BodyPartConstant[] = [];
       let newCost = 0;
       for (const bodyPart of body) {
-        if (newCost + BODYPART_COST[bodyPart] > room.energyCapacityAvailable) {
+        if (newCost + BODYPART_COST[bodyPart] > energyCapacity) {
           return trimmedBody;
         }
 
@@ -145,7 +145,7 @@ const creepBody = {
     }
 
     if (!body.length) {
-      console.log("Empty trimmedBody being returned.");
+      console.log("creepBody.trimExtraPartsToEnergyCapacity: Empty trimmedBody being returned.");
     }
     return body;
   }

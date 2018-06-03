@@ -139,42 +139,45 @@ export const loop = ErrorMapper.wrapLoop(() => {
           const spawn = spawns[spawnIndex];
           const sourceIdMissingMiner = roomFunctions.findSourceIdMissingMiner(room);
 
-          if (_.size(room.find(FIND_HOSTILE_CREEPS)) > 0 && _.size(creepsOfRole.defender) < 2) {
-            spawnFunctions.createCreepWithRole(spawn, "defender", creepBody.defender);
-          } else if (_.size(roomCreeps) < 2) {
-            spawnFunctions.createCreepWithRole(spawn, "harvester", creepBody.harvester);
-          } else if (_.size(creepsOfRole.courier) < 1) {
-            spawnFunctions.createCreepWithRole(spawn, "courier", creepBody.courier);
-          } else if (sourceIdMissingMiner) {
-            const minerName = spawnFunctions.buildMiner(sourceIdMissingMiner, spawn, creepBody.miner);
-            if (minerName === ERR_NOT_ENOUGH_ENERGY &&
-              _.size(creepsOfRole.miner) < 1 &&
-              _.size(creepsOfRole.harvester) < 2) {
+          if (!spawn.spawning) {
+            if (_.size(room.find(FIND_HOSTILE_CREEPS)) > 0 && _.size(creepsOfRole.defender) < 2) {
+              spawnFunctions.createCreepWithRole(spawn, "defender", creepBody.defender);
+            } else if (_.size(roomCreeps) < 2) {
               spawnFunctions.createCreepWithRole(spawn, "harvester", creepBody.harvester);
+            } else if (_.size(creepsOfRole.courier) < 1 && room.controller!.level > 1) {
+              const miniCourierBody = creepBody.trimExtraPartsToEnergyCapacity(room.energyAvailable, creepBody.courier);
+              spawnFunctions.createCreepWithRole(spawn, "courier", miniCourierBody);
+            } else if (sourceIdMissingMiner) {
+              const minerName = spawnFunctions.buildMiner(sourceIdMissingMiner, spawn, creepBody.miner);
+              if (minerName === ERR_NOT_ENOUGH_ENERGY &&
+                _.size(creepsOfRole.miner) < 1 &&
+                _.size(creepsOfRole.harvester) < 2) {
+                spawnFunctions.createCreepWithRole(spawn, "harvester", creepBody.harvester);
+              }
+            } else if (_.size(creepsOfRole.courier) < 3) {
+              spawnFunctions.createCreepWithRole(spawn, "courier", creepBody.courier);
+            } else if (_.size(room.find(FIND_MY_CONSTRUCTION_SITES)) > 0 && _.size(creepsOfRole.builder) < 2) {
+              spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
+            } else if (_.size(creepsOfRole.upgrader) < 2) {
+              spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
+            } else if (
+              myRoomCount < Game.gcl.level &&
+              Game.flags[roleClaimer.newClaimFlagName] &&
+              !Memory.claimerName &&
+              creepBody.bodyCost(creepBody.claimer) <= room.energyCapacityAvailable) {
+              const claimerName = spawnFunctions.createCreepWithRole(spawn, "claimer", creepBody.claimer);
+              if (typeof claimerName === "string") {
+                Memory.claimerName = claimerName;
+              }
+            } else if (Game.flags[roleColonist.newColonyFlagName] && _.size(Memory.colonistNames) < 3) {
+              const colonistName = spawnFunctions.createCreepWithRole(spawn, "colonist", creepBody.colonist);
+              if (typeof colonistName === "string") {
+                Memory.colonistNames[colonistName] = colonistName;
+              }
             }
-          } else if (_.size(creepsOfRole.courier) < 3) {
-            spawnFunctions.createCreepWithRole(spawn, "courier", creepBody.courier);
-          } else if (_.size(room.find(FIND_MY_CONSTRUCTION_SITES)) > 0 && _.size(creepsOfRole.builder) < 2) {
-            spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
-          } else if (_.size(creepsOfRole.upgrader) < 2) {
-            spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
-          } else if (
-            myRoomCount < Game.gcl.level &&
-            Game.flags[roleClaimer.newClaimFlagName] &&
-            !Memory.claimerName &&
-            creepBody.bodyCost(creepBody.claimer) <= room.energyCapacityAvailable) {
-            const claimerName = spawnFunctions.createCreepWithRole(spawn, "claimer", creepBody.claimer);
-            if (typeof claimerName === "string") {
-              Memory.claimerName = claimerName;
-            }
-          } else if (Game.flags[roleColonist.newColonyFlagName] && _.size(Memory.colonistNames) < 3) {
-            const colonistName = spawnFunctions.createCreepWithRole(spawn, "colonist", creepBody.colonist);
-            if (typeof colonistName === "string") {
-              Memory.colonistNames[colonistName] = colonistName;
-            }
+          } else {
+            spawnFunctions.displayCreateCreepVisual(spawn);
           }
-
-          spawnFunctions.displayCreateCreepVisual(spawn);
 
           roomConstruction.placeUpgraderContainer(room, spawn.pos);
 
