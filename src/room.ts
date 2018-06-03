@@ -19,20 +19,18 @@ const roomFunctions = {
       const sourceAssignments: any = {};
 
       _.forEach(room.find(FIND_SOURCES), (source) => {
-        if (!room.memory.sourceAssignments[source.id]) {
-          sourceAssignments[source.id] = {minerName: "none", path: []};
+        sourceAssignments[source.id] = {minerName: "none", path: [], towersAssigned: 0} as SourceAssignment;
 
-          // mark mining spots with flags so that buildings are not placed there.
-          const adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true) as LookAtResultWithPos[];
-          let miningSpotNumber = 0;
-          for (const object of adjacentObjects) {
-            if (object.terrain && object.terrain !== "wall") {
-              const flagPosition = new RoomPosition(object.x, object.y, room.name);
-              let flagName: any = source.id + " miningSpot " + miningSpotNumber;
-              flagName = flagPosition.createFlag(flagName, COLOR_YELLOW);
-              Memory.flags[flagName] = flagPosition;
-              miningSpotNumber++;
-            }
+        // mark mining spots with flags so that buildings are not placed there.
+        const adjacentObjects = roomPositionFunctions.getAdjacentObjects(source.pos, true) as LookAtResultWithPos[];
+        let miningSpotNumber = 0;
+        for (const object of adjacentObjects) {
+          if (object.terrain && object.terrain !== "wall") {
+            const flagPosition = new RoomPosition(object.x, object.y, room.name);
+            let flagName: any = source.id + " miningSpot " + miningSpotNumber;
+            flagName = flagPosition.createFlag(flagName, COLOR_YELLOW);
+            Memory.flags[flagName] = flagPosition;
+            miningSpotNumber++;
           }
         }
       });
@@ -67,24 +65,6 @@ const roomFunctions = {
     });
 
     return result;
-  },
-
-  /**
-   * Creates tower assignments in memory for the given room.
-   * @param {Room} room
-   */
-  createTowerAssignments(room: Room): void {
-    if (!room.memory.towerAssignments) {
-      room.memory.towerAssignments = {};
-
-      // add sources to the tower assignments list.
-      const sources = room.find(FIND_SOURCES);
-      if (sources.length) {
-        for (const source in sources) {
-          room.memory.towerAssignments[sources[source].id] = {};
-        }
-      }
-    }
   }
 };
 

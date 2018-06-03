@@ -13,12 +13,13 @@ interface CreepMemory {
 interface SourceAssignment {
   minerName: string
   path: PathStep[]
+  towersAssigned: number
 }
 
 interface RoomMemory { 
   extensionSquareLayerCount?: number
+  // index should be the source.id
   sourceAssignments: {[name: string]: SourceAssignment}
-  towerAssignments?: any
   controllerLevel?: number
 }
 

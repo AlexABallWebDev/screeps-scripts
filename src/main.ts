@@ -131,8 +131,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
       if (room.controller && room.controller.my) {
         utilityFunctions.checkForLevelUp(room);
 
-        roomFunctions.createTowerAssignments(room);
-
         const spawns: StructureSpawn[] = room.find(FIND_MY_STRUCTURES, {
           filter: (structure) => structure.structureType === STRUCTURE_SPAWN
         }) as StructureSpawn[];
@@ -143,7 +141,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
           if (_.size(room.find(FIND_HOSTILE_CREEPS)) > 0 && _.size(creepsOfRole.defender) < 2) {
             spawnFunctions.createCreepWithRole(spawn, "defender", creepBody.defender);
-          } else if (_.size(Game.creeps) < 2) {
+          } else if (_.size(roomCreeps) < 2) {
             spawnFunctions.createCreepWithRole(spawn, "harvester", creepBody.harvester);
           } else if (_.size(creepsOfRole.courier) < 1) {
             spawnFunctions.createCreepWithRole(spawn, "courier", creepBody.courier);

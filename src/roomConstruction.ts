@@ -70,20 +70,21 @@ const roomConstruction = {
   },
 
   /**
-   * Returns the number of extensions and extension construction sites
-   * in the room.
+   * Returns the number of structures and construction sites of the given
+   * structure type in the room.
    * @param {Room} room
+   * @param {StructureConstant} structureType
    */
-  countExtensions(room: Room): number {
-    const extensions: any[] = room.find(FIND_MY_STRUCTURES, {
-      filter: (structure) => structure.structureType === STRUCTURE_EXTENSION
+  countStructuresAndConstructionSites(room: Room, structureType: StructureConstant): number {
+    const structures: any[] = room.find(FIND_MY_STRUCTURES, {
+      filter: (structure) => structure.structureType === structureType
     });
 
-    const extensionConstructionSites: any[] = room.find(FIND_MY_CONSTRUCTION_SITES, {
-      filter: (constructionSite) => constructionSite.structureType === STRUCTURE_EXTENSION
+    const constructionSites: any[] = room.find(FIND_MY_CONSTRUCTION_SITES, {
+      filter: (constructionSite) => constructionSite.structureType === structureType
     });
 
-    return _.size(extensions.concat(extensionConstructionSites));
+    return _.size(structures.concat(constructionSites));
   },
 
   /**
@@ -127,7 +128,7 @@ const roomConstruction = {
 
     // skip every other square so creeps have room to move.
     const DOT_LENGTH = 1;
-    const extensionCount = this.countExtensions(room);
+    const extensionCount = this.countStructuresAndConstructionSites(room, STRUCTURE_EXTENSION);
 
     if (extensionCount < maxExtensions) {
       // 2nd layer is 1 square away (corners of a square around the position).
@@ -247,76 +248,41 @@ const roomConstruction = {
   },
 
   /**
-   * Places tower flags and constructionSites based on tower assignments for the
-   * given room if the max number of towers in the room has not been reached.
-   * Also replaces towers by placing a tower constructionSite on tower flags.
+   * Places towers near Sources in the room if the room's controller level is
+   * high enough to place another tower.
    * @param {Room} room
    * @param {RoomPosition} startPosition
    */
   placeTowers(room: Room, startPosition: RoomPosition): void {
-    if (room.memory.towerAssignments) {
-      let numberOfTowersAssigned = 0;
-      const towerAssignmentsToRemove: any[] = [];
-      _.forEach(room.memory.towerAssignments, (towerFlagsContainer, towerAssignmentName) => {
-        _.forEach(towerFlagsContainer, (towerFlagPosition, towerFlagName) => {
-          // mark tower assignments that are missing a flag.
-          if (!Memory.flags[towerFlagName]) {
-            towerAssignmentsToRemove.push({
-              towerAssignmentName,
-              towerFlagName
-            });
-          } else {
-            numberOfTowersAssigned++;
-            // replace dead towers
-            this.createConstructionSite(room, towerFlagPosition.x, towerFlagPosition.y,
-              STRUCTURE_TOWER, towerFlagName);
-          }
-        });
-      });
+    // only build towers if there is capacity for more towers.
+    const towerCount = this.countStructuresAndConstructionSites(room, STRUCTURE_TOWER);
+    if (towerCount < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller!.level]) {
+      // get the source that has had the fewest towers assigned to it.
+      let lowestTowersAssigned;
+      let lowestTowerAssignmentSourceId;
+      for (const sourceId in room.memory.sourceAssignments) {
+        const sourceAssignment = room.memory.sourceAssignments[sourceId];
 
-      // remove tower assignments that do not have a flag
-      if (towerAssignmentsToRemove.length) {
-        for (const towerAssignmentToRemove of towerAssignmentsToRemove) {
-          const towerAssignmentName = towerAssignmentToRemove.towerAssignmentName;
-          const towerFlagName = towerAssignmentToRemove.towerFlagName;
-          room.memory.towerAssignments[towerAssignmentName][towerFlagName] = undefined;
+        // RESPAWN: temporary update to add towersAssigned to sourceAssignments until my next respawn.
+        if (sourceAssignment.towersAssigned === undefined) {
+          sourceAssignment.towersAssigned = 0;
+        }
+
+        if (lowestTowersAssigned === undefined || sourceAssignment.towersAssigned < lowestTowersAssigned) {
+          lowestTowersAssigned = sourceAssignment.towersAssigned;
+          lowestTowerAssignmentSourceId = sourceId;
         }
       }
 
-      if (numberOfTowersAssigned < CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller!.level]) {
-
-        // iterate over tower assignments, find the lowest tower count.
-        let lowestTowerAssignment;
-        let lowestTowerCount = CONTROLLER_STRUCTURES[STRUCTURE_TOWER][8];
-        for (const assignmentObjectId in room.memory.towerAssignments) {
-          const towerCount = _.size(room.memory.towerAssignments[assignmentObjectId]);
-          if (towerCount < lowestTowerCount) {
-            lowestTowerCount = towerCount;
-            lowestTowerAssignment = Game.getObjectById(assignmentObjectId);
-          }
-        }
-
-        if (lowestTowerAssignment) {
-          // build a tower near the lowest count tower assignment and add it to the assignment.
-          let towerPosition = this.placeBuildingAdjacentToPathDestination(
-            startPosition,
-            lowestTowerAssignment.pos,
-            STRUCTURE_TOWER
-          );
-          if (towerPosition !== ERR_RCL_NOT_ENOUGH &&
-            towerPosition !== ERR_NOT_FOUND &&
-            towerPosition !== ERR_INVALID_TARGET) {
-            towerPosition = towerPosition as RoomPosition;
-            const towerFlagName = towerPosition.createFlag(
-              lowestTowerAssignment.id + " tower " + lowestTowerCount,
-              COLOR_BLUE
-            );
-
-            // save tower flag to towerAssignments
-            room.memory.towerAssignments[lowestTowerAssignment.id][towerFlagName] = Game.flags[towerFlagName].pos;
-            Memory.flags[towerFlagName] = Game.flags[towerFlagName].pos;
-          }
-        }
+      // Build a tower close to the found source.
+      const lowestTowersAssignedSource: Source = Game.getObjectById(lowestTowerAssignmentSourceId) as Source;
+      if (lowestTowersAssignedSource && lowestTowerAssignmentSourceId) {
+        this.placeBuildingAdjacentToPathDestination(
+          startPosition,
+          lowestTowersAssignedSource.pos,
+          STRUCTURE_TOWER
+        );
+        room.memory.sourceAssignments[lowestTowerAssignmentSourceId].towersAssigned++;
       }
     }
   }
