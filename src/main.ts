@@ -67,6 +67,20 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
     towerFunctions.runTowerLogic();
 
+    // Number of creeps that should exist for a given role. May vary by RCL.
+    const creepRoleCountsByRcl = {
+      rcl1: {
+        builder: 2,
+        courier: 3,
+        upgrader: 2
+      },
+      rcl4: {
+        builder: 1,
+        courier: 2,
+        upgrader: 1
+      }
+    };
+
     for (const roomName in Game.rooms) {
       const room = Game.rooms[roomName];
 
@@ -138,13 +152,26 @@ export const loop = ErrorMapper.wrapLoop(() => {
         for (const spawnIndex in spawns) {
           const spawn = spawns[spawnIndex];
           const sourceIdMissingMiner = roomFunctions.findSourceIdMissingMiner(room);
+          const constructionSiteCount = _.size(room.find(FIND_MY_CONSTRUCTION_SITES));
+
+          const builderCount = _.size(creepsOfRole.builder);
+          const courierCount = _.size(creepsOfRole.courier);
+          const upgraderCount = _.size(creepsOfRole.upgrader);
+
+          // get the creepRoleCounts for this RCL.
+          let creepRoleCounts;
+          if (room.controller!.level < 4) {
+            creepRoleCounts = creepRoleCountsByRcl.rcl1;
+          } else {
+            creepRoleCounts = creepRoleCountsByRcl.rcl4;
+          }
 
           if (!spawn.spawning) {
             if (_.size(room.find(FIND_HOSTILE_CREEPS)) > 0 && _.size(creepsOfRole.defender) < 2) {
               spawnFunctions.createCreepWithRole(spawn, "defender", creepBody.defender);
             } else if (_.size(roomCreeps) < 2) {
               spawnFunctions.createCreepWithRole(spawn, "harvester", creepBody.harvester);
-            } else if (_.size(creepsOfRole.courier) < 1 && room.controller!.level > 1) {
+            } else if (courierCount < 1 && room.controller!.level > 1) {
               const miniCourierBody = creepBody.trimExtraPartsToEnergyCapacity(room.energyAvailable, creepBody.courier);
               spawnFunctions.createCreepWithRole(spawn, "courier", miniCourierBody);
             } else if (sourceIdMissingMiner) {
@@ -154,12 +181,15 @@ export const loop = ErrorMapper.wrapLoop(() => {
                 _.size(creepsOfRole.harvester) < 2) {
                 spawnFunctions.createCreepWithRole(spawn, "harvester", creepBody.harvester);
               }
-            } else if (_.size(creepsOfRole.courier) < 3) {
+            } else if (courierCount < creepRoleCounts.courier) {
               spawnFunctions.createCreepWithRole(spawn, "courier", creepBody.courier);
-            } else if ((_.size(room.find(FIND_MY_CONSTRUCTION_SITES)) > 0 || room.controller!.level <= 3) &&
-            _.size(creepsOfRole.builder) < 2) {
+            } else if ((constructionSiteCount > 0 || room.controller!.level <= 3) &&
+              builderCount < creepRoleCounts.builder) {
               spawnFunctions.createCreepWithRole(spawn, "builder", creepBody.builder);
-            } else if (_.size(creepsOfRole.upgrader) < 2) {
+            } else if (upgraderCount < creepRoleCounts.upgrader ||
+              (constructionSiteCount === 0 &&
+              upgraderCount + builderCount <
+              creepRoleCounts.upgrader + creepRoleCounts.builder)) {
               spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
             } else if (
               myRoomCount < Game.gcl.level &&
