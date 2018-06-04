@@ -38,6 +38,21 @@ const roleCourier = {
       // and there is energy in the storage, then take from storage.
       const scarcityLimit = 500 * creep.room.find(FIND_SOURCES).length;
       if (pileEnergyCount < Math.min(creep.carryCapacity, scarcityLimit)) {
+        // Prioritize tombstones over storage if we are not under attack.
+        if (creep.room.find(FIND_HOSTILE_CREEPS).length === 0) {
+          const tombstone = creepBehavior.findTombstoneWithMostEnergy(creep);
+          if (tombstone) {
+            if (creep.withdraw(tombstone, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(tombstone, {
+                visualizePathStyle: {
+                  stroke: "#ffaa00"
+                }
+              });
+            }
+            return;
+          }
+        }
+
         // Only take from storage if it exists and there is energy in it.
         const storage = creepBehavior.getStorage(creep);
         if (storage && storage.store[RESOURCE_ENERGY] > 0) {
