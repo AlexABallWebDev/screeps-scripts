@@ -202,6 +202,18 @@ const creepBehavior = {
    * @param {Creep} creep
    */
   retrieveEnergyForUpgrading(creep: Creep): void {
+    const storage = this.getStorage(creep);
+    if (storage) {
+      if (creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(storage, {
+          visualizePathStyle: {
+            stroke: "#ffaa00"
+          }
+        });
+      }
+      return;
+    }
+
     const upContainer = this.getUpContainer(creep);
     if (upContainer) {
       if (creep.withdraw(upContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
@@ -283,6 +295,10 @@ const creepBehavior = {
     return undefined;
   },
 
+  /**
+   * Returns the storage for this creep's room, or undefined if there isn't one.
+   * @param {Creep} creep
+   */
   getStorage(creep: Creep): StructureStorage | undefined {
     const storages = creep.room.find(FIND_MY_STRUCTURES, {
       filter: (structure) => structure.structureType === STRUCTURE_STORAGE

@@ -52,10 +52,15 @@ const roomConstruction = {
     const extensionCount = _.size(room.find(FIND_MY_STRUCTURES, {
       filter: (structure) => structure.structureType === STRUCTURE_EXTENSION
     }));
+
     if (extensionCount >= 5) {
+      const storages = room.find(FIND_MY_STRUCTURES, {
+        filter: (structure) => structure.structureType === STRUCTURE_STORAGE
+      });
+
       const flagName = room.name + " upContainer";
       const flag = Game.flags[flagName];
-      if (!flag) {
+      if (!flag && storages.length === 0) {
         let upContainerPosition = this.placeBuildingAdjacentToPathDestination(startPosition,
           room.controller!.pos, STRUCTURE_CONTAINER);
 
@@ -68,8 +73,19 @@ const roomConstruction = {
           console.log("roomConstruction.js: placeUpgraderContainer failed to place upgraderContainer " +
             "due to error: " + upContainerPosition);
         }
-      } else {
-        this.createConstructionSite(room, flag.pos.x, flag.pos.y, STRUCTURE_CONTAINER, flagName);
+      } else if (flag) {
+        if (storages.length === 0) {
+          this.createConstructionSite(room, flag.pos.x, flag.pos.y, STRUCTURE_CONTAINER, flagName);
+        } else {
+          // If this room has a storage, destroy the upContainer.
+          const structures = room.lookForAt(LOOK_STRUCTURES, flag.pos);
+          for (const structure of structures) {
+            if (structure.structureType === STRUCTURE_CONTAINER) {
+              structure.destroy();
+              flag.remove();
+            }
+          }
+        }
       }
     }
   },
