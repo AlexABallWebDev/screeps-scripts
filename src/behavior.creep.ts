@@ -283,6 +283,16 @@ const creepBehavior = {
     return undefined;
   },
 
+  getStorage(creep: Creep): StructureStorage | undefined {
+    const storages = creep.room.find(FIND_MY_STRUCTURES, {
+      filter: (structure) => structure.structureType === STRUCTURE_STORAGE
+    });
+    if (storages.length) {
+      return storages[0] as StructureStorage;
+    }
+    return undefined;
+  },
+
   /**
    * Repair the upContainer in the creep's room. Note that this function does
    * not move the creep towards the upContainer.
@@ -307,6 +317,51 @@ const creepBehavior = {
         }
       });
     }
+  },
+
+  /**
+   * Gets the biggest energy pile or the tombstone with the most energy in it
+   * in the creep's room and returns it. The given targetResourceId is used
+   * to check if an existing target still exists and is not empty. If so,
+   * then the existing target is returned.
+   * @param {Creep} creep
+   * @param {string} targetResourceId
+   */
+  getBiggestEnergyPileOrTombstone(creep: Creep, targetResourceId?: string): Resource | Tombstone | undefined {
+    let targetResource = Game.getObjectById(targetResourceId) as Resource | Tombstone | undefined;
+
+    // check if there is any energy in the target resource pile or tombstone.
+    // if not, unset targetResource so that a new target can be found.
+    if (targetResource &&
+      targetResource instanceof Tombstone &&
+      targetResource.store &&
+      targetResource.store[RESOURCE_ENERGY] === 0) {
+      targetResource = undefined;
+    }
+
+    // if this creep does not have a target resource in memory, find the biggest
+    // energy pile and place it in memory.
+    if (!targetResource) {
+      // check for tombstones that contain energy and check for energy piles.
+      const tombstoneWithMostEnergy = creepBehavior.findTombstoneWithMostEnergy(creep);
+      const biggestResource = creepBehavior.findBiggestEnergyPile(creep);
+
+      // if both tombstones and energy piles are in the room, target the one
+      // with the most energy.
+      if (tombstoneWithMostEnergy && biggestResource) {
+        if (tombstoneWithMostEnergy.store[RESOURCE_ENERGY] > biggestResource.amount) {
+          targetResource = tombstoneWithMostEnergy;
+        } else {
+          targetResource = biggestResource;
+        }
+      } else if (tombstoneWithMostEnergy) {
+        targetResource = tombstoneWithMostEnergy;
+      } else if (biggestResource) {
+        targetResource = biggestResource;
+      }
+    }
+
+    return targetResource;
   }
 };
 
