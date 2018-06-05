@@ -145,6 +145,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
       if (room.controller && room.controller.my) {
         utilityFunctions.checkForLevelUp(room);
 
+        const storages = room.find(FIND_MY_STRUCTURES, {
+          filter: (structure) => structure.structureType === STRUCTURE_STORAGE
+        });
+        let storage: StructureStorage | undefined;
+        if (storages.length) {
+          storage = storages[0] as StructureStorage;
+        }
+
         const spawns: StructureSpawn[] = room.find(FIND_MY_STRUCTURES, {
           filter: (structure) => structure.structureType === STRUCTURE_SPAWN
         }) as StructureSpawn[];
@@ -189,7 +197,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
             } else if (upgraderCount < creepRoleCounts.upgrader ||
               (constructionSiteCount === 0 &&
               upgraderCount + builderCount <
-              creepRoleCounts.upgrader + creepRoleCounts.builder)) {
+              creepRoleCounts.upgrader + creepRoleCounts.builder &&
+              storage &&
+              storage.store[RESOURCE_ENERGY] > 200000)) {
               spawnFunctions.createCreepWithRole(spawn, "upgrader", creepBody.upgrader);
             } else if (
               myRoomCount < Game.gcl.level &&
