@@ -19,25 +19,22 @@ const spawnFunctions = {
     spawn: StructureSpawn,
     body: BodyPartConstant[],
     name?: string): string | ScreepsReturnCode | undefined {
-    if (sourceId) {
-      name = "miner" + Game.time;
-      const newCreepName: any = this.createCreepWithMemory(spawn, {
-        assignedSourceId: sourceId,
-        role: "miner"
-      }, body, name);
+    name = "miner" + Game.time;
+    const newCreepName: any = this.createCreepWithMemory(spawn, {
+      assignedSourceId: sourceId,
+      role: "miner"
+    }, body, name);
 
-      const minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId) as Source, {
-        ignoreCreeps: true
-      });
-      spawn.room.memory.sourceAssignments[sourceId].path = minerPath;
+    const minerPath = spawn.pos.findPathTo(Game.getObjectById(sourceId) as Source, {
+      ignoreCreeps: true
+    });
+    spawn.room.memory.sourceAssignments[sourceId].path = minerPath;
 
-      if (newCreepName !== ERR_NOT_ENOUGH_ENERGY && newCreepName !== ERR_BUSY) {
-        spawn.room.memory.sourceAssignments[sourceId].minerName = newCreepName;
-      }
-
-      return newCreepName as string | ScreepsReturnCode;
+    if (newCreepName !== ERR_NOT_ENOUGH_ENERGY && newCreepName !== ERR_BUSY) {
+      spawn.room.memory.sourceAssignments[sourceId].minerName = newCreepName;
     }
-    return undefined;
+
+    return newCreepName as string | ScreepsReturnCode;
   },
 
   /**
