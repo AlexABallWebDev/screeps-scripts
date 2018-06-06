@@ -72,7 +72,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       rcl1: {
         builder: 2,
         courier: 3,
-        upgrader: 2
+        upgrader: 3
       },
       rcl4: {
         builder: 1,
